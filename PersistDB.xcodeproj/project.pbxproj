@@ -14,6 +14,8 @@
 		BE89D62C1EBE3D7400CEC4D1 /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */; };
 		BE89D6331EBE765000CEC4D1 /* Radicle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6321EBE765000CEC4D1 /* Radicle.framework */; };
 		BE89D6351EBE766400CEC4D1 /* Radicle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6341EBE766400CEC4D1 /* Radicle.framework */; };
+		BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6361EBE769100CEC4D1 /* Result.framework */; };
+		BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6371EBE769100CEC4D1 /* Schemata.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,8 @@
 		BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Schemata.framework; path = Carthage/Checkouts/Schemata/build/Debug/Schemata.framework; sourceTree = "<group>"; };
 		BE89D6321EBE765000CEC4D1 /* Radicle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Radicle.framework; path = ../Radicle/build/Debug/Radicle.framework; sourceTree = "<group>"; };
 		BE89D6341EBE766400CEC4D1 /* Radicle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Radicle.framework; path = ../Radicle/build/Debug/Radicle.framework; sourceTree = "<group>"; };
+		BE89D6361EBE769100CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../../Library/Developer/Xcode/DerivedData/PersistDB-gnzhfgorkpsgefalfzckoiisvirl/Build/Products/Debug/Result.framework"; sourceTree = "<group>"; };
+		BE89D6371EBE769100CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Schemata.framework; path = "../../../Library/Developer/Xcode/DerivedData/PersistDB-gnzhfgorkpsgefalfzckoiisvirl/Build/Products/Debug/Schemata.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */,
+				BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */,
 				BE89D6351EBE766400CEC4D1 /* Radicle.framework in Frameworks */,
 				BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */,
 			);
@@ -102,6 +108,8 @@
 		BE89D6281EBE3D7400CEC4D1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BE89D6361EBE769100CEC4D1 /* Result.framework */,
+				BE89D6371EBE769100CEC4D1 /* Schemata.framework */,
 				BE89D6341EBE766400CEC4D1 /* Radicle.framework */,
 				BE89D6321EBE765000CEC4D1 /* Radicle.framework */,
 				BE89D6291EBE3D7400CEC4D1 /* Result.framework */,
