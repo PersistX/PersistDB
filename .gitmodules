@@ -1,0 +1,6 @@
+[submodule "Carthage/Checkouts/Result"]
+	path = Carthage/Checkouts/Result
+	url = https://github.com/antitypical/Result.git
+[submodule "Carthage/Checkouts/Schemata"]
+	path = Carthage/Checkouts/Schemata
+	url = https://github.com/mdiep/Schemata.git
