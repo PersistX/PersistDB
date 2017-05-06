@@ -8,6 +8,9 @@
       location = "group:Carthage/Checkouts/Schemata/Schemata.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:../Radicle/Radicle.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:PersistDB.xcodeproj">
    </FileRef>
 </Workspace>

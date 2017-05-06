@@ -4,3 +4,6 @@
 [submodule "Carthage/Checkouts/Schemata"]
 	path = Carthage/Checkouts/Schemata
 	url = https://github.com/mdiep/Schemata.git
+[submodule "Carthage/Checkouts/Radicle"]
+	path = Carthage/Checkouts/Radicle
+	url = https://github.com/mdiep/Radicle.git

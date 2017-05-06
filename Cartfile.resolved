@@ -1,2 +1,3 @@
 github "antitypical/Result" "3.2.1"
+github "mdiep/Radicle" "f82ba9f877d55fc76a23041dd0676190d3ec7ff7"
 github "mdiep/Schemata" "42ca128127e1ab8d6848cde15a7666e910fe4071"
