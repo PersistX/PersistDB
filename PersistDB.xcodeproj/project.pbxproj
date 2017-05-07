@@ -16,6 +16,7 @@
 		BE89D6351EBE766400CEC4D1 /* Radicle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6341EBE766400CEC4D1 /* Radicle.framework */; };
 		BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6361EBE769100CEC4D1 /* Result.framework */; };
 		BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6371EBE769100CEC4D1 /* Schemata.framework */; };
+		BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBEB06C1EBEADAA00522152 /* Store.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,12 +36,13 @@
 		BE89D5FF1EBE3A0100CEC4D1 /* PersistDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersistDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE89D6041EBE3A0100CEC4D1 /* PersistDBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistDBTests.swift; sourceTree = "<group>"; };
 		BE89D6061EBE3A0100CEC4D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BE89D6291EBE3D7400CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE89D6321EBE765000CEC4D1 /* Radicle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Radicle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE89D6341EBE766400CEC4D1 /* Radicle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Radicle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE89D6361EBE769100CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE89D6371EBE769100CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE89D6291EBE3D7400CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE89D6321EBE765000CEC4D1 /* Radicle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Radicle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE89D6341EBE766400CEC4D1 /* Radicle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Radicle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE89D6361EBE769100CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE89D6371EBE769100CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEBEB06C1EBEADAA00522152 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 		BE89D5F81EBE3A0100CEC4D1 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				BEBEB06C1EBEADAA00522152 /* Store.swift */,
 				BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */,
 				BE89D5FA1EBE3A0100CEC4D1 /* Info.plist */,
 			);
@@ -180,6 +183,7 @@
 				TargetAttributes = {
 					BE89D5F51EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 					BE89D5FE1EBE3A0100CEC4D1 = {
@@ -228,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +356,7 @@
 		BE89D60B1EBE3A0100CEC4D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -364,6 +370,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDB;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -371,6 +378,7 @@
 		BE89D60C1EBE3A0100CEC4D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -391,6 +399,7 @@
 		BE89D60E1EBE3A0100CEC4D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -403,6 +412,7 @@
 		BE89D60F1EBE3A0100CEC4D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
