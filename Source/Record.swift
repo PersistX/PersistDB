@@ -1,4 +1,5 @@
 import Foundation
+import Result
 import Schemata
 
 public protocol RecordValue {
@@ -10,19 +11,14 @@ public protocol RecordObject: KeyPathCompliant {
 }
 
 public struct Record: Format {
-    public enum Error: FormatError {
-        public var hashValue: Int {
-            return 0
-        }
-        
-        public static func == (lhs: Error, rhs: Error) -> Bool {
-            return false
-        }
+    public enum Error: Swift.Error {
     }
     
     public typealias Path = String
     
-    public enum Field {
+    public enum Field: FormatValue {
+        public typealias Error = Record.Error
+        
         case string(String)
     }
     
@@ -44,6 +40,23 @@ public struct Record: Format {
         set {
             fields[field] = newValue
         }
+    }
+    
+    public func decode<T>(_ path: Path, _ decode: Schemata.Value<T, Record>.Decoder) -> Result<T, DecodeError<Record>> {
+        guard let value = self[path].flatMap({ decode($0).value }) else {
+            fatalError()
+        }
+        return .success(value)
+    }
+}
+
+extension Record.Error: Hashable {
+    public var hashValue: Int {
+        return 0
+    }
+    
+    public static func == (lhs: Record.Error, rhs: Record.Error) -> Bool {
+        return false
     }
 }
 
