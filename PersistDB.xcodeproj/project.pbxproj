@@ -83,6 +83,7 @@
 				BE89D6281EBE3D7400CEC4D1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		BE89D5F71EBE3A0100CEC4D1 /* Products */ = {
 			isa = PBXGroup;
