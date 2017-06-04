@@ -23,6 +23,17 @@ extension Query: Hashable {
 }
 
 extension Query {
+    /// Return the results of the query as executed against the given models.
+    public func evaluate<C: Collection>(_ models: C) -> [Model] where C.Element == Model {
+        var result = Array(models)
+        if let predicate = predicate {
+            result = result.filter(predicate.evaluate)
+        }
+        return result
+    }
+}
+
+extension Query {
     /// Returns a query that is filtered by the given predicate.
     public func filter(_ predicate: Predicate<Model>) -> Query {
         var result = self
