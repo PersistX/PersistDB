@@ -15,3 +15,17 @@ extension Predicate: Hashable {
         return true
     }
 }
+
+extension Predicate {
+    public static func &&(lhs: Predicate, rhs: Predicate) -> Predicate {
+        fatalError()
+    }
+    
+    public static func ||(lhs: Predicate, rhs: Predicate) -> Predicate {
+        fatalError()
+    }
+    
+    public static prefix func !(predicate: Predicate) -> Predicate {
+        fatalError()
+    }
+}
