@@ -1,5 +1,5 @@
 import Foundation
 import Schemata
 
-struct Query<Model: RecordObject> {
+struct Query<Model: RecordModel> {
 }
