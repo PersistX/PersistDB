@@ -3,7 +3,11 @@ import Schemata
 
 /// A logical condition used for filtering.
 public struct Predicate<Model: RecordModel> {
-
+    fileprivate let eval: (Model) -> Bool
+    
+    fileprivate init(evaluate: @escaping (Model) -> Bool) {
+        self.eval = evaluate
+    }
 }
 
 extension Predicate: Hashable {
@@ -19,13 +23,14 @@ extension Predicate: Hashable {
 extension Predicate {
     /// Test whether the predicate evaluates to true for the given model.
     public func evaluate(_ model: Model) -> Bool {
-        return false
+        return eval(model)
     }
 }
 
 /// Test whether a property of the model matches a value.
 public func ==<Model, Value: RecordValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    fatalError()
+    let evaluate: (Model) -> Bool = { $0[keyPath: lhs] == rhs }
+    return Predicate<Model>(evaluate: evaluate)
 }
 
 extension Predicate {
