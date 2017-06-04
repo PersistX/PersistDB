@@ -29,3 +29,10 @@ extension Predicate {
         fatalError()
     }
 }
+
+extension Predicate {
+    /// Test whether the predicate evaluates to true for the given model.
+    public func evaluate(_ model: Model) -> Bool {
+        return false
+    }
+}
