@@ -11,6 +11,7 @@
 		BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6051EE3ACC600A0671F /* QueryTests.swift */; };
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
 		BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6091EE3B37600A0671F /* PredicateTests.swift */; };
+		BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */; };
 		BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */; };
 		BE89D6071EBE3A0100CEC4D1 /* PersistDB.h in Headers */ = {isa = PBXBuildFile; fileRef = BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE89D62B1EBE3D7400CEC4D1 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6291EBE3D7400CEC4D1 /* Result.framework */; };
@@ -38,6 +39,7 @@
 		BE1DC6051EE3ACC600A0671F /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		BE1DC6071EE3B34800A0671F /* Predicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicate.swift; sourceTree = "<group>"; };
 		BE1DC6091EE3B37600A0671F /* PredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicateTests.swift; sourceTree = "<group>"; };
+		BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PersistDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistDB.h; sourceTree = "<group>"; };
 		BE89D5FA1EBE3A0100CEC4D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 		BE89D6031EBE3A0100CEC4D1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */,
 				BE1DC6091EE3B37600A0671F /* PredicateTests.swift */,
 				BE1DC6051EE3ACC600A0671F /* QueryTests.swift */,
 				BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */,
@@ -258,6 +261,7 @@
 				BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */,
 				BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */,
 				BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */,
+				BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
