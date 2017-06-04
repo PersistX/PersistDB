@@ -24,14 +24,17 @@ extension Predicate {
 }
 
 extension Predicate {
+    /// Creates a predicate that's true when both predicates are true.
     public static func &&(lhs: Predicate, rhs: Predicate) -> Predicate {
         fatalError()
     }
     
+    /// Creates a predicate that's true when either predicates is true.
     public static func ||(lhs: Predicate, rhs: Predicate) -> Predicate {
         fatalError()
     }
     
+    /// Creates a predicate that's true when the given predicate is false.
     public static prefix func !(predicate: Predicate) -> Predicate {
         fatalError()
     }
