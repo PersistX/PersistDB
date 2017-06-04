@@ -23,6 +23,11 @@ extension Predicate {
     }
 }
 
+/// Test whether a property of the model matches a value.
+public func ==<Model, Value: RecordValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
+    fatalError()
+}
+
 extension Predicate {
     /// Creates a predicate that's true when both predicates are true.
     public static func &&(lhs: Predicate, rhs: Predicate) -> Predicate {
