@@ -11,9 +11,9 @@ public final class Store {
 }
 
 extension Store {
-    func fetch<Model: RecordModel, Value>(
-        _ query: Query<Model>
-    ) -> Result<Value, NoError> {
+    func fetch<P: RecordProjection>(
+        _ query: Query<P.Model>
+    ) -> Result<P, NoError> {
         fatalError()
     }
 }
