@@ -12,7 +12,7 @@ public final class Store {
 
 extension Store {
     func fetch<Model: RecordObject, Value>(
-        _ projection: Projection<Model, Value>
+        _ query: Query<Model>
     ) -> Result<Value, NoError> {
         fatalError()
     }
