@@ -1,12 +1,20 @@
 import Foundation
+import Radicle
 import Schemata
 
 /// A logical condition used for filtering.
 public struct Predicate<Model: RecordModel> {
-    fileprivate let eval: (Model) -> Bool
+    /// Test whether the predicate evaluates to true for the given model.
+    public let evaluate: (Model) -> Bool
     
-    fileprivate init(evaluate: @escaping (Model) -> Bool) {
-        self.eval = evaluate
+    public let sqlExpression: Radicle.Expression<Bool>
+    
+    fileprivate init(
+        evaluate: @escaping (Model) -> Bool,
+        sqlExpression: Radicle.Expression<Bool>
+    ) {
+        self.evaluate = evaluate
+        self.sqlExpression = sqlExpression
     }
 }
 
@@ -20,17 +28,14 @@ extension Predicate: Hashable {
     }
 }
 
-extension Predicate {
-    /// Test whether the predicate evaluates to true for the given model.
-    public func evaluate(_ model: Model) -> Bool {
-        return eval(model)
-    }
-}
-
 /// Test whether a property of the model matches a value.
-public func ==<Model, Value: RecordValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    let evaluate: (Model) -> Bool = { $0[keyPath: lhs] == rhs }
-    return Predicate<Model>(evaluate: evaluate)
+public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Model> {
+    let properties = Model.record.properties(for: lhs)
+    let column = properties[0].path
+    return Predicate<Model>(
+        evaluate: { $0[keyPath: lhs] == rhs },
+        sqlExpression: Table(String(describing: Model.self)).column(column) == rhs
+    )
 }
 
 extension Predicate {

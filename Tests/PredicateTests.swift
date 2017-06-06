@@ -1,4 +1,5 @@
 import PersistDB
+import Radicle
 import XCTest
 
 private let jkRowling = Author(
@@ -32,5 +33,11 @@ class PredicateTests: XCTestCase {
     func test_evaluate_equal_toOne_string_false() {
         let predicate = \Book.author.name == "Ray Bradbury"
         XCTAssertFalse(predicate.evaluate(sorcerersStone))
+    }
+    
+    func test_sqlExpression_equal_string() {
+        let predicate = \Author.name == "J.K. Rowling"
+        let expression = Table("Author").column("name") as Expression<String> == "J.K. Rowling"
+        XCTAssertEqual(predicate.sqlExpression, expression)
     }
 }
