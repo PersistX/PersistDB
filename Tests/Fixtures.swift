@@ -36,15 +36,15 @@ extension Book: Hashable {
     }
 }
 
-extension Book.ID: RecordValue {
-    static let record = String.record.bimap(
+extension Book.ID: ModelValue {
+    static let value = String.value.bimap(
         decode: Book.ID.init,
         encode: { $0.string }
     )
 }
 
-extension Book: RecordModel {
-    static let record = Schema<Record, Book>(
+extension Book: Model {
+    static let schema = Schema<Book>(
         Book.init,
         \Book.id ~ "id",
         \Book.title ~ "title",
@@ -91,15 +91,15 @@ extension Author: Hashable {
     }
 }
 
-extension Author.ID: RecordValue {
-    static let record = String.record.bimap(
+extension Author.ID: ModelValue {
+    static let value = String.value.bimap(
         decode: Author.ID.init,
         encode: { $0.string }
     )
 }
 
-extension Author: RecordModel {
-    static let record = Schema<Record, Author>(
+extension Author: Model {
+    static let schema = Schema<Author>(
         Author.init,
         \Author.id ~ "id",
         \Author.name ~ "name",
