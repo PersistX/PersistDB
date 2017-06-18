@@ -34,7 +34,7 @@ public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Mod
     let column = properties[0].path
     return Predicate<Model>(
         evaluate: { $0[keyPath: lhs] == rhs },
-        sqlExpression: Table(String(describing: Model.self)).column(column) == rhs
+        sqlExpression: Table(String(describing: Model.self))[column] == rhs
     )
 }
 

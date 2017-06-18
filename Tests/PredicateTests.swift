@@ -37,7 +37,7 @@ class PredicateTests: XCTestCase {
     
     func test_sqlExpression_equal_string() {
         let predicate = \Author.name == "J.K. Rowling"
-        let expression = Table("Author").column("name") as Expression<String> == "J.K. Rowling"
+        let expression = Table("Author")["name"] as Expression<String> == "J.K. Rowling"
         XCTAssertEqual(predicate.sqlExpression, expression)
     }
 }
