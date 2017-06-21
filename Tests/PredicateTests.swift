@@ -15,6 +15,8 @@ private let sorcerersStone = Book(
 )
 
 class PredicateTests: XCTestCase {
+    //  MARK: - evaluate
+    
     func test_evaluate_equal_string_true() {
         let predicate = \Author.name == "J.K. Rowling"
         XCTAssertTrue(predicate.evaluate(jkRowling))
@@ -34,6 +36,8 @@ class PredicateTests: XCTestCase {
         let predicate = \Book.author.name == "Ray Bradbury"
         XCTAssertFalse(predicate.evaluate(sorcerersStone))
     }
+    
+    // MARK: - sqlExpression
     
     func test_sqlExpression_equal_string() {
         let predicate = \Author.name == "J.K. Rowling"
