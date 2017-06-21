@@ -30,11 +30,26 @@ extension Predicate: Hashable {
 
 /// Test whether a property of the model matches a value.
 public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Model> {
-    let properties = Model.schema.properties(for: lhs)
-    let column = properties[0].path
+    let sqlExpression = Model.schema
+        .properties(for: lhs)
+        .map { property -> Radicle.Expression<Bool> in
+            let lhsTable = Table(String(describing: property.model))
+            switch property.type {
+            case .toMany:
+                fatalError()
+            case let .toOne(model):
+                return lhsTable[property.path] as Expression<Any> == Table(String(describing: model))["id"]
+            case .value:
+                return lhsTable[property.path] as Expression<String> == rhs
+            }
+        }
+        .reduce(nil) { result, expression -> Radicle.Expression<Bool> in
+            return result.map { $0 && expression } ?? expression
+        }!
+    
     return Predicate<Model>(
         evaluate: { $0[keyPath: lhs] == rhs },
-        sqlExpression: Table(String(describing: Model.self))[column] == rhs
+        sqlExpression: sqlExpression
     )
 }
 
