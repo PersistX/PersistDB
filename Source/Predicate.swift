@@ -1,5 +1,4 @@
 import Foundation
-import Radicle
 import Schemata
 
 /// A logical condition used for filtering.

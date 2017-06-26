@@ -1,5 +1,5 @@
 import PersistDB
-import Radicle
+import Schemata
 import XCTest
 
 private let jkRowling = Author(
