@@ -66,6 +66,8 @@ struct Author {
     
     let id: ID
     let name: String
+    let born: Int
+    let died: Int?
     let books: Set<Book>
 }
 
@@ -87,6 +89,8 @@ extension Author: Hashable {
     static func == (lhs: Author, rhs: Author) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
+            && lhs.born == rhs.born
+            && lhs.died == rhs.died
             && lhs.books == rhs.books
     }
 }
@@ -103,6 +107,8 @@ extension Author: Model {
         Author.init,
         \Author.id ~ "id",
         \Author.name ~ "name",
+        \Author.born ~ "born",
+        \Author.died ~ "died",
         \Author.books ~ \Book.author
     )
 }

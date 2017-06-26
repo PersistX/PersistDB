@@ -5,6 +5,8 @@ import XCTest
 private let jkRowling = Author(
     id: Author.ID("j.k.rowling"),
     name: "J.K. Rowling",
+    born: 1965,
+    died: nil,
     books: Set()
 )
 
