@@ -4,10 +4,10 @@ import Schemata
 
 struct Book {
     struct ID {
-        let string: String
+        let int: Int
         
-        init(_ string: String) {
-            self.string = string
+        init(_ int: Int) {
+            self.int = int
         }
     }
     
@@ -18,11 +18,11 @@ struct Book {
 
 extension Book.ID: Hashable {
     var hashValue: Int {
-        return string.hashValue
+        return int.hashValue
     }
     
     static func == (lhs: Book.ID, rhs: Book.ID) -> Bool {
-        return lhs.string == rhs.string
+        return lhs.int == rhs.int
     }
 }
 
@@ -37,9 +37,9 @@ extension Book: Hashable {
 }
 
 extension Book.ID: ModelValue {
-    static let value = String.value.bimap(
+    static let value = Int.value.bimap(
         decode: Book.ID.init,
-        encode: { $0.string }
+        encode: { $0.int }
     )
 }
 
@@ -57,10 +57,10 @@ extension Book: Model {
 
 struct Author {
     struct ID {
-        let string: String
+        let int: Int
         
-        init(_ string: String) {
-            self.string = string
+        init(_ int: Int) {
+            self.int = int
         }
     }
     
@@ -73,11 +73,11 @@ struct Author {
 
 extension Author.ID: Hashable {
     var hashValue: Int {
-        return string.hashValue
+        return int.hashValue
     }
     
     static func == (lhs: Author.ID, rhs: Author.ID) -> Bool {
-        return lhs.string == rhs.string
+        return lhs.int == rhs.int
     }
 }
 
@@ -96,9 +96,9 @@ extension Author: Hashable {
 }
 
 extension Author.ID: ModelValue {
-    static let value = String.value.bimap(
+    static let value = Int.value.bimap(
         decode: Author.ID.init,
-        encode: { $0.string }
+        encode: { $0.int }
     )
 }
 

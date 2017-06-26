@@ -3,7 +3,7 @@ import Radicle
 import XCTest
 
 private let jkRowling = Author(
-    id: Author.ID("j.k.rowling"),
+    id: Author.ID(1),
     name: "J.K. Rowling",
     born: 1965,
     died: nil,
@@ -11,7 +11,7 @@ private let jkRowling = Author(
 )
 
 private let sorcerersStone = Book(
-    id: Book.ID("1"),
+    id: Book.ID(1),
     title: "Harry Potter and the Sorcerer's Stone",
     author: jkRowling
 )
