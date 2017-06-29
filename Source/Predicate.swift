@@ -6,11 +6,11 @@ public struct Predicate<Model: Schemata.Model> {
     /// Test whether the predicate evaluates to true for the given model.
     public let evaluate: (Model) -> Bool
     
-    internal let sqlExpression: SQL.AnyExpression
+    internal let sqlExpression: SQL.Expression
     
     fileprivate init(
         evaluate: @escaping (Model) -> Bool,
-        sqlExpression: SQL.AnyExpression
+        sqlExpression: SQL.Expression
     ) {
         self.evaluate = evaluate
         self.sqlExpression = sqlExpression
@@ -31,7 +31,7 @@ extension Predicate: Hashable {
 public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Model> {
     let sqlExpression = Model.schema
         .properties(for: lhs)
-        .map { property -> SQL.AnyExpression in
+        .map { property -> SQL.Expression in
             let lhsTable = SQL.Table(String(describing: property.model))
             switch property.type {
             case .toMany:
@@ -42,7 +42,7 @@ public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Mod
                 return lhsTable[property.path] == rhs
             }
         }
-        .reduce(nil) { result, expression -> SQL.AnyExpression in
+        .reduce(nil) { result, expression -> SQL.Expression in
             return result.map { $0 && expression } ?? expression
         }!
     

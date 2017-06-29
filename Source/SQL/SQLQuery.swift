@@ -3,7 +3,7 @@ import Foundation
 extension SQL {
     /// A result in a SQL query.
     internal enum ResultType {
-        case expression(AnyExpression)
+        case expression(Expression)
         case wildcard(Table)
         
         var sql: SQL {
@@ -61,7 +61,7 @@ extension SQL {
             self.result = result
         }
         
-        internal init(_ expression: AnyExpression) {
+        internal init(_ expression: Expression) {
             self.init(.expression(expression))
         }
         
@@ -87,7 +87,7 @@ extension SQL {
     /// A SQL query.
     internal struct Query {
         internal var results: [Result]
-        internal var predicates: [AnyExpression] = []
+        internal var predicates: [Expression] = []
         internal var order: [SortDescriptor] = []
     }
 }
@@ -103,7 +103,7 @@ extension SQL.Query {
     }
     
     /// Filter the query by adding a predicate that limits results.
-    internal func `where`(_ predicate: SQL.AnyExpression) -> SQL.Query {
+    internal func `where`(_ predicate: SQL.Expression) -> SQL.Query {
         var query = self
         query.predicates.append(predicate)
         return query
@@ -160,7 +160,7 @@ extension SQL.Query {
     }
     
     /// An expression that tests whether `self` has any results.
-    internal var exists: SQL.AnyExpression {
+    internal var exists: SQL.Expression {
         return .exists(self)
     }
 }

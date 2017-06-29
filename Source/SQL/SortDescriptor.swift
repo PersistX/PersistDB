@@ -18,10 +18,10 @@ extension SQL {
             }
         }
         
-        let expression: AnyExpression
+        let expression: Expression
         let direction: Direction
         
-        internal init(_ expression: AnyExpression, _ direction: Direction) {
+        internal init(_ expression: Expression, _ direction: Direction) {
             self.expression = expression
             self.direction = direction
         }

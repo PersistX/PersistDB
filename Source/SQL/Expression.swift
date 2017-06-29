@@ -22,18 +22,18 @@ extension SQL {
     }
 
     /// A SQL expression.
-    internal indirect enum AnyExpression {
-        case binary(BinaryOperator, AnyExpression, AnyExpression)
+    internal indirect enum Expression {
+        case binary(BinaryOperator, Expression, Expression)
         case column(Table, String)
         case exists(Query)
-        case function(Function, [AnyExpression])
-        case inList(AnyExpression, [Value])
-        case unary(UnaryOperator, AnyExpression)
+        case function(Function, [Expression])
+        case inList(Expression, [Value])
+        case unary(UnaryOperator, Expression)
         case value(Value)
     }
 }
 
-extension SQL.AnyExpression {
+extension SQL.Expression {
     var sql: SQL {
         switch self {
         case let .binary(op, lhs, rhs):
@@ -71,7 +71,7 @@ extension SQL.AnyExpression {
     }
 }
 
-extension SQL.AnyExpression: Hashable {
+extension SQL.Expression: Hashable {
     var hashValue: Int {
         switch self {
         case let .binary(op, lhs, rhs):
@@ -91,7 +91,7 @@ extension SQL.AnyExpression: Hashable {
         }
     }
     
-    static func == (lhs: SQL.AnyExpression, rhs: SQL.AnyExpression) -> Bool {
+    static func == (lhs: SQL.Expression, rhs: SQL.Expression) -> Bool {
         switch (lhs, rhs) {
         case let (.binary(op1, lhs1, rhs1), .binary(op2, lhs2, rhs2)):
             return op1 == op2 && lhs1 == lhs2 && rhs1 == rhs2
@@ -113,13 +113,13 @@ extension SQL.AnyExpression: Hashable {
     }
 }
 
-extension SQL.AnyExpression: InsertValueConvertible {
+extension SQL.Expression: InsertValueConvertible {
     internal var insertValue: SQL.Insert.Value {
         return SQL.Insert.Value(self)
     }
 }
 
-extension SQL.AnyExpression {
+extension SQL.Expression {
     /// An ascending sort descriptor.
     internal var ascending: SQL.SortDescriptor {
         return SQL.SortDescriptor(self, .ascending)
@@ -133,113 +133,113 @@ extension SQL.AnyExpression {
 
 // MARK: - Operators
 
-internal func == (lhs: SQL.AnyExpression, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func == (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
     return .binary(.equal, lhs, rhs)
 }
 
-internal func != (lhs: SQL.AnyExpression, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func != (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
     return .binary(.notEqual, lhs, rhs)
 }
 
-internal func && (lhs: SQL.AnyExpression, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func && (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
     return .binary(.and, lhs, rhs)
 }
 
-internal func || (lhs: SQL.AnyExpression, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func || (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
     return .binary(.or, lhs, rhs)
 }
 
-internal prefix func ! (expression: SQL.AnyExpression) -> SQL.AnyExpression {
+internal prefix func ! (expression: SQL.Expression) -> SQL.Expression {
     return .unary(.not, expression)
 }
 
 // MARK: - Int Operators
 
-internal func == (lhs: SQL.AnyExpression, rhs: Int) -> SQL.AnyExpression {
+internal func == (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
     return .binary(.equal, lhs, .value(.integer(rhs)))
 }
 
-internal func == (lhs: Int, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func == (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
     return rhs == lhs
 }
 
-internal func != (lhs: SQL.AnyExpression, rhs: Int) -> SQL.AnyExpression {
+internal func != (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
     return .binary(.notEqual, lhs, .value(.integer(rhs)))
 }
 
-internal func != (lhs: Int, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func != (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
     return rhs != lhs
 }
 
-internal func < (lhs: SQL.AnyExpression, rhs: Int) -> SQL.AnyExpression {
+internal func < (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
     return .binary(.lessThan, lhs, .value(.integer(rhs)))
 }
 
-internal func < (lhs: Int, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func < (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
     return rhs > lhs
 }
 
-internal func > (lhs: SQL.AnyExpression, rhs: Int) -> SQL.AnyExpression {
+internal func > (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
     return .binary(.greaterThan, lhs, .value(.integer(rhs)))
 }
 
-internal func > (lhs: Int, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func > (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
     return rhs < lhs
 }
 
 // MARK: - Int? Operators
 
-internal func == (lhs: SQL.AnyExpression, rhs: Int?) -> SQL.AnyExpression {
+internal func == (lhs: SQL.Expression, rhs: Int?) -> SQL.Expression {
     let value = rhs.map(SQL.Value.integer) ?? .null
     return .binary(.is, lhs, .value(value))
 }
 
-internal func == (lhs: Int?, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func == (lhs: Int?, rhs: SQL.Expression) -> SQL.Expression {
     return rhs == lhs
 }
 
-internal func != (lhs: SQL.AnyExpression, rhs: Int?) -> SQL.AnyExpression {
+internal func != (lhs: SQL.Expression, rhs: Int?) -> SQL.Expression {
     let value = rhs.map(SQL.Value.integer) ?? .null
     return .binary(.isNot, lhs, .value(value))
 }
 
-internal func != (lhs: Int?, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func != (lhs: Int?, rhs: SQL.Expression) -> SQL.Expression {
     return rhs != lhs
 }
 
 // MARK: - String Operators
 
-internal func == (lhs: SQL.AnyExpression, rhs: String) -> SQL.AnyExpression {
+internal func == (lhs: SQL.Expression, rhs: String) -> SQL.Expression {
     return .binary(.equal, lhs, .value(.string(rhs)))
 }
 
-internal func == (lhs: String, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func == (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
     return rhs == lhs
 }
 
-internal func != (lhs: SQL.AnyExpression, rhs: String) -> SQL.AnyExpression {
+internal func != (lhs: SQL.Expression, rhs: String) -> SQL.Expression {
     return .binary(.notEqual, lhs, .value(.string(rhs)))
 }
 
-internal func != (lhs: String, rhs: SQL.AnyExpression) -> SQL.AnyExpression {
+internal func != (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
     return rhs != lhs
 }
 
 // MARK: - Aggregates
 
-internal func max(_ expressions: [SQL.AnyExpression]) -> SQL.AnyExpression {
+internal func max(_ expressions: [SQL.Expression]) -> SQL.Expression {
     return .function(.max, expressions)
 }
 
-internal func max(_ expressions: SQL.AnyExpression...) -> SQL.AnyExpression {
+internal func max(_ expressions: SQL.Expression...) -> SQL.Expression {
     return max(expressions)
 }
 
-internal func min(_ expressions: [SQL.AnyExpression]) -> SQL.AnyExpression {
+internal func min(_ expressions: [SQL.Expression]) -> SQL.Expression {
     return .function(.min, expressions)
 }
 
-internal func min(_ expressions: SQL.AnyExpression...) -> SQL.AnyExpression {
+internal func min(_ expressions: SQL.Expression...) -> SQL.Expression {
     return min(expressions)
 }
 
@@ -248,7 +248,7 @@ internal func min(_ expressions: SQL.AnyExpression...) -> SQL.AnyExpression {
 extension Collection where Iterator.Element == String {
     /// An expression that tests whether the list contains the value of an
     /// expression.
-    internal func contains(_ expression: SQL.AnyExpression) -> SQL.AnyExpression {
+    internal func contains(_ expression: SQL.Expression) -> SQL.Expression {
         return .inList(expression, map(SQL.Value.string))
     }
 }

@@ -7,9 +7,9 @@ internal protocol InsertValueConvertible {
 extension SQL {
     internal struct Insert {
         internal struct Value {
-            internal let expression: AnyExpression
+            internal let expression: Expression
             
-            internal init(_ expression: AnyExpression) {
+            internal init(_ expression: Expression) {
                 self.expression = expression
             }
         }
