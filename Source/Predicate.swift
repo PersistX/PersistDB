@@ -19,11 +19,11 @@ public struct Predicate<Model: Schemata.Model> {
 
 extension Predicate: Hashable {
     public var hashValue: Int {
-        return 0
+        return sql.hashValue
     }
     
-    public static func ==(lhs: Predicate, rhs: Predicate) -> Bool {
-        return true
+    public static func == (lhs: Predicate, rhs: Predicate) -> Bool {
+        return lhs.sql == rhs.sql
     }
 }
 
