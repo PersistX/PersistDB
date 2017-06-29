@@ -43,8 +43,8 @@ class PredicateTests: XCTestCase {
     
     func test_sqlExpression_equal_string() {
         let predicate = \Author.name == "J.K. Rowling"
-        let expression = SQL.Table("Author")["name"] == "J.K. Rowling"
-        XCTAssertEqual(predicate.sqlExpression, expression)
+        let sql = SQL.Table("Author")["name"] == "J.K. Rowling"
+        XCTAssertEqual(predicate.sql, sql)
     }
     
     func test_sqlExpression_equal_toOne_string() {
@@ -52,7 +52,7 @@ class PredicateTests: XCTestCase {
         
         let author = SQL.Table("Author")
         let book = SQL.Table("Book")
-        let expression = book["author"] == author["id"] && author["name"] == "J.K. Rowling"
-        XCTAssertEqual(predicate.sqlExpression, expression)
+        let sql = book["author"] == author["id"] && author["name"] == "J.K. Rowling"
+        XCTAssertEqual(predicate.sql, sql)
     }
 }
