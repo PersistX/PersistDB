@@ -4,7 +4,7 @@ import XCTest
 class AnyPropertyTests: XCTestCase {
     func testSQLForPrimaryKey() {
         let property = Book.anySchema.properties[\Book.id]!
-        let expected = SQL.Schema.Column(name: "id", type: .integer, primaryKey: true)
+        let expected = SQL.Schema.Column(name: "id", type: .text, primaryKey: true)
         XCTAssertEqual(property.sql, expected)
     }
     
@@ -13,7 +13,7 @@ class AnyPropertyTests: XCTestCase {
         XCTAssertNil(property.sql)
     }
     
-    func testSQLForToOne() {
+    func testSQLForToOneWithIntID() {
         let property = Book.anySchema.properties[\Book.author]!
         let expected = SQL.Schema.Column(name: "author", type: .integer)
         XCTAssertEqual(property.sql, expected)
@@ -43,7 +43,7 @@ class ModelTests: XCTestCase {
         let expected = SQL.Schema(
             table: SQL.Table("Book"),
             columns: [
-                .init(name: "id", type: .integer),
+                .init(name: "id", type: .text, primaryKey: true),
                 .init(name: "title", type: .text),
                 .init(name: "author", type: .integer),
             ]

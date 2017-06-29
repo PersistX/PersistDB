@@ -73,25 +73,25 @@ extension Book {
     
     static let table = SQL.Table("books")
     
-    static let theHobbit = Book(id: Book.ID(1), title: "The Hobbit", author: .jrrTolkien)
-    static let theLordOfTheRings = Book(id: Book.ID(2), title: "The Lord of the Rings", author: .jrrTolkien)
+    static let theHobbit = Book(id: "978-0547928227", title: "The Hobbit", author: .jrrTolkien)
+    static let theLordOfTheRings = Book(id: "978-0544003415", title: "The Lord of the Rings", author: .jrrTolkien)
     static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
     
-    static let endersGame = Book(id: Book.ID(3), title: "Ender's Game", author: .orsonScottCard)
-    static let speakerForTheDead = Book(id: Book.ID(4), title: "Speaker for the Dead", author: .orsonScottCard)
-    static let xenocide = Book(id: Book.ID(5), title: "Xenocide", author: .orsonScottCard)
-    static let childrenOfTheMind = Book(id: Book.ID(6), title: "Children of the Mind", author: .orsonScottCard)
+    static let endersGame = Book(id: "978-0312853235", title: "Ender's Game", author: .orsonScottCard)
+    static let speakerForTheDead = Book(id: "978-0312853259", title: "Speaker for the Dead", author: .orsonScottCard)
+    static let xenocide = Book(id: "978-0812509250", title: "Xenocide", author: .orsonScottCard)
+    static let childrenOfTheMind = Book(id: "978-0812522396", title: "Children of the Mind", author: .orsonScottCard)
     static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
     
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
-        SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
+        SQL.Schema.Column(name: "id", type: .text, primaryKey: true),
         SQL.Schema.Column(name: "author", type: .integer),
         SQL.Schema.Column(name: "title", type: .text),
     ])
     
     fileprivate var insert: SQL.Insert {
         return Book.table.insert([
-            "id": SQL.Value.integer(id.int),
+            "id": SQL.Value.string(id.string),
             "author": SQL.Value.integer(author.id.int),
             "title": SQL.Value.string(title)
         ])
@@ -99,7 +99,7 @@ extension Book {
     
     var row: Row {
         return [
-            "id": .integer(id.int),
+            "id": .string(id.string),
             "author": .integer(author.id.int),
             "title": .string(title),
         ]

@@ -11,7 +11,7 @@ private let jkRowling = Author(
 )
 
 private let sorcerersStone = Book(
-    id: Book.ID(1),
+    id: "978-0439708180",
     title: "Harry Potter and the Sorcerer's Stone",
     author: jkRowling
 )

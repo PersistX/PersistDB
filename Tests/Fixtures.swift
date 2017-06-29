@@ -4,26 +4,40 @@ import Schemata
 // MARK: - Book
 
 struct Book {
-    struct ID {
-        let int: Int
+    struct ISBN {
+        let string: String
         
-        init(_ int: Int) {
-            self.int = int
+        init(_ string: String) {
+            self.string = string
         }
     }
     
-    let id: ID
+    let id: ISBN
     let title: String
     let author: Author
 }
 
-extension Book.ID: Hashable {
+extension Book.ISBN: Hashable {
     var hashValue: Int {
-        return int.hashValue
+        return string.hashValue
     }
     
-    static func == (lhs: Book.ID, rhs: Book.ID) -> Bool {
-        return lhs.int == rhs.int
+    static func == (lhs: Book.ISBN, rhs: Book.ISBN) -> Bool {
+        return lhs.string == rhs.string
+    }
+}
+
+extension Book.ISBN: ExpressibleByStringLiteral {
+    init(stringLiteral value: String) {
+        self.init(value)
+    }
+    
+    init(unicodeScalarLiteral value: String) {
+        self.init(value)
+    }
+    
+    init(extendedGraphemeClusterLiteral value: String) {
+        self.init(value)
     }
 }
 
@@ -37,10 +51,10 @@ extension Book: Hashable {
     }
 }
 
-extension Book.ID: ModelValue {
-    static let value = Int.value.bimap(
-        decode: Book.ID.init,
-        encode: { $0.int }
+extension Book.ISBN: ModelValue {
+    static let value = String.value.bimap(
+        decode: Book.ISBN.init(_:),
+        encode: { $0.string }
     )
 }
 
