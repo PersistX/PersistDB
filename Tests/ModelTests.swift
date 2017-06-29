@@ -2,6 +2,12 @@
 import XCTest
 
 class AnyPropertyTests: XCTestCase {
+    func testSQLForPrimaryKey() {
+        let property = Book.anySchema.properties[\Book.id]!
+        let expected = SQL.Schema.Column(name: "id", type: .integer, primaryKey: true)
+        XCTAssertEqual(property.sql, expected)
+    }
+    
     func testSQLForToMany() {
         let property = Author.anySchema.properties[\Author.books]!
         XCTAssertNil(property.sql)

@@ -26,7 +26,14 @@ extension AnyProperty {
             nullable = null
         }
         
-        return dataType.map { SQL.Schema.Column(name: path, type: $0, nullable: nullable) }
+        return dataType.map { dataType in
+            return SQL.Schema.Column(
+                name: path,
+                type: dataType,
+                nullable: nullable,
+                primaryKey: path == "id"
+            )
+        }
     }
 }
 
