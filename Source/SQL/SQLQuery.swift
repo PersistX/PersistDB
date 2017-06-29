@@ -61,8 +61,8 @@ extension SQL {
             self.result = result
         }
         
-        internal init<Value>(_ expression: Expression<Value>) {
-            self.init(.expression(expression.expression))
+        internal init(_ expression: AnyExpression) {
+            self.init(.expression(expression))
         }
         
         var sql: SQL {
@@ -87,7 +87,7 @@ extension SQL {
     /// A SQL query.
     internal struct Query {
         internal var results: [Result]
-        internal var predicates: [Expression<Bool>] = []
+        internal var predicates: [AnyExpression] = []
         internal var order: [SortDescriptor] = []
     }
 }
@@ -103,7 +103,7 @@ extension SQL.Query {
     }
     
     /// Filter the query by adding a predicate that limits results.
-    internal func `where`(_ predicate: SQL.Expression<Bool>) -> SQL.Query {
+    internal func `where`(_ predicate: SQL.AnyExpression) -> SQL.Query {
         var query = self
         query.predicates.append(predicate)
         return query
@@ -160,8 +160,8 @@ extension SQL.Query {
     }
     
     /// An expression that tests whether `self` has any results.
-    internal var exists: SQL.Expression<Bool> {
-        return SQL.Expression(.exists(self))
+    internal var exists: SQL.AnyExpression {
+        return .exists(self)
     }
 }
 

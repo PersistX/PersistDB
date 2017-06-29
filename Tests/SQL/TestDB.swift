@@ -27,10 +27,10 @@ struct Row: Hashable, ExpressibleByDictionaryLiteral {
 
 extension Author {
     enum Table {
-        static let id: SQL.Expression<Int> = Author.table["id"]
-        static let name: SQL.Expression<String> = Author.table["name"]
-        static let born: SQL.Expression<Int> = Author.table["born"]
-        static let died: SQL.Expression<Int?> = Author.table["died"]
+        static let id = Author.table["id"]
+        static let name = Author.table["name"]
+        static let born = Author.table["born"]
+        static let died = Author.table["died"]
     }
     
     static let table = SQL.Table("authors")
@@ -66,9 +66,9 @@ extension Author {
 
 extension Book {
     enum Table {
-        static let id: SQL.Expression<Int> = Book.table["id"]
-        static let author: SQL.Expression<Int> = Book.table["author"]
-        static let title: SQL.Expression<String> = Book.table["title"]
+        static let id = Book.table["id"]
+        static let author = Book.table["author"]
+        static let title = Book.table["title"]
     }
     
     static let table = SQL.Table("books")

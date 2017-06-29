@@ -326,7 +326,7 @@ class SQLQueryTests: XCTestCase {
     
     func testMax() {
         let maximum = max(
-            Author.Table.born.optional,
+            Author.Table.born,
             Author.Table.died
         )
         let query = SQL.Query
@@ -343,7 +343,7 @@ class SQLQueryTests: XCTestCase {
     
     func testMin() {
         let maximum = min(
-            Author.Table.born.optional,
+            Author.Table.born,
             Author.Table.died
         )
         let query = SQL.Query

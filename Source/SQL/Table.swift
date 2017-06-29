@@ -11,8 +11,8 @@ extension SQL {
             self.name = name
         }
         
-        internal subscript<Value>(_ name: String) -> Expression<Value> {
-            return Expression(.column(self, name))
+        internal subscript(_ name: String) -> AnyExpression {
+            return .column(self, name)
         }
     }
 }
