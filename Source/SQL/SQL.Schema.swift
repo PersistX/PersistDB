@@ -113,3 +113,9 @@ extension SQL.Schema {
             + ")"
     }
 }
+
+extension SQL.Schema: CustomStringConvertible {
+    var description: String {
+        return sql.debugDescription
+    }
+}
