@@ -1,3 +1,4 @@
+import PersistDB
 import Schemata
 
 // MARK: - Book
@@ -43,7 +44,7 @@ extension Book.ID: ModelValue {
     )
 }
 
-extension Book: Model {
+extension Book: PersistDB.Model {
     static let schema = Schema<Book>(
         Book.init,
         \Book.id ~ "id",
@@ -102,7 +103,7 @@ extension Author.ID: ModelValue {
     )
 }
 
-extension Author: Model {
+extension Author: PersistDB.Model {
     static let schema = Schema<Author>(
         Author.init,
         \Author.id ~ "id",

@@ -30,6 +30,12 @@ extension AnyProperty {
     }
 }
 
+public protocol Model: Schemata.Model {
+    associatedtype ID
+    
+    var id: ID { get }
+}
+
 extension Model {
     internal static var sql: SQL.Schema {
         return SQL.Schema(
