@@ -42,18 +42,18 @@ extension SQL.Value: Hashable {
             return value.hashValue
         }
     }
-}
 
-public func ==(lhs: SQL.Value, rhs: SQL.Value) -> Bool {
-    switch (lhs, rhs) {
-    case (.null, .null):
-        return true
-    case let (.integer(left), .integer(right)):
-        return left == right
-    case let (.string(left), .string(right)):
-        return left == right
-    default:
-        return false
+    public static func ==(lhs: SQL.Value, rhs: SQL.Value) -> Bool {
+        switch (lhs, rhs) {
+        case (.null, .null):
+            return true
+        case let (.integer(left), .integer(right)):
+            return left == right
+        case let (.string(left), .string(right)):
+            return left == right
+        default:
+            return false
+        }
     }
 }
 
@@ -203,10 +203,10 @@ extension SQL: Hashable {
     public var hashValue: Int {
         return parameters.reduce(sql.hashValue) { $0 ^ $1.hashValue }
     }
-}
 
-public func ==(lhs: SQL, rhs: SQL) -> Bool {
-    return lhs.sql == rhs.sql && lhs.parameters == rhs.parameters
+    public static func ==(lhs: SQL, rhs: SQL) -> Bool {
+        return lhs.sql == rhs.sql && lhs.parameters == rhs.parameters
+    }
 }
 
 extension Sequence where Iterator.Element == SQL {
