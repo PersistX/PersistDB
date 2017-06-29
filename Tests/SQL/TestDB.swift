@@ -1,4 +1,4 @@
-import PersistDB
+@testable import PersistDB
 import SQLite3
 
 struct Row: Hashable, ExpressibleByDictionaryLiteral {

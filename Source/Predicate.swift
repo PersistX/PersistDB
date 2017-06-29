@@ -6,7 +6,7 @@ public struct Predicate<Model: Schemata.Model> {
     /// Test whether the predicate evaluates to true for the given model.
     public let evaluate: (Model) -> Bool
     
-    public let sqlExpression: SQL.Expression<Bool>
+    internal let sqlExpression: SQL.Expression<Bool>
     
     fileprivate init(
         evaluate: @escaping (Model) -> Bool,

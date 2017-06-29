@@ -2,9 +2,9 @@ import Foundation
 
 extension SQL {
     /// A value representing how results should be sorted.
-    public struct SortDescriptor {
+    internal struct SortDescriptor {
         /// The direction of the sort.
-        public enum Direction {
+        internal enum Direction {
             case ascending
             case descending
             
@@ -21,7 +21,7 @@ extension SQL {
         let expression: AnyExpression
         let direction: Direction
         
-        public init<Value>(_ expression: Expression<Value>, _ direction: Direction) {
+        internal init<Value>(_ expression: Expression<Value>, _ direction: Direction) {
             self.expression = expression.expression
             self.direction = direction
         }
@@ -33,11 +33,11 @@ extension SQL {
 }
 
 extension SQL.SortDescriptor: Hashable {
-    public var hashValue: Int {
+    internal var hashValue: Int {
         return expression.hashValue
     }
     
-    public static func ==(lhs: SQL.SortDescriptor, rhs: SQL.SortDescriptor) -> Bool {
+    internal static func ==(lhs: SQL.SortDescriptor, rhs: SQL.SortDescriptor) -> Bool {
         return lhs.expression == rhs.expression && lhs.direction == rhs.direction
     }
 }

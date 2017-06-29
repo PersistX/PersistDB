@@ -50,10 +50,10 @@ extension SQL.ResultType: Hashable {
 
 extension SQL {
     /// Something that can be used as a result in a SQL query.
-    public struct Result: Hashable {
+    internal struct Result: Hashable {
         private let result: ResultType
         
-        public static func wildcard(_ table: Table) -> Result {
+        internal static func wildcard(_ table: Table) -> Result {
             return Result(.wildcard(table))
         }
         
@@ -61,7 +61,7 @@ extension SQL {
             self.result = result
         }
         
-        public init<Value>(_ expression: Expression<Value>) {
+        internal init<Value>(_ expression: Expression<Value>) {
             self.init(.expression(expression.expression))
         }
         
@@ -73,11 +73,11 @@ extension SQL {
             return result.tables
         }
         
-        public var hashValue: Int {
+        internal var hashValue: Int {
             return result.hashValue
         }
         
-        public static func == (lhs: Result, rhs: Result) -> Bool {
+        internal static func == (lhs: Result, rhs: Result) -> Bool {
             return lhs.result == rhs.result
         }
     }
@@ -85,16 +85,16 @@ extension SQL {
 
 extension SQL {
     /// A SQL query.
-    public struct Query {
-        public var results: [Result]
-        public var predicates: [Expression<Bool>] = []
-        public var order: [SortDescriptor] = []
+    internal struct Query {
+        internal var results: [Result]
+        internal var predicates: [Expression<Bool>] = []
+        internal var order: [SortDescriptor] = []
     }
 }
 
 extension SQL.Query {
     /// Create a new query by selecting results.
-    public static func select(_ results: [SQL.Result]) -> SQL.Query {
+    internal static func select(_ results: [SQL.Result]) -> SQL.Query {
         return SQL.Query(results: results)
     }
     
@@ -103,7 +103,7 @@ extension SQL.Query {
     }
     
     /// Filter the query by adding a predicate that limits results.
-    public func `where`(_ predicate: SQL.Expression<Bool>) -> SQL.Query {
+    internal func `where`(_ predicate: SQL.Expression<Bool>) -> SQL.Query {
         var query = self
         query.predicates.append(predicate)
         return query
@@ -113,7 +113,7 @@ extension SQL.Query {
     ///
     /// The first sort descriptor in the list will be the primary sort. This
     /// supercedes previous sorting.
-    public func sorted(by descriptors: [SQL.SortDescriptor]) -> SQL.Query {
+    internal func sorted(by descriptors: [SQL.SortDescriptor]) -> SQL.Query {
         var query = self
         query.order = descriptors + query.order
         return query
@@ -123,7 +123,7 @@ extension SQL.Query {
     ///
     /// The first sort descriptor in the list will be the primary sort. This
     /// supercedes previous sorting.
-    public func sorted(by descriptors: SQL.SortDescriptor...) -> SQL.Query {
+    internal func sorted(by descriptors: SQL.SortDescriptor...) -> SQL.Query {
         return sorted(by: descriptors)
     }
     
@@ -135,7 +135,7 @@ extension SQL.Query {
     }
     
     /// The SQL for this query.
-    public var sql: SQL {
+    internal var sql: SQL {
         let results = self.results.map { $0.sql }.joined(separator: ", ")
         let tables = self.tables.map { "\"\($0.name)\"" }.joined(separator: ", ")
         
@@ -160,18 +160,18 @@ extension SQL.Query {
     }
     
     /// An expression that tests whether `self` has any results.
-    public var exists: SQL.Expression<Bool> {
+    internal var exists: SQL.Expression<Bool> {
         return SQL.Expression(.exists(self))
     }
 }
 
 extension SQL.Query: Hashable {
-    public var hashValue: Int {
+    internal var hashValue: Int {
         return results.reduce(0) { $0 ^ $1.hashValue }
             + predicates.reduce(0) { $0 ^ $1.hashValue }
     }
     
-    public static func == (lhs: SQL.Query, rhs: SQL.Query) -> Bool {
+    internal static func == (lhs: SQL.Query, rhs: SQL.Query) -> Bool {
         return lhs.results == rhs.results
             && lhs.predicates == rhs.predicates
             && lhs.order == rhs.order

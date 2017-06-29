@@ -2,9 +2,9 @@ import Foundation
 
 extension SQL {
     /// A description of a table in a database.
-    public struct Schema {
+    internal struct Schema {
         /// The type of data in a column.
-        public enum DataType {
+        internal enum DataType {
             case text
             case numeric
             case integer
@@ -13,14 +13,14 @@ extension SQL {
         }
         
         /// A description of a column in a database.
-        public struct Column {
+        internal struct Column {
             var name: String
             var type: DataType
             var nullable: Bool
             var unique: Bool
             var primaryKey: Bool
             
-            public init(
+            internal init(
                 name: String,
                 type: DataType,
                 nullable: Bool = false,
@@ -36,12 +36,12 @@ extension SQL {
         }
         
         /// The table that the schema describes.
-        public var table: Table
+        internal var table: Table
         
         /// The columns in the table.
-        public var columns: [Column]
+        internal var columns: [Column]
         
-        public init(table: Table, columns: [Column]) {
+        internal init(table: Table, columns: [Column]) {
             self.table = table
             self.columns = columns
         }
@@ -49,11 +49,11 @@ extension SQL {
 }
 
 extension SQL.Schema.Column: Hashable {
-    public var hashValue: Int {
+    internal var hashValue: Int {
         return name.hashValue
     }
     
-    public static func ==(lhs: SQL.Schema.Column, rhs: SQL.Schema.Column) -> Bool {
+    internal static func ==(lhs: SQL.Schema.Column, rhs: SQL.Schema.Column) -> Bool {
         return lhs.name == rhs.name
             && lhs.type == rhs.type
             && lhs.nullable == rhs.nullable
@@ -63,11 +63,11 @@ extension SQL.Schema.Column: Hashable {
 }
 
 extension SQL.Schema: Hashable {
-    public var hashValue: Int {
+    internal var hashValue: Int {
         return table.hashValue
     }
     
-    public static func ==(lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
+    internal static func ==(lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
         return lhs.table == rhs.table && lhs.columns == rhs.columns
     }
 }
@@ -107,7 +107,7 @@ extension SQL.Schema.Column {
 
 extension SQL.Schema {
     /// SQL to create the table with the given schema.
-    public var sql: SQL {
+    internal var sql: SQL {
         return SQL("CREATE TABLE \"\(table.name)\" (")
             + columns.map { $0.sql }.joined(separator: ", ")
             + ")"

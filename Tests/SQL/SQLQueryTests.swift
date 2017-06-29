@@ -1,4 +1,4 @@
-import PersistDB
+@testable import PersistDB
 import XCTest
 
 class SQLQueryTests: XCTestCase {

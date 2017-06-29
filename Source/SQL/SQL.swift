@@ -78,7 +78,7 @@ extension SQL.Value: ExpressibleByIntegerLiteral {
 }
 
 extension SQL.Value: InsertValueConvertible {
-    public var insertValue: SQL.Insert.Value {
+    internal var insertValue: SQL.Insert.Value {
         return SQL.Insert.Value(.value(self))
     }
 }
@@ -140,33 +140,33 @@ public struct SQL {
     }
     
     /// Append the given statement to the statement.
-    public mutating func append(_ sql: String, parameters: [SQL.Value]) {
+    internal mutating func append(_ sql: String, parameters: [SQL.Value]) {
         self.sql += sql
         self.parameters += parameters
     }
     
     /// Append the given statement to the statement.
-    public mutating func append(_ sql: String, parameters: SQL.Value...) {
+    internal mutating func append(_ sql: String, parameters: SQL.Value...) {
         append(sql, parameters: parameters)
     }
     
     /// Append the given statement to the statement.
-    public mutating func append(_ sql: SQL) {
+    internal mutating func append(_ sql: SQL) {
         append(sql.sql, parameters: sql.parameters)
     }
     
     /// Create a new SQL statement by appending a SQL statement
-    public func appending(_ sql: String, parameters: [SQL.Value]) -> SQL {
+    internal func appending(_ sql: String, parameters: [SQL.Value]) -> SQL {
         return SQL(self.sql + sql, parameters: self.parameters + parameters)
     }
     
     /// Create a new SQL statement by appending a SQL statement
-    public func appending(_ sql: String, parameters: SQL.Value...) -> SQL {
+    internal func appending(_ sql: String, parameters: SQL.Value...) -> SQL {
         return appending(sql, parameters: parameters)
     }
     
     /// Create a new SQL statement by appending a SQL statement
-    public func appending(_ sql: SQL) -> SQL {
+    internal func appending(_ sql: SQL) -> SQL {
         return appending(sql.sql, parameters: sql.parameters)
     }
     
@@ -177,25 +177,25 @@ public struct SQL {
 }
 
 /// Create a new SQL statement by appending a SQL statement
-public func +(lhs: SQL, rhs: SQL) -> SQL {
+internal func +(lhs: SQL, rhs: SQL) -> SQL {
     return lhs.appending(rhs)
 }
 
 /// Create a new SQL statement by appending a SQL statement
-public func +(lhs: SQL, rhs: String) -> SQL {
+internal func +(lhs: SQL, rhs: String) -> SQL {
     return lhs.appending(rhs)
 }
 
 /// Create a new SQL statement by appending a SQL statement
-public func +(lhs: String, rhs: SQL) -> SQL {
+internal func +(lhs: String, rhs: SQL) -> SQL {
     return SQL(lhs).appending(rhs)
 }
 
-public func +=(lhs: inout SQL, rhs: SQL) {
+internal func +=(lhs: inout SQL, rhs: SQL) {
     lhs.append(rhs)
 }
 
-public func +=(lhs: inout SQL, rhs: String) {
+internal func +=(lhs: inout SQL, rhs: String) {
     lhs.append(rhs)
 }
 
@@ -210,7 +210,7 @@ public func ==(lhs: SQL, rhs: SQL) -> Bool {
 }
 
 extension Sequence where Iterator.Element == SQL {
-    public func joined(separator: String) -> SQL {
+    internal func joined(separator: String) -> SQL {
         var result: SQL? = nil
         for sql in self {
             if let accumulated = result {
