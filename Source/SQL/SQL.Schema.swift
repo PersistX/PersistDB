@@ -39,9 +39,9 @@ extension SQL {
         internal var table: Table
         
         /// The columns in the table.
-        internal var columns: [Column]
+        internal var columns: Set<Column>
         
-        internal init(table: Table, columns: [Column]) {
+        internal init(table: Table, columns: Set<Column>) {
             self.table = table
             self.columns = columns
         }
