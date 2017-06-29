@@ -12,18 +12,18 @@
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
 		BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6091EE3B37600A0671F /* PredicateTests.swift */; };
 		BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */; };
-		BE7740E21EFFDC4E00D1F5A5 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DF1EFFDC4500D1F5A5 /* ExpressionTests.swift */; };
-		BE7740E31EFFDC4E00D1F5A5 /* SQLQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E01EFFDC4500D1F5A5 /* SQLQueryTests.swift */; };
+		BE7740E21EFFDC4E00D1F5A5 /* SQL.ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */; };
+		BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */; };
 		BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DD1EFFDC4500D1F5A5 /* SQLTests.swift */; };
-		BE7740E51EFFDC4E00D1F5A5 /* TableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DE1EFFDC4500D1F5A5 /* TableTests.swift */; };
+		BE7740E51EFFDC4E00D1F5A5 /* SQL.TableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DE1EFFDC4500D1F5A5 /* SQL.TableTests.swift */; };
 		BE7740E61EFFDC4E00D1F5A5 /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E11EFFDC4500D1F5A5 /* TestDB.swift */; };
-		BE7740E71EFFDC5500D1F5A5 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D81EFFDC3800D1F5A5 /* Expression.swift */; };
-		BE7740E81EFFDC5500D1F5A5 /* Insert.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D61EFFDC3800D1F5A5 /* Insert.swift */; };
-		BE7740E91EFFDC5500D1F5A5 /* SQLQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DC1EFFDC3800D1F5A5 /* SQLQuery.swift */; };
-		BE7740EA1EFFDC5500D1F5A5 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DA1EFFDC3800D1F5A5 /* Schema.swift */; };
-		BE7740EB1EFFDC5500D1F5A5 /* SortDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D71EFFDC3800D1F5A5 /* SortDescriptor.swift */; };
+		BE7740E71EFFDC5500D1F5A5 /* SQL.Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */; };
+		BE7740E81EFFDC5500D1F5A5 /* SQL.Insert.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */; };
+		BE7740E91EFFDC5500D1F5A5 /* SQL.Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DC1EFFDC3800D1F5A5 /* SQL.Query.swift */; };
+		BE7740EA1EFFDC5500D1F5A5 /* SQL.Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DA1EFFDC3800D1F5A5 /* SQL.Schema.swift */; };
+		BE7740EB1EFFDC5500D1F5A5 /* SQL.SortDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D71EFFDC3800D1F5A5 /* SQL.SortDescriptor.swift */; };
 		BE7740EC1EFFDC5500D1F5A5 /* SQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740D91EFFDC3800D1F5A5 /* SQL.swift */; };
-		BE7740ED1EFFDC5500D1F5A5 /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DB1EFFDC3800D1F5A5 /* Table.swift */; };
+		BE7740ED1EFFDC5500D1F5A5 /* SQL.Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DB1EFFDC3800D1F5A5 /* SQL.Table.swift */; };
 		BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */; };
 		BE89D6071EBE3A0100CEC4D1 /* PersistDB.h in Headers */ = {isa = PBXBuildFile; fileRef = BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE89D62B1EBE3D7400CEC4D1 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6291EBE3D7400CEC4D1 /* Result.framework */; };
@@ -52,17 +52,17 @@
 		BE1DC6071EE3B34800A0671F /* Predicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicate.swift; sourceTree = "<group>"; };
 		BE1DC6091EE3B37600A0671F /* PredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicateTests.swift; sourceTree = "<group>"; };
 		BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
-		BE7740D61EFFDC3800D1F5A5 /* Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insert.swift; sourceTree = "<group>"; };
-		BE7740D71EFFDC3800D1F5A5 /* SortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortDescriptor.swift; sourceTree = "<group>"; };
-		BE7740D81EFFDC3800D1F5A5 /* Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
+		BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Insert.swift; sourceTree = "<group>"; };
+		BE7740D71EFFDC3800D1F5A5 /* SQL.SortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.SortDescriptor.swift; sourceTree = "<group>"; };
+		BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Expression.swift; sourceTree = "<group>"; };
 		BE7740D91EFFDC3800D1F5A5 /* SQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.swift; sourceTree = "<group>"; };
-		BE7740DA1EFFDC3800D1F5A5 /* Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
-		BE7740DB1EFFDC3800D1F5A5 /* Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
-		BE7740DC1EFFDC3800D1F5A5 /* SQLQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLQuery.swift; sourceTree = "<group>"; };
+		BE7740DA1EFFDC3800D1F5A5 /* SQL.Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Schema.swift; sourceTree = "<group>"; };
+		BE7740DB1EFFDC3800D1F5A5 /* SQL.Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Table.swift; sourceTree = "<group>"; };
+		BE7740DC1EFFDC3800D1F5A5 /* SQL.Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Query.swift; sourceTree = "<group>"; };
 		BE7740DD1EFFDC4500D1F5A5 /* SQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLTests.swift; sourceTree = "<group>"; };
-		BE7740DE1EFFDC4500D1F5A5 /* TableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableTests.swift; sourceTree = "<group>"; };
-		BE7740DF1EFFDC4500D1F5A5 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
-		BE7740E01EFFDC4500D1F5A5 /* SQLQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLQueryTests.swift; sourceTree = "<group>"; };
+		BE7740DE1EFFDC4500D1F5A5 /* SQL.TableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.TableTests.swift; sourceTree = "<group>"; };
+		BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.ExpressionTests.swift; sourceTree = "<group>"; };
+		BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.QueryTests.swift; sourceTree = "<group>"; };
 		BE7740E11EFFDC4500D1F5A5 /* TestDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDB.swift; sourceTree = "<group>"; };
 		BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PersistDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistDB.h; sourceTree = "<group>"; };
@@ -105,13 +105,13 @@
 		BE7740D21EFFDB8F00D1F5A5 /* SQL */ = {
 			isa = PBXGroup;
 			children = (
-				BE7740D81EFFDC3800D1F5A5 /* Expression.swift */,
-				BE7740D61EFFDC3800D1F5A5 /* Insert.swift */,
-				BE7740DC1EFFDC3800D1F5A5 /* SQLQuery.swift */,
-				BE7740DA1EFFDC3800D1F5A5 /* Schema.swift */,
-				BE7740D71EFFDC3800D1F5A5 /* SortDescriptor.swift */,
+				BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */,
+				BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */,
+				BE7740DC1EFFDC3800D1F5A5 /* SQL.Query.swift */,
+				BE7740DA1EFFDC3800D1F5A5 /* SQL.Schema.swift */,
+				BE7740D71EFFDC3800D1F5A5 /* SQL.SortDescriptor.swift */,
+				BE7740DB1EFFDC3800D1F5A5 /* SQL.Table.swift */,
 				BE7740D91EFFDC3800D1F5A5 /* SQL.swift */,
-				BE7740DB1EFFDC3800D1F5A5 /* Table.swift */,
 			);
 			path = SQL;
 			sourceTree = "<group>";
@@ -119,10 +119,10 @@
 		BE7740D41EFFDBBB00D1F5A5 /* SQL */ = {
 			isa = PBXGroup;
 			children = (
-				BE7740DF1EFFDC4500D1F5A5 /* ExpressionTests.swift */,
-				BE7740E01EFFDC4500D1F5A5 /* SQLQueryTests.swift */,
+				BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */,
+				BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */,
+				BE7740DE1EFFDC4500D1F5A5 /* SQL.TableTests.swift */,
 				BE7740DD1EFFDC4500D1F5A5 /* SQLTests.swift */,
-				BE7740DE1EFFDC4500D1F5A5 /* TableTests.swift */,
 				BE7740E11EFFDC4500D1F5A5 /* TestDB.swift */,
 			);
 			path = SQL;
@@ -299,17 +299,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE7740EA1EFFDC5500D1F5A5 /* Schema.swift in Sources */,
-				BE7740E81EFFDC5500D1F5A5 /* Insert.swift in Sources */,
-				BE7740E91EFFDC5500D1F5A5 /* SQLQuery.swift in Sources */,
+				BE7740EA1EFFDC5500D1F5A5 /* SQL.Schema.swift in Sources */,
+				BE7740E81EFFDC5500D1F5A5 /* SQL.Insert.swift in Sources */,
+				BE7740E91EFFDC5500D1F5A5 /* SQL.Query.swift in Sources */,
 				BE1DC6041EE3AC9400A0671F /* Query.swift in Sources */,
 				BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */,
-				BE7740EB1EFFDC5500D1F5A5 /* SortDescriptor.swift in Sources */,
+				BE7740EB1EFFDC5500D1F5A5 /* SQL.SortDescriptor.swift in Sources */,
 				BE7740EC1EFFDC5500D1F5A5 /* SQL.swift in Sources */,
 				BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */,
 				BECF33931EEBA6A600F9FC88 /* Model.swift in Sources */,
-				BE7740E71EFFDC5500D1F5A5 /* Expression.swift in Sources */,
-				BE7740ED1EFFDC5500D1F5A5 /* Table.swift in Sources */,
+				BE7740E71EFFDC5500D1F5A5 /* SQL.Expression.swift in Sources */,
+				BE7740ED1EFFDC5500D1F5A5 /* SQL.Table.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,14 +318,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */,
-				BE7740E31EFFDC4E00D1F5A5 /* SQLQueryTests.swift in Sources */,
+				BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */,
 				BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */,
 				BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */,
 				BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */,
-				BE7740E51EFFDC4E00D1F5A5 /* TableTests.swift in Sources */,
+				BE7740E51EFFDC4E00D1F5A5 /* SQL.TableTests.swift in Sources */,
 				BECF33961EEBA6BF00F9FC88 /* ModelTests.swift in Sources */,
 				BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */,
-				BE7740E21EFFDC4E00D1F5A5 /* ExpressionTests.swift in Sources */,
+				BE7740E21EFFDC4E00D1F5A5 /* SQL.ExpressionTests.swift in Sources */,
 				BE7740E61EFFDC4E00D1F5A5 /* TestDB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
