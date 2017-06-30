@@ -3,4 +3,4 @@
 	url = https://github.com/antitypical/Result.git
 [submodule "Carthage/Checkouts/Schemata"]
 	path = Carthage/Checkouts/Schemata
-	url = https://github.com/mdiep/Schemata.git
+	url = https://github.com/PersistX/Schemata.git
