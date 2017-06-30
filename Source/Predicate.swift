@@ -3,16 +3,9 @@ import Schemata
 
 /// A logical condition used for filtering.
 public struct Predicate<Model: Schemata.Model> {
-    /// Test whether the predicate evaluates to true for the given model.
-    public let evaluate: (Model) -> Bool
-    
     internal let sql: SQL.Expression
     
-    fileprivate init(
-        evaluate: @escaping (Model) -> Bool,
-        sql: SQL.Expression
-    ) {
-        self.evaluate = evaluate
+    fileprivate init(sql: SQL.Expression) {
         self.sql = sql
     }
 }
@@ -46,10 +39,7 @@ public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Mod
             return result.map { $0 && expression } ?? expression
         }!
     
-    return Predicate<Model>(
-        evaluate: { $0[keyPath: lhs] == rhs },
-        sql: sql
-    )
+    return Predicate<Model>(sql: sql)
 }
 
 extension Predicate {
