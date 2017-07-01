@@ -25,6 +25,11 @@ struct Row: Hashable, ExpressibleByDictionaryLiteral {
     }
 }
 
+extension Author.ID {
+    static let orsonScottCard = Author.ID(1)
+    static let jrrTolkien = Author.ID(2)
+}
+
 extension Author {
     enum Table {
         static let id = Author.table["id"]
@@ -33,10 +38,35 @@ extension Author {
         static let died = Author.table["died"]
     }
     
+    struct Data {
+        let id: Author.ID
+        let name: String
+        let born: Int
+        let died: Int?
+        
+        fileprivate var insert: SQL.Insert {
+            return Author.table.insert([
+                "id": SQL.Value.integer(id.int),
+                "name": SQL.Value.string(name),
+                "born": SQL.Value.integer(born),
+                "died": died.map(SQL.Value.integer) ?? SQL.Value.null
+            ])
+        }
+        
+        var row: Row {
+            return [
+                "id": .integer(id.int),
+                "name": .string(name),
+                "born": .integer(born),
+                "died": died.map(SQL.Value.integer) ?? .null,
+            ]
+        }
+    }
+    
     static let table = SQL.Table("authors")
     
-    static let orsonScottCard = Author(id: Author.ID(1), name: "Orson Scott Card", born: 1951, died: nil, books: [])
-    static let jrrTolkien = Author(id: Author.ID(2), name: "J.R.R. Tolkien", born: 1892, died: 1973, books: [])
+    static let orsonScottCard = Data(id: .orsonScottCard, name: "Orson Scott Card", born: 1951, died: nil)
+    static let jrrTolkien = Data(id: .jrrTolkien, name: "J.R.R. Tolkien", born: 1892, died: 1973)
     
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
@@ -44,24 +74,16 @@ extension Author {
         SQL.Schema.Column(name: "born", type: .integer),
         SQL.Schema.Column(name: "died", type: .integer, nullable: true),
     ])
+}
+
+extension Book.ISBN {
+    static let theHobbit = Book.ISBN("978-0547928227")
+    static let theLordOfTheRings = Book.ISBN("978-0544003415")
     
-    fileprivate var insert: SQL.Insert {
-        return Author.table.insert([
-            "id": SQL.Value.integer(id.int),
-            "name": SQL.Value.string(name),
-            "born": SQL.Value.integer(born),
-            "died": died.map(SQL.Value.integer) ?? SQL.Value.null
-        ])
-    }
-    
-    var row: Row {
-        return [
-            "id": .integer(id.int),
-            "name": .string(name),
-            "born": .integer(born),
-            "died": died.map(SQL.Value.integer) ?? .null,
-        ]
-    }
+    static let endersGame = Book.ISBN("978-0312853235")
+    static let speakerForTheDead = Book.ISBN("978-0312853259")
+    static let xenocide = Book.ISBN("978-0812509250")
+    static let childrenOfTheMind = Book.ISBN("978-0812522396")
 }
 
 extension Book {
@@ -71,16 +93,38 @@ extension Book {
         static let title = Book.table["title"]
     }
     
+    struct Data {
+        let id: Book.ISBN
+        let title: String
+        let author: Author.ID
+        
+        fileprivate var insert: SQL.Insert {
+            return Book.table.insert([
+                "id": SQL.Value.string(id.string),
+                "author": SQL.Value.integer(author.int),
+                "title": SQL.Value.string(title)
+            ])
+        }
+        
+        var row: Row {
+            return [
+                "id": .string(id.string),
+                "author": .integer(author.int),
+                "title": .string(title),
+            ]
+        }
+    }
+    
     static let table = SQL.Table("books")
     
-    static let theHobbit = Book(id: "978-0547928227", title: "The Hobbit", author: .jrrTolkien)
-    static let theLordOfTheRings = Book(id: "978-0544003415", title: "The Lord of the Rings", author: .jrrTolkien)
+    static let theHobbit = Data(id: .theHobbit, title: "The Hobbit", author: Author.jrrTolkien.id)
+    static let theLordOfTheRings = Data(id: .theLordOfTheRings, title: "The Lord of the Rings", author: Author.jrrTolkien.id)
     static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
     
-    static let endersGame = Book(id: "978-0312853235", title: "Ender's Game", author: .orsonScottCard)
-    static let speakerForTheDead = Book(id: "978-0312853259", title: "Speaker for the Dead", author: .orsonScottCard)
-    static let xenocide = Book(id: "978-0812509250", title: "Xenocide", author: .orsonScottCard)
-    static let childrenOfTheMind = Book(id: "978-0812522396", title: "Children of the Mind", author: .orsonScottCard)
+    static let endersGame = Data(id: .endersGame, title: "Ender's Game", author: .orsonScottCard)
+    static let speakerForTheDead = Data(id: .speakerForTheDead, title: "Speaker for the Dead", author: .orsonScottCard)
+    static let xenocide = Data(id: .xenocide, title: "Xenocide", author: .orsonScottCard)
+    static let childrenOfTheMind = Data(id: .childrenOfTheMind, title: "Children of the Mind", author: .orsonScottCard)
     static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
     
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
@@ -88,22 +132,6 @@ extension Book {
         SQL.Schema.Column(name: "author", type: .integer),
         SQL.Schema.Column(name: "title", type: .text),
     ])
-    
-    fileprivate var insert: SQL.Insert {
-        return Book.table.insert([
-            "id": SQL.Value.string(id.string),
-            "author": SQL.Value.integer(author.id.int),
-            "title": SQL.Value.string(title)
-        ])
-    }
-    
-    var row: Row {
-        return [
-            "id": .string(id.string),
-            "author": .integer(author.id.int),
-            "title": .string(title),
-        ]
-    }
 }
 
 class TestDB {
