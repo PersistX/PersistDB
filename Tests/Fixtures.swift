@@ -59,11 +59,11 @@ extension Book.ISBN: ModelValue {
 }
 
 extension Book: PersistDB.Model {
-    static let schema = Schema<Book>(
+    static let schema = Schema(
         Book.init,
-        \Book.id ~ "id",
-        \Book.title ~ "title",
-        \Book.author ~ "author"
+        \.id ~ "id",
+        \.title ~ "title",
+        \.author ~ "author"
     )
 }
 
@@ -118,13 +118,13 @@ extension Author.ID: ModelValue {
 }
 
 extension Author: PersistDB.Model {
-    static let schema = Schema<Author>(
+    static let schema = Schema(
         Author.init,
-        \Author.id ~ "id",
-        \Author.name ~ "name",
-        \Author.born ~ "born",
-        \Author.died ~ "died",
-        \Author.books ~ \Book.author
+        \.id ~ "id",
+        \.name ~ "name",
+        \.born ~ "born",
+        \.died ~ "died",
+        \.books ~ \Book.author
     )
 }
 
