@@ -1,6 +1,19 @@
 import Foundation
 import Schemata
 
+extension AnyValue.Encoded {
+    fileprivate var sql: SQL.Schema.DataType {
+        switch self {
+        case .date, .float:
+            return .real
+        case .int:
+            return .integer
+        case .string:
+            return .text
+        }
+    }
+}
+
 extension AnyProperty {
     internal var sql: SQL.Schema.Column? {
         let dataType: SQL.Schema.DataType?
@@ -15,14 +28,7 @@ extension AnyProperty {
             nullable = false
             
         case let .value(type, null):
-            let encoded = type.anyValue.encoded
-            if encoded == String.self {
-                dataType = .text
-            } else if encoded == Int.self {
-                dataType = .integer
-            } else {
-                fatalError("Unknown encoded property type \(encoded)")
-            }
+            dataType = type.anyValue.encoded.sql
             nullable = null
         }
         
