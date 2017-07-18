@@ -25,9 +25,9 @@ class AnyPropertyTests: XCTestCase {
         XCTAssertEqual(property.sql, expected)
     }
     
-    func testSQLForFloat() {
-        let property = Widget.anySchema.properties[\Widget.float]!
-        let expected = SQL.Schema.Column(name: "float", type: .real)
+    func testSQLForDouble() {
+        let property = Widget.anySchema.properties[\Widget.double]!
+        let expected = SQL.Schema.Column(name: "double", type: .real)
         XCTAssertEqual(property.sql, expected)
     }
     

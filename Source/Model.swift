@@ -4,7 +4,7 @@ import Schemata
 extension AnyValue.Encoded {
     fileprivate var sql: SQL.Schema.DataType {
         switch self {
-        case .date, .float:
+        case .date, .double:
             return .real
         case .int:
             return .integer

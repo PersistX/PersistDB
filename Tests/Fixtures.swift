@@ -133,7 +133,7 @@ extension Author: PersistDB.Model {
 struct Widget {
     let id: Int
     let date: Date
-    let float: Float
+    let double: Double
 }
 
 extension Widget: PersistDB.Model {
@@ -141,6 +141,6 @@ extension Widget: PersistDB.Model {
         Widget.init,
         \.id ~ "id",
         \.date ~ "date",
-        \.float ~ "float"
+        \.double ~ "double"
     )
 }
