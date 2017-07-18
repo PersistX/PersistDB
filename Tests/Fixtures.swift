@@ -128,3 +128,19 @@ extension Author: PersistDB.Model {
     )
 }
 
+// MARK: - Widget
+
+struct Widget {
+    let id: Int
+    let date: Date
+    let float: Float
+}
+
+extension Widget: PersistDB.Model {
+    static let schema = Schema(
+        Widget.init,
+        \.id ~ "id",
+        \.date ~ "date",
+        \.float ~ "float"
+    )
+}
