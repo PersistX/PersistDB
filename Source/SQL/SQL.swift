@@ -3,13 +3,16 @@ import Foundation
 extension SQL {
     /// A SQL value to a SQL statement
     public enum Value {
-        /// A null parameter
-        case null
-        
-        /// An integer parameter
+        /// An integer value
         case integer(Int)
         
-        /// A string parameter
+        /// A null value
+        case null
+        
+        /// A floating point value
+        case real(Double)
+        
+        /// A string value
         case text(String)
         
         internal var sql: SQL {
@@ -21,9 +24,11 @@ extension SQL {
 extension SQL.Value: CustomStringConvertible {
     public var description: String {
         switch self {
+        case let .integer(value):
+            return value.description
         case .null:
             return "(null)"
-        case let .integer(value):
+        case let .real(value):
             return value.description
         case let .text(value):
             return "'\(value)'"
@@ -34,9 +39,11 @@ extension SQL.Value: CustomStringConvertible {
 extension SQL.Value: Hashable {
     public var hashValue: Int {
         switch self {
+        case let .integer(value):
+            return value.hashValue
         case .null:
             return 0
-        case let .integer(value):
+        case let .real(value):
             return value.hashValue
         case let .text(value):
             return value.hashValue
@@ -45,9 +52,11 @@ extension SQL.Value: Hashable {
 
     public static func ==(lhs: SQL.Value, rhs: SQL.Value) -> Bool {
         switch (lhs, rhs) {
+        case let (.integer(left), .integer(right)):
+            return left == right
         case (.null, .null):
             return true
-        case let (.integer(left), .integer(right)):
+        case let (.real(left), .real(right)):
             return left == right
         case let (.text(left), .text(right)):
             return left == right

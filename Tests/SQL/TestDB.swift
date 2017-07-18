@@ -170,10 +170,12 @@ class TestDB {
         for idx in sql.parameters.indices {
             let p = sql.parameters[idx]
             switch p {
-            case .null:
-                sqlite3_bind_null(stmt, Int32(idx + 1))
             case let .integer(value):
                 sqlite3_bind_int(stmt, Int32(idx + 1), Int32(value))
+            case .null:
+                sqlite3_bind_null(stmt, Int32(idx + 1))
+            case let .real(value):
+                sqlite3_bind_double(stmt, Int32(idx + 1), value)
             case let .text(value):
                 sqlite3_bind_text(stmt, Int32(idx + 1), value, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
             }
