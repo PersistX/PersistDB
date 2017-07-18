@@ -76,11 +76,11 @@ class SQLQueryTests: XCTestCase {
             Set([
                 Row([
                     "id": .integer(Author.orsonScottCard.id.int),
-                    "name": .string("Orson Scott Card"),
+                    "name": .text("Orson Scott Card"),
                 ]),
                 Row([
                     "id": .integer(Author.jrrTolkien.id.int),
-                    "name": .string("J.R.R. Tolkien"),
+                    "name": .text("J.R.R. Tolkien"),
                 ]),
             ])
         )

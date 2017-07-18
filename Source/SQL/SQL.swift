@@ -10,7 +10,7 @@ extension SQL {
         case integer(Int)
         
         /// A string parameter
-        case string(String)
+        case text(String)
         
         internal var sql: SQL {
             return SQL("?", parameters: self)
@@ -25,7 +25,7 @@ extension SQL.Value: CustomStringConvertible {
             return "(null)"
         case let .integer(value):
             return value.description
-        case let .string(value):
+        case let .text(value):
             return "'\(value)'"
         }
     }
@@ -38,7 +38,7 @@ extension SQL.Value: Hashable {
             return 0
         case let .integer(value):
             return value.hashValue
-        case let .string(value):
+        case let .text(value):
             return value.hashValue
         }
     }
@@ -49,7 +49,7 @@ extension SQL.Value: Hashable {
             return true
         case let (.integer(left), .integer(right)):
             return left == right
-        case let (.string(left), .string(right)):
+        case let (.text(left), .text(right)):
             return left == right
         default:
             return false
@@ -59,15 +59,15 @@ extension SQL.Value: Hashable {
 
 extension SQL.Value: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
-        self = .string(value)
+        self = .text(value)
     }
     
     public init(unicodeScalarLiteral value: String) {
-        self = .string(value)
+        self = .text(value)
     }
     
     public init(extendedGraphemeClusterLiteral value: String) {
-        self = .string(value)
+        self = .text(value)
     }
 }
 

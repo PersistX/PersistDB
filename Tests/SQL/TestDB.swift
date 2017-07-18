@@ -47,7 +47,7 @@ extension Author {
         fileprivate var insert: SQL.Insert {
             return Author.table.insert([
                 "id": SQL.Value.integer(id.int),
-                "name": SQL.Value.string(name),
+                "name": SQL.Value.text(name),
                 "born": SQL.Value.integer(born),
                 "died": died.map(SQL.Value.integer) ?? SQL.Value.null
             ])
@@ -56,7 +56,7 @@ extension Author {
         var row: Row {
             return [
                 "id": .integer(id.int),
-                "name": .string(name),
+                "name": .text(name),
                 "born": .integer(born),
                 "died": died.map(SQL.Value.integer) ?? .null,
             ]
@@ -100,17 +100,17 @@ extension Book {
         
         fileprivate var insert: SQL.Insert {
             return Book.table.insert([
-                "id": SQL.Value.string(id.string),
+                "id": SQL.Value.text(id.string),
                 "author": SQL.Value.integer(author.int),
-                "title": SQL.Value.string(title)
+                "title": SQL.Value.text(title)
             ])
         }
         
         var row: Row {
             return [
-                "id": .string(id.string),
+                "id": .text(id.string),
                 "author": .integer(author.int),
-                "title": .string(title),
+                "title": .text(title),
             ]
         }
     }
@@ -174,7 +174,7 @@ class TestDB {
                 sqlite3_bind_null(stmt, Int32(idx + 1))
             case let .integer(value):
                 sqlite3_bind_int(stmt, Int32(idx + 1), Int32(value))
-            case let .string(value):
+            case let .text(value):
                 sqlite3_bind_text(stmt, Int32(idx + 1), value, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
             }
         }
@@ -203,7 +203,7 @@ class TestDB {
                     case 3:
                         let pointer = UnsafeRawPointer(sqlite3_column_text(stmt, Int32(idx)))!
                         let cchars = pointer.bindMemory(to: CChar.self, capacity: 0)
-                        value = .string(String(validatingUTF8: cchars)!)
+                        value = .text(String(validatingUTF8: cchars)!)
                         
                     case 5:
                         value = .null

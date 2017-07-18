@@ -210,7 +210,7 @@ internal func != (lhs: Int?, rhs: SQL.Expression) -> SQL.Expression {
 // MARK: - String Operators
 
 internal func == (lhs: SQL.Expression, rhs: String) -> SQL.Expression {
-    return .binary(.equal, lhs, .value(.string(rhs)))
+    return .binary(.equal, lhs, .value(.text(rhs)))
 }
 
 internal func == (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
@@ -218,7 +218,7 @@ internal func == (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
 }
 
 internal func != (lhs: SQL.Expression, rhs: String) -> SQL.Expression {
-    return .binary(.notEqual, lhs, .value(.string(rhs)))
+    return .binary(.notEqual, lhs, .value(.text(rhs)))
 }
 
 internal func != (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
@@ -249,6 +249,6 @@ extension Collection where Iterator.Element == String {
     /// An expression that tests whether the list contains the value of an
     /// expression.
     internal func contains(_ expression: SQL.Expression) -> SQL.Expression {
-        return .inList(expression, map(SQL.Value.string))
+        return .inList(expression, map(SQL.Value.text))
     }
 }

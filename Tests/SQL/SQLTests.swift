@@ -7,10 +7,10 @@ class SQLValueTests: XCTestCase {
         XCTAssertEqual(SQL.Value.integer(5), SQL.Value.integer(5))
         XCTAssertNotEqual(SQL.Value.integer(5), SQL.Value.integer(6))
         
-        XCTAssertEqual(SQL.Value.string("A"), SQL.Value.string("A"))
-        XCTAssertNotEqual(SQL.Value.string("A"), SQL.Value.string("B"))
+        XCTAssertEqual(SQL.Value.text("A"), SQL.Value.text("A"))
+        XCTAssertNotEqual(SQL.Value.text("A"), SQL.Value.text("B"))
         
-        XCTAssertNotEqual(SQL.Value.integer(5), SQL.Value.string("A"))
+        XCTAssertNotEqual(SQL.Value.integer(5), SQL.Value.text("A"))
     }
     
     func testIntegerLiteralConvertible() {
@@ -18,7 +18,7 @@ class SQLValueTests: XCTestCase {
     }
     
     func testStringLiteralConvertible() {
-        XCTAssertEqual("A", SQL.Value.string("A"))
+        XCTAssertEqual("A", SQL.Value.text("A"))
     }
 }
 
