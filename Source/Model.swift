@@ -50,6 +50,13 @@ public protocol Model: Schemata.Model {
 }
 
 extension Model {
+    /// A `Query` matching all values.
+    public static var all: Query<Self> {
+        return .init()
+    }
+}
+
+extension Model {
     internal static var sql: SQL.Schema {
         return SQL.Schema(
             table: SQL.Table(String(describing: Self.self)),
