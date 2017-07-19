@@ -32,7 +32,7 @@ public func ==<Model>(lhs: KeyPath<Model, String>, rhs: String) -> Predicate<Mod
             case let .toOne(model):
                 return lhsTable[property.path] == SQL.Table(String(describing: model))["id"]
             case .value:
-                return lhsTable[property.path] == rhs
+                return lhsTable[property.path] == .value(.text(rhs))
             }
         }
         .reduce(nil) { result, expression -> SQL.Expression in

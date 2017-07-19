@@ -153,76 +153,12 @@ internal prefix func ! (expression: SQL.Expression) -> SQL.Expression {
     return .unary(.not, expression)
 }
 
-// MARK: - Int Operators
-
-internal func == (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
-    return .binary(.equal, lhs, .value(.integer(rhs)))
+internal func < (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
+    return .binary(.lessThan, lhs, rhs)
 }
 
-internal func == (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs == lhs
-}
-
-internal func != (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
-    return .binary(.notEqual, lhs, .value(.integer(rhs)))
-}
-
-internal func != (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs != lhs
-}
-
-internal func < (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
-    return .binary(.lessThan, lhs, .value(.integer(rhs)))
-}
-
-internal func < (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs > lhs
-}
-
-internal func > (lhs: SQL.Expression, rhs: Int) -> SQL.Expression {
-    return .binary(.greaterThan, lhs, .value(.integer(rhs)))
-}
-
-internal func > (lhs: Int, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs < lhs
-}
-
-// MARK: - Int? Operators
-
-internal func == (lhs: SQL.Expression, rhs: Int?) -> SQL.Expression {
-    let value = rhs.map(SQL.Value.integer) ?? .null
-    return .binary(.is, lhs, .value(value))
-}
-
-internal func == (lhs: Int?, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs == lhs
-}
-
-internal func != (lhs: SQL.Expression, rhs: Int?) -> SQL.Expression {
-    let value = rhs.map(SQL.Value.integer) ?? .null
-    return .binary(.isNot, lhs, .value(value))
-}
-
-internal func != (lhs: Int?, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs != lhs
-}
-
-// MARK: - String Operators
-
-internal func == (lhs: SQL.Expression, rhs: String) -> SQL.Expression {
-    return .binary(.equal, lhs, .value(.text(rhs)))
-}
-
-internal func == (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs == lhs
-}
-
-internal func != (lhs: SQL.Expression, rhs: String) -> SQL.Expression {
-    return .binary(.notEqual, lhs, .value(.text(rhs)))
-}
-
-internal func != (lhs: String, rhs: SQL.Expression) -> SQL.Expression {
-    return rhs != lhs
+internal func > (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
+    return .binary(.greaterThan, lhs, rhs)
 }
 
 // MARK: - Aggregates

@@ -26,8 +26,8 @@ class SQLQueryTests: XCTestCase {
     func testNotEqualWithDifferentPredicates() {
         let query = SQL.Query.select([ .wildcard(Book.table) ])
         XCTAssertNotEqual(
-            query.where(Book.Table.author == Author.jrrTolkien.id.int),
-            query.where(Book.Table.author == Author.orsonScottCard.id.int)
+            query.where(Book.Table.author == .value(.integer(Author.jrrTolkien.id.int))),
+            query.where(Book.Table.author == .value(.integer(Author.orsonScottCard.id.int)))
         )
     }
     
@@ -92,7 +92,7 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
             .where(Book.Table.author == Author.Table.id)
-            .where(Author.Table.id == Author.jrrTolkien.id.int)
+            .where(Author.Table.id == .value(.integer(Author.jrrTolkien.id.int)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -104,11 +104,33 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
             .where(Book.Table.author == Author.Table.id)
-            .where(Author.Table.id != Author.jrrTolkien.id.int)
+            .where(Author.Table.id != .value(.integer(Author.jrrTolkien.id.int)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
             Set(Book.byOrsonScottCard)
+        )
+    }
+    
+    func testLessThan() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(Author.Table.born < .value(.integer(1951)))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.jrrTolkien.row])
+        )
+    }
+    
+    func testGreaterThan() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(Author.Table.born > .value(.integer(1950)))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.orsonScottCard.row])
         )
     }
     
@@ -118,7 +140,7 @@ class SQLQueryTests: XCTestCase {
         let title = Book.Table.title
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
-            .where(title == Book.endersGame.title || title == Book.xenocide.title)
+            .where(title == .value(.text(Book.endersGame.title)) || title == .value(.text(Book.xenocide.title)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -132,189 +154,7 @@ class SQLQueryTests: XCTestCase {
     func testNot() {
         let query = SQL.Query
             .select([ .wildcard(Author.table) ])
-            .where(!(Author.Table.name == Author.jrrTolkien.name))
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
-        )
-    }
-    
-    // MARK: - Int Operators
-    
-    func testExpressionEqualsInt() {
-        let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
-            .where(Book.Table.author == Author.jrrTolkien.id.int)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set(Book.byJRRTolkien)
-        )
-    }
-    
-    func testIntEqualsExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
-            .where(Author.jrrTolkien.id.int == Book.Table.author)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set(Book.byJRRTolkien)
-        )
-    }
-    
-    func testExpressionDoesNotEqualInt() {
-        let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
-            .where(Book.Table.author != Author.jrrTolkien.id.int)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set(Book.byOrsonScottCard)
-        )
-    }
-    
-    func testIntDoesNotEqualExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
-            .where(Author.jrrTolkien.id.int != Book.Table.author)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set(Book.byOrsonScottCard)
-        )
-    }
-    
-    func testIntLessThanExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(1950 < Author.Table.born)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
-        )
-    }
-    
-    func testExpressionLessThanInt() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.Table.born < 1951)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
-        )
-    }
-    
-    func testIntGreaterThanExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(1951 > Author.Table.born)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
-        )
-    }
-    
-    func testExpressionGreaterThanInt() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.Table.born > 1950)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
-        )
-    }
-    
-    // MARK: - Int? Operators
-    
-    func testExpressionEqualsOptionalInt() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.Table.died == nil)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([ Author.orsonScottCard.row ])
-        )
-    }
-    
-    func testOptionalIntEqualsExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(nil == Author.Table.died)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([ Author.orsonScottCard.row ])
-        )
-    }
-    
-    func testExpressionDoesNotEqualOptionalInt() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.Table.died != nil)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([ Author.jrrTolkien.row ])
-        )
-    }
-    
-    func testOptionalIntDoesNotEqualExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(nil != Author.Table.died)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([ Author.jrrTolkien.row ])
-        )
-    }
-    
-    // MARK: - String Operators
-    
-    func testExpressionEqualsString() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.Table.name == Author.jrrTolkien.name)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
-        )
-    }
-    
-    func testStringEqualsExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.jrrTolkien.name == Author.Table.name)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
-        )
-    }
-    
-    func testExpressionDoesNotEqualString() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.Table.name != Author.jrrTolkien.name)
-        XCTAssertEqual(query, query)
-        XCTAssertEqual(
-            Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
-        )
-    }
-    
-    func testStringDoesNotEqualExpression() {
-        let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
-            .where(Author.jrrTolkien.name != Author.Table.name)
+            .where(!(Author.Table.name == .value(.text(Author.jrrTolkien.name))))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -331,7 +171,7 @@ class SQLQueryTests: XCTestCase {
         )
         let query = SQL.Query
             .select([ SQL.Result(maximum) ])
-            .where(Author.Table.id == Author.jrrTolkien.id.int)
+            .where(Author.Table.id == .value(.integer(Author.jrrTolkien.id.int)))
         
         let row: Row = [maximum.sql.debugDescription: .integer(Author.jrrTolkien.died!)]
         XCTAssertEqual(query, query)
@@ -348,7 +188,7 @@ class SQLQueryTests: XCTestCase {
         )
         let query = SQL.Query
             .select([ SQL.Result(maximum) ])
-            .where(Author.Table.id == Author.jrrTolkien.id.int)
+            .where(Author.Table.id == .value(.integer(Author.jrrTolkien.id.int)))
         
         let row: Row = [maximum.sql.debugDescription: .integer(Author.jrrTolkien.born)]
         XCTAssertEqual(query, query)
@@ -377,8 +217,8 @@ class SQLQueryTests: XCTestCase {
     func testMultipleWhereMethods() {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
-            .where(Book.Table.author != Author.jrrTolkien.id.int)
-            .where(Book.Table.author != Author.orsonScottCard.id.int)
+            .where(Book.Table.author != .value(.integer(Author.jrrTolkien.id.int)))
+            .where(Book.Table.author != .value(.integer(Author.orsonScottCard.id.int)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
