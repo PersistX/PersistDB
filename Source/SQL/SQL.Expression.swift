@@ -134,11 +134,23 @@ extension SQL.Expression {
 // MARK: - Operators
 
 internal func == (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
-    return .binary(.equal, lhs, rhs)
+    if lhs == .value(.null) {
+        return .binary(.is, rhs, lhs)
+    } else if rhs == .value(.null) {
+        return .binary(.is, lhs, rhs)
+    } else {
+        return .binary(.equal, lhs, rhs)
+    }
 }
 
 internal func != (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
-    return .binary(.notEqual, lhs, rhs)
+    if lhs == .value(.null) {
+        return .binary(.isNot, rhs, lhs)
+    } else if rhs == .value(.null) {
+        return .binary(.isNot, lhs, rhs)
+    } else {
+        return .binary(.notEqual, lhs, rhs)
+    }
 }
 
 internal func && (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {

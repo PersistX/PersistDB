@@ -100,6 +100,28 @@ class SQLQueryTests: XCTestCase {
         )
     }
     
+    func testEqualsNil() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(Author.Table.died == .value(.null))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.orsonScottCard.row])
+        )
+    }
+    
+    func testNilEquals() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(.value(.null) == Author.Table.died)
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.orsonScottCard.row])
+        )
+    }
+    
     func testNotEqual() {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
@@ -109,6 +131,28 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             Set(db.query(query)),
             Set(Book.byOrsonScottCard)
+        )
+    }
+    
+    func testDoesNotEqualNil() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(Author.Table.died != .value(.null))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.jrrTolkien.row])
+        )
+    }
+    
+    func testNilDoesNotEqual() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(.value(.null) != Author.Table.died)
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.jrrTolkien.row])
         )
     }
     
