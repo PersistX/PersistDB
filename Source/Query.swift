@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 /// A value representing a query of a model type.
-public struct Query<Model: Schemata.Model> {
+public struct Query<Model: PersistDB.Model> {
     /// The predicates used to filter results.
     public var predicates: [Predicate<Model>]
     

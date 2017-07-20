@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 /// A logical condition used for filtering.
-public struct Predicate<Model: Schemata.Model> {
+public struct Predicate<Model: PersistDB.Model> {
     internal let sql: SQL.Expression
     
     fileprivate init(sql: SQL.Expression) {
