@@ -20,48 +20,42 @@ extension Predicate: Hashable {
     }
 }
 
+extension Predicate {
+    fileprivate init<Model: PersistDB.Model, Value>(
+        keyPath: KeyPath<Model, Value>,
+        test: (SQL.Expression) -> SQL.Expression
+    ) {
+        self.sql = Model.schema
+            .properties(for: keyPath)
+            .map { property -> SQL.Expression in
+                let lhsTable = SQL.Table(String(describing: property.model))
+                switch property.type {
+                case .toMany:
+                    fatalError()
+                case let .toOne(model):
+                    return lhsTable[property.path] == SQL.Table(String(describing: model))["id"]
+                case .value:
+                    return test(lhsTable[property.path])
+                }
+            }
+            .reduce(nil) { result, expression -> SQL.Expression in
+                return result.map { $0 && expression } ?? expression
+            }!
+    }
+}
+
 /// Test whether a property of the model matches a value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    let sql = Model.schema
-        .properties(for: lhs)
-        .map { property -> SQL.Expression in
-            let lhsTable = SQL.Table(String(describing: property.model))
-            switch property.type {
-            case .toMany:
-                fatalError()
-            case let .toOne(model):
-                return lhsTable[property.path] == SQL.Table(String(describing: model))["id"]
-            case .value:
-                return lhsTable[property.path] == .value(Value.anyValue.encode(rhs).sql)
-            }
-        }
-        .reduce(nil) { result, expression -> SQL.Expression in
-            return result.map { $0 && expression } ?? expression
-        }!
-    
-    return Predicate<Model>(sql: sql)
+    return Predicate(keyPath: lhs) {
+        return $0 == .value(Value.anyValue.encode(rhs).sql)
+    }
 }
 
 /// Test whether a property of the model matches an optional value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    let sql = Model.schema
-        .properties(for: lhs)
-        .map { property -> SQL.Expression in
-            let lhsTable = SQL.Table(String(describing: property.model))
-            switch property.type {
-            case .toMany:
-                fatalError()
-            case let .toOne(model):
-                return lhsTable[property.path] == SQL.Table(String(describing: model))["id"]
-            case .value:
-                return lhsTable[property.path] == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null)
-            }
-        }
-        .reduce(nil) { result, expression -> SQL.Expression in
-            return result.map { $0 && expression } ?? expression
-        }!
-    
-    return Predicate<Model>(sql: sql)
+    return Predicate(keyPath: lhs) {
+        return $0 == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null)
+    }
 }
 
 extension Predicate {
