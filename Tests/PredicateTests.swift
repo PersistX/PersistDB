@@ -45,4 +45,28 @@ class PredicateTests: XCTestCase {
         let sql: SQL.Expression = book["author"] == author["id"] && author["name"] == .value(.text("J.K. Rowling"))
         XCTAssertEqual(predicate.sql, sql)
     }
+    
+    func test_sql_notEqual_date() {
+        let predicate = \Widget.date != Date(timeIntervalSinceReferenceDate: 100_000)
+        let sql: SQL.Expression = SQL.Table("Widget")["date"] != .value(.real(100_000))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_notEqual_toOne_optional_int() {
+        let predicate = \Book.author.died != nil
+        
+        let author = SQL.Table("Author")
+        let book = SQL.Table("Book")
+        let sql: SQL.Expression = book["author"] == author["id"] && author["died"] != .value(.null)
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_notEqual_toOne_string() {
+        let predicate = \Book.author.name != "J.K. Rowling"
+
+        let author = SQL.Table("Author")
+        let book = SQL.Table("Book")
+        let sql: SQL.Expression = book["author"] == author["id"] && author["name"] != .value(.text("J.K. Rowling"))
+        XCTAssertEqual(predicate.sql, sql)
+    }
 }

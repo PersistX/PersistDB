@@ -44,17 +44,31 @@ extension Predicate {
     }
 }
 
-/// Test whether a property of the model matches a value.
+/// Test that a property of the model matches a value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
     return Predicate(keyPath: lhs) {
         return $0 == .value(Value.anyValue.encode(rhs).sql)
     }
 }
 
-/// Test whether a property of the model matches an optional value.
+/// Test that a property of the model matches an optional value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
     return Predicate(keyPath: lhs) {
         return $0 == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null)
+    }
+}
+
+/// Test that a property of the model doesn't matches a value.
+public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
+    return Predicate(keyPath: lhs) {
+        return $0 != .value(Value.anyValue.encode(rhs).sql)
+    }
+}
+
+/// Test that a property of the model doesn't matches an optional value.
+public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
+    return Predicate(keyPath: lhs) {
+        return $0 != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null)
     }
 }
 
