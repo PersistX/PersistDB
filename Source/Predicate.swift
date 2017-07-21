@@ -75,16 +75,16 @@ public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value
 extension Predicate {
     /// Creates a predicate that's true when both predicates are true.
     public static func &&(lhs: Predicate, rhs: Predicate) -> Predicate {
-        fatalError()
+        return Predicate(sql: lhs.sql && rhs.sql)
     }
     
     /// Creates a predicate that's true when either predicates is true.
     public static func ||(lhs: Predicate, rhs: Predicate) -> Predicate {
-        fatalError()
+        return Predicate(sql: lhs.sql || rhs.sql)
     }
     
     /// Creates a predicate that's true when the given predicate is false.
     public static prefix func !(predicate: Predicate) -> Predicate {
-        fatalError()
+        return Predicate(sql: !predicate.sql)
     }
 }

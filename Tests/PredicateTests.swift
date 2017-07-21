@@ -69,4 +69,24 @@ class PredicateTests: XCTestCase {
         let sql: SQL.Expression = book["author"] == author["id"] && author["name"] != .value(.text("J.K. Rowling"))
         XCTAssertEqual(predicate.sql, sql)
     }
+    
+    func test_sql_or() {
+        let predicate = \Author.name == "J" || \Author.name == "K"
+        let name = SQL.Table("Author")["name"]
+        let sql: SQL.Expression = name == .value(.text("J")) || name == .value(.text("K"))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_and() {
+        let predicate = \Author.name == "J" && \Author.name == "K"
+        let name = SQL.Table("Author")["name"]
+        let sql: SQL.Expression = name == .value(.text("J")) && name == .value(.text("K"))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_not() {
+        let predicate = !(\Author.name == "J.K. Rowling")
+        let sql: SQL.Expression = !(SQL.Table("Author")["name"] == .value(.text("J.K. Rowling")))
+        XCTAssertEqual(predicate.sql, sql)
+    }
 }
