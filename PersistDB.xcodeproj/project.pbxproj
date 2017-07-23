@@ -12,6 +12,11 @@
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
 		BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6091EE3B37600A0671F /* PredicateTests.swift */; };
 		BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */; };
+		BE1E738B1F24351F00B05DFA /* PersistTest.h in Headers */ = {isa = PBXBuildFile; fileRef = BE1E73891F24351E00B05DFA /* PersistTest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE1E738F1F24355700B05DFA /* PersistDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */; };
+		BE1E73911F24356300B05DFA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73901F24355C00B05DFA /* XCTest.framework */; };
+		BE1E73931F24358600B05DFA /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1E73921F24358600B05DFA /* TestDB.swift */; };
+		BE1E73941F2435DA00B05DFA /* PersistTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73871F24351E00B05DFA /* PersistTest.framework */; };
 		BE7740E21EFFDC4E00D1F5A5 /* SQL.ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */; };
 		BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */; };
 		BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DD1EFFDC4500D1F5A5 /* SQLTests.swift */; };
@@ -54,6 +59,11 @@
 		BE1DC6071EE3B34800A0671F /* Predicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicate.swift; sourceTree = "<group>"; };
 		BE1DC6091EE3B37600A0671F /* PredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicateTests.swift; sourceTree = "<group>"; };
 		BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
+		BE1E73871F24351E00B05DFA /* PersistTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PersistTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE1E73891F24351E00B05DFA /* PersistTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistTest.h; sourceTree = "<group>"; };
+		BE1E738A1F24351E00B05DFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BE1E73901F24355C00B05DFA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		BE1E73921F24358600B05DFA /* TestDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDB.swift; sourceTree = "<group>"; };
 		BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Insert.swift; sourceTree = "<group>"; };
 		BE7740D71EFFDC3800D1F5A5 /* SQL.SortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.SortDescriptor.swift; sourceTree = "<group>"; };
 		BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Expression.swift; sourceTree = "<group>"; };
@@ -84,6 +94,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		BE1E73831F24351E00B05DFA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE1E738F1F24355700B05DFA /* PersistDB.framework in Frameworks */,
+				BE1E73911F24356300B05DFA /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE89D5F21EBE3A0100CEC4D1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -100,12 +119,23 @@
 				BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */,
 				BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */,
 				BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */,
+				BE1E73941F2435DA00B05DFA /* PersistTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE1E73881F24351E00B05DFA /* PersistTest */ = {
+			isa = PBXGroup;
+			children = (
+				BE1E73891F24351E00B05DFA /* PersistTest.h */,
+				BE1E73921F24358600B05DFA /* TestDB.swift */,
+				BE1E738A1F24351E00B05DFA /* Info.plist */,
+			);
+			path = PersistTest;
+			sourceTree = "<group>";
+		};
 		BE7740D21EFFDB8F00D1F5A5 /* SQL */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				BE89D5F81EBE3A0100CEC4D1 /* Source */,
+				BE1E73881F24351E00B05DFA /* PersistTest */,
 				BE89D6031EBE3A0100CEC4D1 /* Tests */,
 				BE89D5F71EBE3A0100CEC4D1 /* Products */,
 				BE89D6281EBE3D7400CEC4D1 /* Frameworks */,
@@ -148,6 +179,7 @@
 			children = (
 				BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */,
 				BE89D5FF1EBE3A0100CEC4D1 /* PersistDBTests.xctest */,
+				BE1E73871F24351E00B05DFA /* PersistTest.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -187,6 +219,7 @@
 			children = (
 				BE89D6361EBE769100CEC4D1 /* Result.framework */,
 				BE89D6371EBE769100CEC4D1 /* Schemata.framework */,
+				BE1E73901F24355C00B05DFA /* XCTest.framework */,
 				BE89D6291EBE3D7400CEC4D1 /* Result.framework */,
 				BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */,
 			);
@@ -196,6 +229,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		BE1E73841F24351E00B05DFA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE1E738B1F24351F00B05DFA /* PersistTest.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE89D5F31EBE3A0100CEC4D1 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -207,6 +248,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		BE1E73861F24351E00B05DFA /* PersistTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE1E738C1F24351F00B05DFA /* Build configuration list for PBXNativeTarget "PersistTest" */;
+			buildPhases = (
+				BE1E73821F24351E00B05DFA /* Sources */,
+				BE1E73831F24351E00B05DFA /* Frameworks */,
+				BE1E73841F24351E00B05DFA /* Headers */,
+				BE1E73851F24351E00B05DFA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PersistTest;
+			productName = PersistTest;
+			productReference = BE1E73871F24351E00B05DFA /* PersistTest.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		BE89D5F51EBE3A0100CEC4D1 /* PersistDB */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB" */;
@@ -253,6 +312,10 @@
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Matt Diephouse";
 				TargetAttributes = {
+					BE1E73861F24351E00B05DFA = {
+						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0900;
+					};
 					BE89D5F51EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
 						LastSwiftMigration = 0900;
@@ -278,12 +341,20 @@
 			projectRoot = "";
 			targets = (
 				BE89D5F51EBE3A0100CEC4D1 /* PersistDB */,
+				BE1E73861F24351E00B05DFA /* PersistTest */,
 				BE89D5FE1EBE3A0100CEC4D1 /* PersistDBTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		BE1E73851F24351E00B05DFA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE89D5F41EBE3A0100CEC4D1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -301,6 +372,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		BE1E73821F24351E00B05DFA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE1E73931F24358600B05DFA /* TestDB.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE89D5F11EBE3A0100CEC4D1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -349,6 +428,59 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		BE1E738D1F24351F00B05DFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(PLATFORM_DIR)/Developer/Library/Frameworks";
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PersistTest/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistTest;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		BE1E738E1F24351F00B05DFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(PLATFORM_DIR)/Developer/Library/Frameworks";
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PersistTest/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistTest;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 		BE89D6081EBE3A0100CEC4D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -533,6 +665,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		BE1E738C1F24351F00B05DFA /* Build configuration list for PBXNativeTarget "PersistTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE1E738D1F24351F00B05DFA /* Debug */,
+				BE1E738E1F24351F00B05DFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		BE89D5F01EBE3A0100CEC4D1 /* Build configuration list for PBXProject "PersistDB" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
