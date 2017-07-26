@@ -139,10 +139,10 @@
 		BE1E73881F24351E00B05DFA /* PersistTest */ = {
 			isa = PBXGroup;
 			children = (
+				BE5B1D0B1F28C36500BD16EB /* Extensions */,
 				BE1E73891F24351E00B05DFA /* PersistTest.h */,
 				BE5B1D021F28C1FC00BD16EB /* Row.swift */,
 				BE1E73921F24358600B05DFA /* TestDB.swift */,
-				BE5B1D001F28BEE500BD16EB /* UUID.swift */,
 				BE5B1D071F28C31E00BD16EB /* Value.swift */,
 				BE1E738A1F24351E00B05DFA /* Info.plist */,
 			);
@@ -156,6 +156,14 @@
 				BE5B1D091F28C34400BD16EB /* ValueTests.swift */,
 			);
 			path = PersistTest;
+			sourceTree = "<group>";
+		};
+		BE5B1D0B1F28C36500BD16EB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BE5B1D001F28BEE500BD16EB /* UUID.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		BE7740D21EFFDB8F00D1F5A5 /* SQL */ = {
