@@ -18,6 +18,8 @@
 		BE1E73931F24358600B05DFA /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1E73921F24358600B05DFA /* TestDB.swift */; };
 		BE1E73941F2435DA00B05DFA /* PersistTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73871F24351E00B05DFA /* PersistTest.framework */; };
 		BE5B1D011F28BEE500BD16EB /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D001F28BEE500BD16EB /* UUID.swift */; };
+		BE5B1D031F28C1FC00BD16EB /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D021F28C1FC00BD16EB /* Row.swift */; };
+		BE5B1D061F28C25800BD16EB /* RowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D051F28C25800BD16EB /* RowTests.swift */; };
 		BE7740E21EFFDC4E00D1F5A5 /* SQL.ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */; };
 		BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */; };
 		BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DD1EFFDC4500D1F5A5 /* SQLTests.swift */; };
@@ -66,6 +68,8 @@
 		BE1E73901F24355C00B05DFA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		BE1E73921F24358600B05DFA /* TestDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDB.swift; sourceTree = "<group>"; };
 		BE5B1D001F28BEE500BD16EB /* UUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
+		BE5B1D021F28C1FC00BD16EB /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
+		BE5B1D051F28C25800BD16EB /* RowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTests.swift; sourceTree = "<group>"; };
 		BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Insert.swift; sourceTree = "<group>"; };
 		BE7740D71EFFDC3800D1F5A5 /* SQL.SortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.SortDescriptor.swift; sourceTree = "<group>"; };
 		BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Expression.swift; sourceTree = "<group>"; };
@@ -132,9 +136,18 @@
 			isa = PBXGroup;
 			children = (
 				BE1E73891F24351E00B05DFA /* PersistTest.h */,
+				BE5B1D021F28C1FC00BD16EB /* Row.swift */,
 				BE1E73921F24358600B05DFA /* TestDB.swift */,
 				BE5B1D001F28BEE500BD16EB /* UUID.swift */,
 				BE1E738A1F24351E00B05DFA /* Info.plist */,
+			);
+			path = PersistTest;
+			sourceTree = "<group>";
+		};
+		BE5B1D041F28C23B00BD16EB /* PersistTest */ = {
+			isa = PBXGroup;
+			children = (
+				BE5B1D051F28C25800BD16EB /* RowTests.swift */,
 			);
 			path = PersistTest;
 			sourceTree = "<group>";
@@ -205,6 +218,7 @@
 		BE89D6031EBE3A0100CEC4D1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				BE5B1D041F28C23B00BD16EB /* PersistTest */,
 				BE7740D41EFFDBBB00D1F5A5 /* SQL */,
 				BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */,
 				BECF33941EEBA6BA00F9FC88 /* ModelTests.swift */,
@@ -380,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE5B1D011F28BEE500BD16EB /* UUID.swift in Sources */,
+				BE5B1D031F28C1FC00BD16EB /* Row.swift in Sources */,
 				BE1E73931F24358600B05DFA /* TestDB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -407,6 +422,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE5B1D061F28C25800BD16EB /* RowTests.swift in Sources */,
 				BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */,
 				BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */,
 				BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */,
