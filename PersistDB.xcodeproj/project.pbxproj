@@ -17,6 +17,7 @@
 		BE1E73911F24356300B05DFA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73901F24355C00B05DFA /* XCTest.framework */; };
 		BE1E73931F24358600B05DFA /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1E73921F24358600B05DFA /* TestDB.swift */; };
 		BE1E73941F2435DA00B05DFA /* PersistTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73871F24351E00B05DFA /* PersistTest.framework */; };
+		BE5B1D011F28BEE500BD16EB /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D001F28BEE500BD16EB /* UUID.swift */; };
 		BE7740E21EFFDC4E00D1F5A5 /* SQL.ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */; };
 		BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */; };
 		BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740DD1EFFDC4500D1F5A5 /* SQLTests.swift */; };
@@ -64,6 +65,7 @@
 		BE1E738A1F24351E00B05DFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE1E73901F24355C00B05DFA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		BE1E73921F24358600B05DFA /* TestDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDB.swift; sourceTree = "<group>"; };
+		BE5B1D001F28BEE500BD16EB /* UUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
 		BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Insert.swift; sourceTree = "<group>"; };
 		BE7740D71EFFDC3800D1F5A5 /* SQL.SortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.SortDescriptor.swift; sourceTree = "<group>"; };
 		BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Expression.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			children = (
 				BE1E73891F24351E00B05DFA /* PersistTest.h */,
 				BE1E73921F24358600B05DFA /* TestDB.swift */,
+				BE5B1D001F28BEE500BD16EB /* UUID.swift */,
 				BE1E738A1F24351E00B05DFA /* Info.plist */,
 			);
 			path = PersistTest;
@@ -376,6 +379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE5B1D011F28BEE500BD16EB /* UUID.swift in Sources */,
 				BE1E73931F24358600B05DFA /* TestDB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -672,6 +676,7 @@
 				BE1E738E1F24351F00B05DFA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BE89D5F01EBE3A0100CEC4D1 /* Build configuration list for PBXProject "PersistDB" */ = {
 			isa = XCConfigurationList;
