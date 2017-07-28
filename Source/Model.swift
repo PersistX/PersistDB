@@ -44,7 +44,7 @@ extension AnyProperty {
 }
 
 public protocol Model: Schemata.Model {
-    associatedtype ID
+    associatedtype ID: ModelValue
     
     var id: ID { get }
 }
