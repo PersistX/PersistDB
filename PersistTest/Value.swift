@@ -18,6 +18,16 @@ extension TestStore {
     }
 }
 
+extension TestStore.AnyValue: Hashable {
+    var hashValue: Int {
+        return keyPath.hashValue ^ value.hashValue
+    }
+    
+    static func ==(lhs: TestStore.AnyValue, rhs: TestStore.AnyValue) -> Bool {
+        return lhs.keyPath == rhs.keyPath && lhs.value == rhs.value
+    }
+}
+
 public func ==<Model: PersistDB.Model, Value: ModelValue>(
     keyPath: KeyPath<Model, Value>,
     value: Value
