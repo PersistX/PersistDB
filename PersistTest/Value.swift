@@ -2,11 +2,11 @@ import PersistDB
 import Schemata
 
 extension TestStore {
-    public struct Value {
-        internal let keyPath: AnyKeyPath
+    public struct Value<Model: PersistDB.Model> {
+        internal let keyPath: PartialKeyPath<Model>
         internal let value: Primitive
         
-        internal init<Model: PersistDB.Model, Value: ModelValue>(
+        internal init<Value: ModelValue>(
             keyPath: KeyPath<Model, Value>,
             value: Value
         ) {
@@ -19,7 +19,7 @@ extension TestStore {
 public func ==<Model: PersistDB.Model, Value: ModelValue>(
     keyPath: KeyPath<Model, Value>,
     value: Value
-) -> TestStore.Value {
+) -> TestStore.Value<Model> {
     return TestStore.Value(keyPath: keyPath, value: value)
 }
 
