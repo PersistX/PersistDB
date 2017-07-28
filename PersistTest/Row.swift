@@ -1,6 +1,6 @@
 import Foundation
 
-extension TestDB {
+extension TestStore {
     public struct Row {
         
     }

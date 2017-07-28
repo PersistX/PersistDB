@@ -1,5 +1,5 @@
 import PersistDB
 
-public final class TestDB {
+public final class TestStore {
     
 }
