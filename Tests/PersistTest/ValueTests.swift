@@ -16,5 +16,11 @@ class TestStoreValueTests: XCTestCase {
         XCTAssertEqual(value.keyPath, \Book.title)
         XCTAssertEqual(value.value, .string("Ubik"))
     }
+    
+    func testEqualsOptionalCreatesValue() {
+        let value: TestStore.Value = \Author.died == nil
+        XCTAssertEqual(value.keyPath, \Author.died)
+        XCTAssertEqual(value.value, .null)
+    }
 }
 

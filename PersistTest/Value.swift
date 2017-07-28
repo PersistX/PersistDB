@@ -40,3 +40,13 @@ public func ==<Model: PersistDB.Model, Value: ModelValue>(
     )
 }
 
+public func ==<Model: PersistDB.Model, Value: ModelValue>(
+    keyPath: KeyPath<Model, Value?>,
+    value: Value?
+) -> TestStore.Value<Model> {
+    return TestStore.Value(
+        keyPath: keyPath,
+        value: value.map(Value.anyValue.encode) ?? .null
+    )
+}
+
