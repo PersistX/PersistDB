@@ -2,6 +2,16 @@ import PersistDB
 import Schemata
 
 extension TestStore {
+    internal struct AnyValue {
+        internal let keyPath: AnyKeyPath
+        internal let value: Primitive
+        
+        internal init<M>(_ value: Value<M>) {
+            self.keyPath = value.keyPath
+            self.value = value.value
+        }
+    }
+    
     public struct Value<Model: PersistDB.Model> {
         internal let keyPath: PartialKeyPath<Model>
         internal let value: Primitive

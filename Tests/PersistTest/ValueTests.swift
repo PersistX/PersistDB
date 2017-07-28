@@ -2,6 +2,14 @@
 import Schemata
 import XCTest
 
+class TestStoreAnyValueTests: XCTestCase {
+    func testInit() {
+        let value = TestStore.AnyValue(\Book.title == "Ubik")
+        XCTAssertEqual(value.keyPath, \Book.title)
+        XCTAssertEqual(value.value, .string("Ubik"))
+    }
+}
+
 class TestStoreValueTests: XCTestCase {
     func testEqualsCreatesValue() {
         let value: TestStore.Value = \Book.title == "Ubik"
