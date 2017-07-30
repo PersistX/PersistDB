@@ -15,7 +15,7 @@
 		BE1E738B1F24351F00B05DFA /* PersistTest.h in Headers */ = {isa = PBXBuildFile; fileRef = BE1E73891F24351E00B05DFA /* PersistTest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE1E738F1F24355700B05DFA /* PersistDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */; };
 		BE1E73911F24356300B05DFA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73901F24355C00B05DFA /* XCTest.framework */; };
-		BE1E73931F24358600B05DFA /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1E73921F24358600B05DFA /* TestDB.swift */; };
+		BE1E73931F24358600B05DFA /* TestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1E73921F24358600B05DFA /* TestStore.swift */; };
 		BE1E73941F2435DA00B05DFA /* PersistTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73871F24351E00B05DFA /* PersistTest.framework */; };
 		BE5B1D011F28BEE500BD16EB /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D001F28BEE500BD16EB /* UUID.swift */; };
 		BE5B1D031F28C1FC00BD16EB /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D021F28C1FC00BD16EB /* Row.swift */; };
@@ -71,7 +71,7 @@
 		BE1E73891F24351E00B05DFA /* PersistTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistTest.h; sourceTree = "<group>"; };
 		BE1E738A1F24351E00B05DFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE1E73901F24355C00B05DFA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		BE1E73921F24358600B05DFA /* TestDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDB.swift; sourceTree = "<group>"; };
+		BE1E73921F24358600B05DFA /* TestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStore.swift; sourceTree = "<group>"; };
 		BE5B1D001F28BEE500BD16EB /* UUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
 		BE5B1D021F28C1FC00BD16EB /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		BE5B1D051F28C25800BD16EB /* RowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTests.swift; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 				BE5B1D0B1F28C36500BD16EB /* Extensions */,
 				BE1E73891F24351E00B05DFA /* PersistTest.h */,
 				BE5B1D021F28C1FC00BD16EB /* Row.swift */,
-				BE1E73921F24358600B05DFA /* TestDB.swift */,
+				BE1E73921F24358600B05DFA /* TestStore.swift */,
 				BE5B1D071F28C31E00BD16EB /* Value.swift */,
 				BE1E738A1F24351E00B05DFA /* Info.plist */,
 			);
@@ -426,7 +426,7 @@
 				BE5B1D101F28C3D000BD16EB /* DateTests.swift in Sources */,
 				BE5B1D0D1F28C39A00BD16EB /* Date.swift in Sources */,
 				BE5B1D031F28C1FC00BD16EB /* Row.swift in Sources */,
-				BE1E73931F24358600B05DFA /* TestDB.swift in Sources */,
+				BE1E73931F24358600B05DFA /* TestStore.swift in Sources */,
 				BE5B1D081F28C31E00BD16EB /* Value.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
