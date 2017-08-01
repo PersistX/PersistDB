@@ -8,3 +8,13 @@ public struct SortDescriptor<Model: PersistDB.Model> {
         self.ascending = ascending
     }
 }
+
+extension SortDescriptor: Hashable {
+    public var hashValue: Int {
+        return keyPath.hashValue
+    }
+    
+    public static func ==(lhs: SortDescriptor, rhs: SortDescriptor) -> Bool {
+        return lhs.keyPath == rhs.keyPath && lhs.ascending == rhs.ascending
+    }
+}
