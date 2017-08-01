@@ -18,6 +18,7 @@
 		BE1E73931F24358600B05DFA /* TestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1E73921F24358600B05DFA /* TestStore.swift */; };
 		BE1E73941F2435DA00B05DFA /* PersistTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1E73871F24351E00B05DFA /* PersistTest.framework */; };
 		BE5AD1CB1F2E5C860055BF9F /* TestStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */; };
+		BE5AD1CD1F30AADB0055BF9F /* SortDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5AD1CC1F30AADB0055BF9F /* SortDescriptor.swift */; };
 		BE5B1D011F28BEE500BD16EB /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D001F28BEE500BD16EB /* UUID.swift */; };
 		BE5B1D031F28C1FC00BD16EB /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D021F28C1FC00BD16EB /* Row.swift */; };
 		BE5B1D061F28C25800BD16EB /* RowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5B1D051F28C25800BD16EB /* RowTests.swift */; };
@@ -74,6 +75,7 @@
 		BE1E73901F24355C00B05DFA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		BE1E73921F24358600B05DFA /* TestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStore.swift; sourceTree = "<group>"; };
 		BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStoreTests.swift; sourceTree = "<group>"; };
+		BE5AD1CC1F30AADB0055BF9F /* SortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortDescriptor.swift; sourceTree = "<group>"; };
 		BE5B1D001F28BEE500BD16EB /* UUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
 		BE5B1D021F28C1FC00BD16EB /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		BE5B1D051F28C25800BD16EB /* RowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTests.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 				BE1DC6071EE3B34800A0671F /* Predicate.swift */,
 				BEC1C23E1F1DA61800D29EFF /* Primitive.swift */,
 				BE1DC6031EE3AC9400A0671F /* Query.swift */,
+				BE5AD1CC1F30AADB0055BF9F /* SortDescriptor.swift */,
 				BEBEB06C1EBEADAA00522152 /* Store.swift */,
 				BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */,
 				BE89D5FA1EBE3A0100CEC4D1 /* Info.plist */,
@@ -438,6 +441,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE5AD1CD1F30AADB0055BF9F /* SortDescriptor.swift in Sources */,
 				BE7740EA1EFFDC5500D1F5A5 /* SQL.Schema.swift in Sources */,
 				BE7740E81EFFDC5500D1F5A5 /* SQL.Insert.swift in Sources */,
 				BE7740E91EFFDC5500D1F5A5 /* SQL.Query.swift in Sources */,
