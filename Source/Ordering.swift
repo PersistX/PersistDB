@@ -1,5 +1,5 @@
-/// A sort order that can be applied to a list of models.
-public struct SortDescriptor<Model: PersistDB.Model> {
+/// An ordering that can be applied to a list of models.
+public struct Ordering<Model: PersistDB.Model> {
     public let keyPath: PartialKeyPath<Model>
     public let ascending: Bool
     
@@ -9,12 +9,12 @@ public struct SortDescriptor<Model: PersistDB.Model> {
     }
 }
 
-extension SortDescriptor: Hashable {
+extension Ordering: Hashable {
     public var hashValue: Int {
         return keyPath.hashValue
     }
     
-    public static func ==(lhs: SortDescriptor, rhs: SortDescriptor) -> Bool {
+    public static func ==(lhs: Ordering, rhs: Ordering) -> Bool {
         return lhs.keyPath == rhs.keyPath && lhs.ascending == rhs.ascending
     }
 }

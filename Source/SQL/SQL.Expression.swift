@@ -120,14 +120,14 @@ extension SQL.Expression: InsertValueConvertible {
 }
 
 extension SQL.Expression {
-    /// An ascending sort descriptor.
-    internal var ascending: SQL.SortDescriptor {
-        return SQL.SortDescriptor(self, .ascending)
+    /// An ascending ordering.
+    internal var ascending: SQL.Ordering {
+        return SQL.Ordering(self, .ascending)
     }
     
-    /// A descending sort descriptor.
-    internal var descending: SQL.SortDescriptor {
-        return SQL.SortDescriptor(self, .descending)
+    /// A descending ordering.
+    internal var descending: SQL.Ordering {
+        return SQL.Ordering(self, .descending)
     }
 }
 

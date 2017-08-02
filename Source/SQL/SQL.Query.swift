@@ -88,7 +88,7 @@ extension SQL {
     internal struct Query {
         internal var results: [Result]
         internal var predicates: [Expression] = []
-        internal var order: [SortDescriptor] = []
+        internal var order: [Ordering] = []
     }
 }
 
@@ -111,19 +111,19 @@ extension SQL.Query {
     
     /// Sort the results of the query.
     ///
-    /// The first sort descriptor in the list will be the primary sort. This
+    /// The first ordering in the list will be the primary ordering. This
     /// supercedes previous sorting.
-    internal func sorted(by descriptors: [SQL.SortDescriptor]) -> SQL.Query {
+    internal func sorted(by orderings: [SQL.Ordering]) -> SQL.Query {
         var query = self
-        query.order = descriptors + query.order
+        query.order = orderings + query.order
         return query
     }
     
     /// Sort the results of the query.
     ///
-    /// The first sort descriptor in the list will be the primary sort. This
+    /// The first ordering in the list will be the primary ordering. This
     /// supercedes previous sorting.
-    internal func sorted(by descriptors: SQL.SortDescriptor...) -> SQL.Query {
+    internal func sorted(by descriptors: SQL.Ordering...) -> SQL.Query {
         return sorted(by: descriptors)
     }
     

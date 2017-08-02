@@ -9,11 +9,11 @@ class QueryTests: XCTestCase {
             .sort(by: \Author.born, ascending: true)
         
         let expected = [
-            SortDescriptor(keyPath: \Author.born, ascending: true),
-            SortDescriptor(keyPath: \Author.died, ascending: false),
+            Ordering(keyPath: \Author.born, ascending: true),
+            Ordering(keyPath: \Author.died, ascending: false),
         ]
         
         XCTAssertEqual(query.predicates, [\.name != "J.K. Rowling"])
-        XCTAssertEqual(query.sortDescriptors, expected)
+        XCTAssertEqual(query.order, expected)
     }
 }
