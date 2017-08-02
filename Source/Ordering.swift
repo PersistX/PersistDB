@@ -3,7 +3,7 @@ public struct Ordering<Model: PersistDB.Model> {
     public let keyPath: PartialKeyPath<Model>
     public let ascending: Bool
     
-    public init(keyPath: PartialKeyPath<Model>, ascending: Bool) {
+    public init(_ keyPath: PartialKeyPath<Model>, ascending: Bool = true) {
         self.keyPath = keyPath
         self.ascending = ascending
     }

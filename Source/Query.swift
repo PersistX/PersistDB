@@ -46,7 +46,7 @@ extension Query {
     ///              `b` and use `a` to break ties.
     public func sort(by keyPath: PartialKeyPath<Model>, ascending: Bool) -> Query {
         var result = self
-        let descriptor = Ordering(keyPath: keyPath, ascending: ascending)
+        let descriptor = Ordering(keyPath, ascending: ascending)
         result.order.insert(descriptor, at: 0)
         return result
     }
