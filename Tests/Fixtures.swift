@@ -65,6 +65,11 @@ extension Book: PersistDB.Model {
         \.title ~ "title",
         \.author ~ "author"
     )
+    
+    static let defaultOrder = [
+        Ordering(\Book.author.name),
+        Ordering(\Book.title),
+    ]
 }
 
 
@@ -126,6 +131,12 @@ extension Author: PersistDB.Model {
         \.died ~ "died",
         \.books ~ \Book.author
     )
+    
+    static let defaultOrder = [
+        Ordering(\Author.name),
+        Ordering(\Author.born),
+        Ordering(\Author.died),
+    ]
 }
 
 // MARK: - Widget
@@ -143,4 +154,8 @@ extension Widget: PersistDB.Model {
         \.date ~ "date",
         \.double ~ "double"
     )
+    
+    static let defaultOrder = [
+        Ordering(\Widget.date)
+    ]
 }

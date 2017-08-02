@@ -47,6 +47,8 @@ public protocol Model: Schemata.Model {
     associatedtype ID: ModelValue
     
     var id: ID { get }
+    
+    static var defaultOrder: [Ordering<Self>] { get }
 }
 
 extension Model {
