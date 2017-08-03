@@ -6,7 +6,7 @@ class QueryTests: XCTestCase {
         let query = Author.all
             .filter(\Author.name != "J.K. Rowling")
             .sort(by: \Author.died, ascending: false)
-            .sort(by: \Author.born, ascending: true)
+            .sort(by: \Author.born)
         
         let expected = [
             Ordering(\Author.born),
