@@ -12,6 +12,10 @@ public final class TestStore {
     public init(_ rows: Row...) {
         data = Dictionary(uniqueKeysWithValues: rows.map { (ID(type: $0.type, id: $0.id), $0.values) })
     }
+    
+    public func query<Model>(_ query: Query<Model>) -> [Model.ID] {
+        return []
+    }
 }
 
 extension TestStore.ID: Hashable {
