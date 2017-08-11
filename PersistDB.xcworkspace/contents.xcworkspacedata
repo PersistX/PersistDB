@@ -8,6 +8,9 @@
       location = "group:Carthage/Checkouts/Schemata/Schemata.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Carthage/Checkouts/ReactiveSwift/ReactiveSwift.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:PersistDB.xcodeproj">
    </FileRef>
 </Workspace>

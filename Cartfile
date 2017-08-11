@@ -1,2 +1,3 @@
 github "PersistX/Schemata" "master"
+github "ReactiveCocoa/ReactiveSwift" ~> 2.0
 

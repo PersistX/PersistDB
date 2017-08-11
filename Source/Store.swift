@@ -1,4 +1,5 @@
 import Foundation
+import ReactiveSwift
 import Result
 import Schemata
 
@@ -13,7 +14,7 @@ public final class Store {
 extension Store {
     func fetch<Model, Value>(
         _ query: Query<Model>
-    ) -> Result<Projection<Model, Value>, NoError> {
+    ) -> SignalProducer<Projection<Model, Value>, NoError> {
         fatalError()
     }
 }
