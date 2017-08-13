@@ -24,7 +24,7 @@ extension SQL {
     /// A SQL expression.
     internal indirect enum Expression {
         case binary(BinaryOperator, Expression, Expression)
-        case column(Table, String)
+        case column(Column)
         case exists(Query)
         case function(Function, [Expression])
         case inList(Expression, [Value])
@@ -38,8 +38,8 @@ extension SQL.Expression {
         switch self {
         case let .binary(op, lhs, rhs):
             return (lhs.sql + " " + SQL(op.rawValue) + " " + rhs.sql).parenthesized
-        case let .column(table, name):
-            return SQL("\"\(table.name)\".\"\(name)\"")
+        case let .column(column):
+            return column.sql
         case let .exists(query):
             return "EXISTS" + query.sql.parenthesized
         case let .function(function, arguments):
@@ -59,8 +59,8 @@ extension SQL.Expression {
         switch self {
         case let .binary(_, lhs, rhs):
             return lhs.tables.union(rhs.tables)
-        case let .column(table, _):
-            return [table]
+        case let .column(column):
+            return [column.table]
         case let .function(_, exprs):
             return exprs.reduce(Set()) { $0.union($1.tables) }
         case let .inList(expr, _), let .unary(_, expr):
@@ -76,8 +76,8 @@ extension SQL.Expression: Hashable {
         switch self {
         case let .binary(op, lhs, rhs):
             return op.hashValue ^ lhs.hashValue ^ rhs.hashValue
-        case let .column(table, name):
-            return table.hashValue ^ name.hashValue
+        case let .column(column):
+            return column.hashValue
         case let .exists(query):
             return query.hashValue
         case let .function(function, arguments):
@@ -95,8 +95,8 @@ extension SQL.Expression: Hashable {
         switch (lhs, rhs) {
         case let (.binary(op1, lhs1, rhs1), .binary(op2, lhs2, rhs2)):
             return op1 == op2 && lhs1 == lhs2 && rhs1 == rhs2
-        case let (.column(table1, name1), .column(table2, name2)):
-            return table1 == table2 && name1 == name2
+        case let (.column(lhs), .column(rhs)):
+            return lhs == rhs
         case let (.exists(query1), .exists(query2)):
             return query1 == query2
         case let (.function(function1, args1), .function(function2, args2)):

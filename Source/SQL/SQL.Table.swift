@@ -12,7 +12,7 @@ extension SQL {
         }
         
         internal subscript(_ name: String) -> Expression {
-            return .column(self, name)
+            return .column(SQL.Column(table: self, name: name))
         }
     }
 }
