@@ -48,6 +48,7 @@
 		BE9D8B291F3DF69500DB1C42 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D8B281F3DF69500DB1C42 /* ReactiveSwift.framework */; };
 		BEA083D51F3FE92B002AB2C1 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA083D41F3FE92B002AB2C1 /* Expression.swift */; };
 		BEA083D71F3FE977002AB2C1 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA083D61F3FE977002AB2C1 /* ExpressionTests.swift */; };
+		BEA083D81F40C3F9002AB2C1 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D8B281F3DF69500DB1C42 /* ReactiveSwift.framework */; };
 		BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBEB06C1EBEADAA00522152 /* Store.swift */; };
 		BEC1C23F1F1DA61800D29EFF /* Primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC1C23E1F1DA61800D29EFF /* Primitive.swift */; };
 		BEC1C2411F1DA64400D29EFF /* PrimitiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC1C2401F1DA64400D29EFF /* PrimitiveTests.swift */; };
@@ -142,6 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEA083D81F40C3F9002AB2C1 /* ReactiveSwift.framework in Frameworks */,
 				BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */,
 				BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */,
 				BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */,

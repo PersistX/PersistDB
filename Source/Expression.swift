@@ -1,4 +1,5 @@
 import Foundation
+import ReactiveSwift
 import Schemata
 
 /// An expression that can be used in `Predicate`s, `Ordering`s, etc.
@@ -23,5 +24,11 @@ extension Expression: Hashable {
 extension Expression where Value: ModelValue {
     public init(_ value: Value) {
         sql = .value(Value.anyValue.encode(value).sql)
+    }
+}
+
+extension Expression where Value: OptionalProtocol, Value.Wrapped: ModelValue {
+    public init(_ value: Value?) {
+        sql = .value(value.map(Value.Wrapped.anyValue.encode)?.sql ?? .null)
     }
 }
