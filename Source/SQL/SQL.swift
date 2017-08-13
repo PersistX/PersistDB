@@ -2,7 +2,7 @@ import Foundation
 
 extension SQL {
     /// A SQL value to a SQL statement
-    public enum Value {
+    internal enum Value {
         /// An integer value
         case integer(Int)
         
@@ -22,7 +22,7 @@ extension SQL {
 }
 
 extension SQL.Value: CustomStringConvertible {
-    public var description: String {
+    internal var description: String {
         switch self {
         case let .integer(value):
             return value.description
@@ -37,7 +37,7 @@ extension SQL.Value: CustomStringConvertible {
 }
 
 extension SQL.Value: Hashable {
-    public var hashValue: Int {
+    internal var hashValue: Int {
         switch self {
         case let .integer(value):
             return value.hashValue
@@ -50,7 +50,7 @@ extension SQL.Value: Hashable {
         }
     }
 
-    public static func ==(lhs: SQL.Value, rhs: SQL.Value) -> Bool {
+    internal static func ==(lhs: SQL.Value, rhs: SQL.Value) -> Bool {
         switch (lhs, rhs) {
         case let (.integer(left), .integer(right)):
             return left == right
@@ -67,21 +67,21 @@ extension SQL.Value: Hashable {
 }
 
 extension SQL.Value: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
+    internal init(stringLiteral value: String) {
         self = .text(value)
     }
     
-    public init(unicodeScalarLiteral value: String) {
+    internal init(unicodeScalarLiteral value: String) {
         self = .text(value)
     }
     
-    public init(extendedGraphemeClusterLiteral value: String) {
+    internal init(extendedGraphemeClusterLiteral value: String) {
         self = .text(value)
     }
 }
 
 extension SQL.Value: ExpressibleByIntegerLiteral {
-    public init(integerLiteral value: Int) {
+    internal init(integerLiteral value: Int) {
         self = .integer(value)
     }
 }
@@ -118,15 +118,15 @@ public struct SQL {
     public private(set) var sql: String
     
     /// The parameters to the SQL statement.
-    public private(set) var parameters: [SQL.Value]
+    internal private(set) var parameters: [SQL.Value]
     
-    public init(_ sql: String, parameters: [SQL.Value]) {
+    internal init(_ sql: String, parameters: [SQL.Value]) {
         precondition(sql.placeholders.count == parameters.count)
         self.sql = sql
         self.parameters = parameters
     }
     
-    public init(_ sql: String, parameters: SQL.Value...) {
+    internal init(_ sql: String, parameters: SQL.Value...) {
         self.init(sql, parameters: parameters)
     }
     
