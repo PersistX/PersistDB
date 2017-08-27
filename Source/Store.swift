@@ -12,9 +12,9 @@ public final class Store {
 }
 
 extension Store {
-    func fetch<Model, Value>(
-        _ query: Query<Model>
-    ) -> SignalProducer<Projection<Model, Value>, NoError> {
+    func fetch<Projection: ModelProjection>(
+        _ query: Query<Projection.Model>
+    ) -> SignalProducer<Projection, NoError> {
         fatalError()
     }
 }
