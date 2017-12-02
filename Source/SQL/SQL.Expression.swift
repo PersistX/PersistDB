@@ -28,6 +28,7 @@ extension SQL {
         case exists(Query)
         case function(Function, [Expression])
         case inList(Expression, [Value])
+        case join(Column, Column, Expression)
         case unary(UnaryOperator, Expression)
         case value(Value)
     }
@@ -48,6 +49,8 @@ extension SQL.Expression {
         case let .inList(expr, values):
             let vs = values.map { $0.sql }.joined(separator: ",")
             return "(" + expr.sql + " IN (" + vs + "))"
+        case let .join(_, _, expr):
+            return expr.sql
         case let .unary(op, expr):
             return (SQL(op.rawValue) + " " + expr.sql).parenthesized
         case let .value(value):
@@ -55,19 +58,47 @@ extension SQL.Expression {
         }
     }
     
-    var tables: Set<SQL.Table> {
+    private var expressions: Set<SQL.Expression> {
         switch self {
         case let .binary(_, lhs, rhs):
-            return lhs.tables.union(rhs.tables)
-        case let .column(column):
-            return [column.table]
+            return lhs.expressions
+                .union(rhs.expressions)
+                .union([self])
+        case .column,
+             .exists,
+             .value:
+            return [self]
         case let .function(_, exprs):
-            return exprs.reduce(Set()) { $0.union($1.tables) }
-        case let .inList(expr, _), let .unary(_, expr):
-            return expr.tables
-        case .exists, .value:
-            return []
+            return exprs.reduce([self]) { $0.union($1.expressions) }
+        case let .inList(expr, _),
+             let .unary(_, expr),
+             let .join(_, _, expr):
+            return expr.expressions.union([self])
         }
+    }
+    
+    var joins: Set<SQL.Expression> {
+        var result: Set<SQL.Expression> = []
+        for case let .join(a, b, _) in expressions {
+            result.insert(.binary(.equal, .column(a), .column(b)))
+        }
+        return result
+    }
+    
+    var tables: Set<SQL.Table> {
+        var result: Set<SQL.Table> = []
+        for expr in expressions {
+            switch expr {
+            case let .column(column):
+                result.insert(column.table)
+            case let .join(a, b, _):
+                result.insert(a.table)
+                result.insert(b.table)
+            case .binary, .exists, .function, .inList, .unary, .value:
+                break
+            }
+        }
+        return result
     }
 }
 
@@ -84,6 +115,8 @@ extension SQL.Expression: Hashable {
             return function.hashValue + arguments.reduce(0) { $0 ^ $1.hashValue }
         case let .inList(expr, values):
             return expr.hashValue ^ values.reduce(0) { $0 ^ $1.hashValue }
+        case let .join(left, right, expr):
+            return left.hashValue ^ right.hashValue ^ expr.hashValue
         case let .unary(op, expr):
             return op.hashValue ^ expr.hashValue
         case let .value(value):
@@ -103,6 +136,8 @@ extension SQL.Expression: Hashable {
             return function1 == function2 && args1 == args2
         case let (.inList(expr1, values1), .inList(expr2, values2)):
             return expr1 == expr2 && values1 == values2
+        case let (.join(left1, right1, expr1), .join(left2, right2, expr2)):
+            return left1 == left2 && right1 == right2 && expr1 == expr2
         case let (.unary(op1, expr1), .unary(op2, expr2)):
             return op1 == op2 && expr1 == expr2
         case let (.value(value1), .value(value2)):

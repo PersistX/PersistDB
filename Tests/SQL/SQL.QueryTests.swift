@@ -242,6 +242,52 @@ class SQLQueryTests: XCTestCase {
         )
     }
     
+    // MARK: - Joins
+    
+    func testJoin() {
+        let join = SQL.Expression.join(
+            SQL.Column(table: Book.table, name: "author"),
+            SQL.Column(table: Author.table, name: "id"),
+            Author.Table.name == .value(.text(Author.jrrTolkien.name))
+        )
+        let query = SQL.Query
+            .select([ .wildcard(Book.table) ])
+            .where(join)
+    
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set(Book.byJRRTolkien)
+        )
+    }
+    
+    func testSortJoin() {
+        let join = SQL.Expression.join(
+            SQL.Column(table: Book.table, name: "author"),
+            SQL.Column(table: Author.table, name: "id"),
+            .column(SQL.Column(table: Author.table, name: "name"))
+        )
+        let query = SQL.Query
+            .select([ .wildcard(Book.table) ])
+            .sorted(by:
+                join.ascending,
+                Book.Table.title.ascending
+            )
+        
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            db.query(query),
+            [
+                Book.theHobbit.row,
+                Book.theLordOfTheRings.row,
+                Book.childrenOfTheMind.row,
+                Book.endersGame.row,
+                Book.speakerForTheDead.row,
+                Book.xenocide.row,
+            ]
+        )
+    }
+    
     // MARK: - Collections
     
     func testContains() {

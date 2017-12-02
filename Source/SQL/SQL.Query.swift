@@ -131,7 +131,8 @@ extension SQL.Query {
     private var tables: Set<SQL.Table> {
         let results = self.results.map { $0.tables }
         let predicates = self.predicates.map { $0.tables }
-        return (results + predicates).reduce(Set()) { $0.union($1) }
+        let order = self.order.map { $0.expression.tables }
+        return (results + predicates + order).reduce(Set()) { $0.union($1) }
     }
     
     /// The SQL for this query.
@@ -140,6 +141,10 @@ extension SQL.Query {
         let tables = self.tables.map { "\"\($0.name)\"" }.joined(separator: ", ")
         
         let whereSQL: SQL
+        let predicates
+            = self.predicates
+            + self.predicates.flatMap { $0.joins }
+            + self.order.flatMap { $0.expression.joins }
         if predicates.isEmpty {
             whereSQL = SQL()
         } else {
