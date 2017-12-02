@@ -99,7 +99,7 @@ extension String {
     )
     
     internal var placeholders: IndexSet {
-        let range = NSRange(location: 0, length: self.characters.count)
+        let range = NSRange(location: 0, length: count)
         let matches = String.PlaceholderRegex.matches(in: self, range: range)
         var result = IndexSet()
         for match in matches {
@@ -136,10 +136,10 @@ public struct SQL {
     
     /// A textual representation of self, suitable for debugging.
     public var debugDescription: String {
-        var result = sql.characters
+        var result = sql
         var offset = 0
         for (index, parameter) in zip(sql.placeholders, parameters) {
-            let replacement = parameter.description.characters
+            let replacement = parameter.description
             let adjusted = result.index(result.startIndex, offsetBy: index + offset)
             result.replaceSubrange(adjusted...adjusted, with: replacement)
             
