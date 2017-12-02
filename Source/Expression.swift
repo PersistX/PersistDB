@@ -6,7 +6,7 @@ import Schemata
 public struct Expression<Model: PersistDB.Model, Value> {
     internal let sql: SQL.Expression
     
-    fileprivate init(sql: SQL.Expression) {
+    fileprivate init(_ sql: SQL.Expression) {
         self.sql = sql
     }
 }
