@@ -5,7 +5,7 @@ import Schemata
 public struct Predicate<Model: PersistDB.Model> {
     internal let sql: SQL.Expression
     
-    fileprivate init(sql: SQL.Expression) {
+    fileprivate init(_ sql: SQL.Expression) {
         self.sql = sql
     }
 }
@@ -20,71 +20,65 @@ extension Predicate: Hashable {
     }
 }
 
-extension Predicate {
-    fileprivate init<Model: PersistDB.Model, Value>(
-        keyPath: KeyPath<Model, Value>,
-        test: (SQL.Expression) -> SQL.Expression
-    ) {
-        self.sql = Model.schema
-            .properties(for: keyPath)
-            .map { property -> SQL.Expression in
-                let lhsTable = SQL.Table(String(describing: property.model))
-                switch property.type {
-                case .toMany:
-                    fatalError()
-                case let .toOne(model):
-                    return lhsTable[property.path] == SQL.Table(String(describing: model))["id"]
-                case .value:
-                    return test(lhsTable[property.path])
-                }
+extension KeyPath where Root: PersistDB.Model {
+    var sql: SQL.Expression {
+        func column(for property: AnyProperty) -> SQL.Column {
+            return SQL.Table(String(describing: property.model))[property.path]
+        }
+        
+        let properties = Root.schema.properties(for: self)
+        var value: SQL.Expression = .column(column(for: properties.last!))
+        for property in properties.reversed().dropFirst() {
+            switch property.type {
+            case .toMany:
+                fatalError()
+            case let .toOne(model):
+                let rhs = SQL.Column(
+                    table: SQL.Table(String(describing: model)),
+                    name: "id"
+                )
+                value = .join(column(for: property), rhs, value)
+            case .value:
+                fatalError()
             }
-            .reduce(nil) { result, expression -> SQL.Expression in
-                return result.map { $0 && expression } ?? expression
-            }!
+        }
+        return value
     }
 }
 
 /// Test that a property of the model matches a value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(keyPath: lhs) {
-        return $0 == .value(Value.anyValue.encode(rhs).sql)
-    }
+    return Predicate(lhs.sql == .value(Value.anyValue.encode(rhs).sql))
 }
 
 /// Test that a property of the model matches an optional value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(keyPath: lhs) {
-        return $0 == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null)
-    }
+    return Predicate(lhs.sql == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
 }
 
 /// Test that a property of the model doesn't matches a value.
 public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(keyPath: lhs) {
-        return $0 != .value(Value.anyValue.encode(rhs).sql)
-    }
+    return Predicate(lhs.sql != .value(Value.anyValue.encode(rhs).sql))
 }
 
 /// Test that a property of the model doesn't matches an optional value.
 public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(keyPath: lhs) {
-        return $0 != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null)
-    }
+    return Predicate(lhs.sql != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
 }
 
 extension Predicate {
     /// Creates a predicate that's true when both predicates are true.
     public static func &&(lhs: Predicate, rhs: Predicate) -> Predicate {
-        return Predicate(sql: lhs.sql && rhs.sql)
+        return Predicate(lhs.sql && rhs.sql)
     }
     
     /// Creates a predicate that's true when either predicates is true.
     public static func ||(lhs: Predicate, rhs: Predicate) -> Predicate {
-        return Predicate(sql: lhs.sql || rhs.sql)
+        return Predicate(lhs.sql || rhs.sql)
     }
     
     /// Creates a predicate that's true when the given predicate is false.
     public static prefix func !(predicate: Predicate) -> Predicate {
-        return Predicate(sql: !predicate.sql)
+        return Predicate(!predicate.sql)
     }
 }

@@ -11,8 +11,8 @@ extension SQL {
             self.name = name
         }
         
-        internal subscript(_ name: String) -> Expression {
-            return .column(SQL.Column(table: self, name: name))
+        internal subscript(_ name: String) -> SQL.Column {
+            return SQL.Column(table: self, name: name)
         }
     }
 }

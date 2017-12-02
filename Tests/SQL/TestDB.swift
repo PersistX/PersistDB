@@ -32,10 +32,10 @@ extension Author.ID {
 
 extension Author {
     enum Table {
-        static let id = Author.table["id"]
-        static let name = Author.table["name"]
-        static let born = Author.table["born"]
-        static let died = Author.table["died"]
+        static let id = SQL.Expression.column(Author.table["id"])
+        static let name = SQL.Expression.column(Author.table["name"])
+        static let born = SQL.Expression.column(Author.table["born"])
+        static let died = SQL.Expression.column(Author.table["died"])
     }
     
     struct Data {
@@ -88,9 +88,9 @@ extension Book.ISBN {
 
 extension Book {
     enum Table {
-        static let id = Book.table["id"]
-        static let author = Book.table["author"]
-        static let title = Book.table["title"]
+        static let id = SQL.Expression.column(Book.table["id"])
+        static let author = SQL.Expression.column(Book.table["author"])
+        static let title = SQL.Expression.column(Book.table["title"])
     }
     
     struct Data {
