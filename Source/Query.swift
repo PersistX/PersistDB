@@ -44,9 +44,21 @@ extension Query {
     /// - important: Orderings are inserted into the beginning of the array.
     ///              `.sort(by: \.a, ascending: true).sort(by: \.b, ascending: true)` will sort by
     ///              `b` and use `a` to break ties.
-    public func sort(by keyPath: PartialKeyPath<Model>, ascending: Bool = true) -> Query {
+    public func sort<Value>(by keyPath: KeyPath<Model, Value>, ascending: Bool = true) -> Query {
         var result = self
         let descriptor = Ordering(keyPath, ascending: ascending)
+        result.order.insert(descriptor, at: 0)
+        return result
+    }
+    
+    /// Returns a query that is sorted by the given expression.
+    ///
+    /// - important: Orderings are inserted into the beginning of the array.
+    ///              `.sort(by: \.a, ascending: true).sort(by: \.b, ascending: true)` will sort by
+    ///              `b` and use `a` to break ties.
+    public func sort<Value>(by expression: Expression<Model, Value>, ascending: Bool = true) -> Query {
+        var result = self
+        let descriptor = Ordering<Model>(expression.sql, ascending: ascending)
         result.order.insert(descriptor, at: 0)
         return result
     }
