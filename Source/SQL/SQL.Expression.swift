@@ -17,6 +17,7 @@ extension SQL {
     }
 
     internal enum Function: String {
+        case coalesce = "COALESCE"
         case max = "MAX"
         case min = "MIN"
     }

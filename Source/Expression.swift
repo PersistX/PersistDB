@@ -32,3 +32,13 @@ extension Expression where Value: OptionalProtocol, Value.Wrapped: ModelValue {
         sql = .value(value.map(Value.Wrapped.anyValue.encode)?.sql ?? .null)
     }
 }
+
+/// Evaluates to the first non-NULL argument, or NULL if all argumnets are NULL.
+public func coalesce<Model: PersistDB.Model, Value>(
+    _ a: KeyPath<Model, Value?>,
+    _ b: KeyPath<Model, Value?>,
+    _ rest: KeyPath<Model, Value?>...
+) -> Expression<Model, Value?> {
+    let args = ([a, b] + rest).map { $0.sql }
+    return Expression(.function(.coalesce, args))
+}
