@@ -56,13 +56,33 @@ public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value
     return Predicate(lhs.sql == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
 }
 
-/// Test that a property of the model doesn't matches a value.
+/// Test that an expression matches a value.
+public func ==<Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
+    return Predicate(lhs.sql == .value(Value.anyValue.encode(rhs).sql))
+}
+
+/// Test that an expression matches an optional value.
+public func ==<Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
+    return Predicate(lhs.sql == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+}
+
+/// Test that a property of the model doesn't match a value.
 public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
     return Predicate(lhs.sql != .value(Value.anyValue.encode(rhs).sql))
 }
 
-/// Test that a property of the model doesn't matches an optional value.
+/// Test that a property of the model doesn't match an optional value.
 public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
+    return Predicate(lhs.sql != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+}
+
+/// Test that an expression doesn't matc a value.
+public func !=<Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
+    return Predicate(lhs.sql != .value(Value.anyValue.encode(rhs).sql))
+}
+
+/// Test that an expression doesn't match an optional value.
+public func !=<Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
     return Predicate(lhs.sql != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
 }
 
