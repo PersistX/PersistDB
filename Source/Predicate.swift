@@ -46,124 +46,136 @@ extension KeyPath where Root: PersistDB.Model {
     }
 }
 
+extension ModelValue {
+    fileprivate var sql: SQL.Expression {
+        return .value(Self.anyValue.encode(self).sql)
+    }
+}
+
+extension Optional where Wrapped: ModelValue {
+    fileprivate var sql: SQL.Expression {
+        return .value(map(Wrapped.anyValue.encode)?.sql ?? .null)
+    }
+}
+
 /// Test that a property of the model matches a value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql == .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql == rhs.sql)
 }
 
 /// Test that a property of the model matches an optional value.
 public func ==<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql == rhs.sql)
 }
 
 /// Test that an expression matches a value.
 public func ==<Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql == .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql == rhs.sql)
 }
 
 /// Test that an expression matches an optional value.
 public func ==<Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql == .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql == rhs.sql)
 }
 
 /// Test that a property of the model doesn't match a value.
 public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql != .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql != rhs.sql)
 }
 
 /// Test that a property of the model doesn't match an optional value.
 public func !=<Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql != rhs.sql)
 }
 
 /// Test that an expression doesn't matc a value.
 public func !=<Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql != .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql != rhs.sql)
 }
 
 /// Test that an expression doesn't match an optional value.
 public func !=<Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql != .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql != rhs.sql)
 }
 
 /// Test that a property of the model is less than a value.
 public func < <Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql < .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql < rhs.sql)
 }
 
 /// Test that a property of the model is less than an optional value.
 public func < <Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql < .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql < rhs.sql)
 }
 
 /// Test that an expression is less than a value.
 public func < <Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql < .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql < rhs.sql)
 }
 
 /// Test that an expression is less than an optional value.
 public func < <Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql < .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql < rhs.sql)
 }
 
 /// Test that a property of the model is greater than a value.
 public func > <Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql > .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql > rhs.sql)
 }
 
 /// Test that a property of the model is greater than an optional value.
 public func > <Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql > .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql > rhs.sql)
 }
 
 /// Test that an expression is greater than a value.
 public func > <Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql > .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql > rhs.sql)
 }
 
 /// Test that an expression is greater than an optional value.
 public func > <Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql > .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql > rhs.sql)
 }
 
 /// Test that a property of the model is less than or equal to a value.
 public func <= <Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql <= .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql <= rhs.sql)
 }
 
 /// Test that a property of the model is less than or equal to an optional value.
 public func <= <Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql <= .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql <= rhs.sql)
 }
 
 /// Test that an expression is less than or equal to a value.
 public func <= <Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql <= .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql <= rhs.sql)
 }
 
 /// Test that an expression is less than or equal to an optional value.
 public func <= <Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql <= .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql <= rhs.sql)
 }
 
 /// Test that a property of the model is greater than or equal to a value.
 public func >= <Model, Value: ModelValue>(lhs: KeyPath<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql >= .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql >= rhs.sql)
 }
 
 /// Test that a property of the model is greater than or equal to an optional value.
 public func >= <Model, Value: ModelValue>(lhs: KeyPath<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql >= .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql >= rhs.sql)
 }
 
 /// Test that an expression is greater than or equal to a value.
 public func >= <Model, Value: ModelValue>(lhs: Expression<Model, Value>, rhs: Value) -> Predicate<Model> {
-    return Predicate(lhs.sql >= .value(Value.anyValue.encode(rhs).sql))
+    return Predicate(lhs.sql >= rhs.sql)
 }
 
 /// Test that an expression is greater than or equal to an optional value.
 public func >= <Model, Value: ModelValue>(lhs: Expression<Model, Value?>, rhs: Value?) -> Predicate<Model> {
-    return Predicate(lhs.sql >= .value(rhs.map(Value.anyValue.encode)?.sql ?? .null))
+    return Predicate(lhs.sql >= rhs.sql)
 }
 
 extension Predicate {
