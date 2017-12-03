@@ -85,4 +85,28 @@ class PredicateTests: XCTestCase {
         let sql: SQL.Expression = !(.column(author["name"]) == .value(.text("J.K. Rowling")))
         XCTAssertEqual(predicate.sql, sql)
     }
+    
+    func test_sql_lessThan() {
+        let predicate = \Author.born < 1950
+        let sql: SQL.Expression = .column(author["born"]) < .value(.integer(1950))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_greaterThan() {
+        let predicate = \Author.born > 1950
+        let sql: SQL.Expression = .column(author["born"]) > .value(.integer(1950))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_lessThanOrEqual() {
+        let predicate = \Author.born <= 1950
+        let sql: SQL.Expression = .column(author["born"]) <= .value(.integer(1950))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
+    func test_sql_greaterThanOrEqual() {
+        let predicate = \Author.born >= 1950
+        let sql: SQL.Expression = .column(author["born"]) >= .value(.integer(1950))
+        XCTAssertEqual(predicate.sql, sql)
+    }
 }
