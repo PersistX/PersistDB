@@ -9,9 +9,11 @@ extension SQL {
         case and = "AND"
         case equal = "=="
         case greaterThan = ">"
+        case greaterThanOrEqual = ">="
         case `is` = "IS"
         case isNot = "IS NOT"
         case lessThan = "<"
+        case lessThanOrEqual = "<="
         case notEqual = "!="
         case or = "OR"
     }
@@ -207,6 +209,14 @@ internal func < (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
 
 internal func > (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
     return .binary(.greaterThan, lhs, rhs)
+}
+
+internal func <= (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
+    return .binary(.lessThanOrEqual, lhs, rhs)
+}
+
+internal func >= (lhs: SQL.Expression, rhs: SQL.Expression) -> SQL.Expression {
+    return .binary(.greaterThanOrEqual, lhs, rhs)
 }
 
 // MARK: - Aggregates

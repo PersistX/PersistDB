@@ -178,6 +178,28 @@ class SQLQueryTests: XCTestCase {
         )
     }
     
+    func testLessThanOrEqual() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(Author.Table.born <= .value(.integer(1892)))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.jrrTolkien.row])
+        )
+    }
+    
+    func testGreaterThanOrEqual() {
+        let query = SQL.Query
+            .select([ .wildcard(Author.table) ])
+            .where(Author.Table.born >= .value(.integer(1951)))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([Author.orsonScottCard.row])
+        )
+    }
+    
     // MARK: - Bool Operators
     
     func testOr() {
