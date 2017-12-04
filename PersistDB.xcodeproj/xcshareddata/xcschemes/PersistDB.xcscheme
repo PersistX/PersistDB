@@ -20,20 +20,6 @@
                ReferencedContainer = "container:PersistDB.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BE1E73861F24351E00B05DFA"
-               BuildableName = "PersistTest.framework"
-               BlueprintName = "PersistTest"
-               ReferencedContainer = "container:PersistDB.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
