@@ -15,6 +15,6 @@ extension Store {
     func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<Projection, NoError> {
-        fatalError()
+        return .empty
     }
 }
