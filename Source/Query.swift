@@ -32,6 +32,16 @@ extension Query: Hashable {
 }
 
 extension Query {
+    internal var sql: SQL.Query {
+        return SQL.Query(
+            results: [],
+            predicates: predicates.map { $0.sql },
+            order: order.map { $0.sql }
+        )
+    }
+}
+
+extension Query {
     /// Returns a query that is filtered by the given predicate.
     public func filter(_ predicate: Predicate<Model>) -> Query {
         var result = self

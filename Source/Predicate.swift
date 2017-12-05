@@ -20,7 +20,7 @@ extension Predicate: Hashable {
     }
 }
 
-extension KeyPath where Root: PersistDB.Model {
+extension PartialKeyPath where Root: PersistDB.Model {
     var sql: SQL.Expression {
         func column(for property: AnyProperty) -> SQL.Column {
             return SQL.Table(String(describing: property.model))[property.path]
