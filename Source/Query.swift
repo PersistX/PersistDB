@@ -58,7 +58,7 @@ extension Query {
     ///              `b` and use `a` to break ties.
     public func sort<Value>(by expression: Expression<Model, Value>, ascending: Bool = true) -> Query {
         var result = self
-        let descriptor = Ordering<Model>(expression.sql, ascending: ascending)
+        let descriptor = Ordering<Model>(SQL.Ordering(expression.sql, ascending ? .ascending : .descending))
         result.order.insert(descriptor, at: 0)
         return result
     }
