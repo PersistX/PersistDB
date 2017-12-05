@@ -66,6 +66,12 @@ class PredicateTests: XCTestCase {
         XCTAssertEqual(predicate.sql, sql)
     }
     
+    func test_sql_notEqual_nil() {
+        let predicate = \Author.died != nil
+        let sql: SQL.Expression = .binary(.isNot, .column(author["died"]), .value(.null))
+        XCTAssertEqual(predicate.sql, sql)
+    }
+    
     func test_sql_or() {
         let predicate = \Author.name == "J" || \Author.name == "K"
         let name = author["name"]

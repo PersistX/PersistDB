@@ -16,7 +16,11 @@ extension SQL {
         case text(String)
         
         internal var sql: SQL {
-            return SQL("?", parameters: self)
+            if self == .null {
+                return SQL("NULL")
+            } else {
+                return SQL("?", parameters: self)
+            }
         }
     }
 }

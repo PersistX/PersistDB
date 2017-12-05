@@ -20,6 +20,10 @@ class SQLValueTests: XCTestCase {
     func testStringLiteralConvertible() {
         XCTAssertEqual("A", SQL.Value.text("A"))
     }
+    
+    func testNullSQL() {
+        XCTAssertEqual(SQL.Value.null.sql, SQL("NULL"))
+    }
 }
 
 class StringTests: XCTestCase {
