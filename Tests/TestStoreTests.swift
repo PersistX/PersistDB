@@ -20,4 +20,12 @@ class TestStoreTests: XCTestCase {
         )
         XCTAssertEqual(store.fetch(query), [.theHobbit, theHobbit])
     }
+    
+    func testQueryWithImplicitlyNilColumn() {
+        let query = Author.all.filter(\Author.died == nil)
+        let store = TestStore(
+            [ .jrrTolkien: [ \Author.name == Author.jrrTolkien.name ]]
+        )
+        XCTAssertEqual(store.fetch(query), [.jrrTolkien])
+    }
 }

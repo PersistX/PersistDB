@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 extension AnyValue.Encoded {
-    fileprivate var sql: SQL.Schema.DataType {
+    internal var sql: SQL.Schema.DataType {
         switch self {
         case .date, .double:
             return .real

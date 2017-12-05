@@ -24,18 +24,19 @@ extension SQL.Insert {
 }
 
 extension SQL.Schema {
-    fileprivate init(_ rows: [TestStore.Row]) {
-        let table = rows[0].table
-        let columns: [SQL.Schema.Column] = rows
-            .flatMap { $0.values.keys }
-            .map { name in
+    fileprivate init<Model: PersistDB.Model>(_ schema: Schema<Model>) {
+        let table = SQL.Table(String(describing: Model.self))
+        let columns: [SQL.Schema.Column] = schema
+            .properties
+            .values
+            .flatMap { property in
+                guard case let .value(type, _) = property.type else { return nil }
                 return SQL.Schema.Column(
-                    name: name,
-                    // SQLite doesn't require values to match the column type, so this doesn't matter
-                    type: .text,
+                    name: property.path,
+                    type: type.anyValue.encoded.sql,
                     nullable: true,
                     unique: false,
-                    primaryKey: name == "id"
+                    primaryKey: property.path == "id"
                 )
             }
         
@@ -75,7 +76,7 @@ public final class TestStore {
     ) {
         let aRows = a.map(Row.init)
         self.init(
-            schemas: [SQL.Schema(aRows)],
+            schemas: [SQL.Schema(A.schema)],
             inserts: aRows.map(SQL.Insert.init)
         )
     }
