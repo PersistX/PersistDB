@@ -52,17 +52,19 @@ extension SQL {
     /// Something that can be used as a result in a SQL query.
     internal struct Result: Hashable {
         private let result: ResultType
+        private let alias: String?
         
         internal static func wildcard(_ table: Table) -> Result {
             return Result(.wildcard(table))
         }
         
-        private init(_ result: ResultType) {
+        private init(_ result: ResultType, alias: String? = nil) {
             self.result = result
+            self.alias = alias
         }
         
-        internal init(_ expression: Expression) {
-            self.init(.expression(expression))
+        internal init(_ expression: Expression, alias: String? = nil) {
+            self.init(.expression(expression), alias: alias)
         }
         
         var expression: SQL.Expression? {
@@ -75,6 +77,9 @@ extension SQL {
         }
         
         var sql: SQL {
+            if let alias = alias {
+                return result.sql + " AS '\(alias)'"
+            }
             return result.sql
         }
         
@@ -88,6 +93,10 @@ extension SQL {
         
         internal static func == (lhs: Result, rhs: Result) -> Bool {
             return lhs.result == rhs.result
+        }
+        
+        func `as`(_ alias: String) -> Result {
+            return Result(result, alias: alias)
         }
     }
 }

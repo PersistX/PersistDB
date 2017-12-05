@@ -86,6 +86,17 @@ class SQLQueryTests: XCTestCase {
         )
     }
     
+    func testSelectingWithAlias() {
+        let query = SQL.Query.select([ SQL.Result(Author.Table.name).as("foo") ])
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([
+                Row([ "foo": .text("Orson Scott Card") ]),
+                Row([ "foo": .text("J.R.R. Tolkien") ]),
+            ])
+        )
+    }
+    
     // MARK: - Generic Operators
     
     func testEqual() {
