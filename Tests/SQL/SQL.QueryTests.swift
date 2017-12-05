@@ -310,6 +310,25 @@ class SQLQueryTests: XCTestCase {
         )
     }
     
+    func testResultJoin() {
+        let join = SQL.Expression.join(
+            SQL.Column(table: Book.table, name: "author"),
+            SQL.Column(table: Author.table, name: "id"),
+            .column(SQL.Column(table: Author.table, name: "name"))
+        )
+        let query = SQL.Query
+            .select([ SQL.Result(join).as("authorName") ])
+            .where(Book.Table.title == .value(.text(Book.theHobbit.title)))
+        
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            db.query(query),
+            [
+                ["authorName": .text(Author.jrrTolkien.name)],
+            ]
+        )
+    }
+    
     // MARK: - Collections
     
     func testContains() {

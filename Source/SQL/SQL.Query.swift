@@ -65,6 +65,15 @@ extension SQL {
             self.init(.expression(expression))
         }
         
+        var expression: SQL.Expression? {
+            switch result {
+            case let .expression(expr):
+                return expr
+            case .wildcard:
+                return nil
+            }
+        }
+        
         var sql: SQL {
             return result.sql
         }
@@ -143,6 +152,7 @@ extension SQL.Query {
         let whereSQL: SQL
         let predicates
             = self.predicates
+            + self.results.flatMap { $0.expression?.joins ?? [] }
             + self.predicates.flatMap { $0.joins }
             + self.order.flatMap { $0.expression.joins }
         if predicates.isEmpty {
