@@ -90,9 +90,9 @@ extension SQL.Value: ExpressibleByIntegerLiteral {
     }
 }
 
-extension SQL.Value: InsertValueConvertible {
-    internal var insertValue: SQL.Insert.Value {
-        return SQL.Insert.Value(.value(self))
+extension SQL.Value: SQLExpressionConvertible {
+    internal var sqlExpression: SQL.Expression {
+        return .value(self)
     }
 }
 

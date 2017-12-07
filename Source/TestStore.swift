@@ -18,7 +18,7 @@ extension SQL.Insert {
     fileprivate init(_ row: TestStore.Row) {
         self.init(
             table: row.table,
-            values: row.values.mapValues { .init(.value($0)) }
+            values: row.values.mapValues(SQL.Expression.value)
         )
     }
 }

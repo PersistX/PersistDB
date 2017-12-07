@@ -1,32 +1,14 @@
 import Foundation
 
-internal protocol InsertValueConvertible {
-    var insertValue: SQL.Insert.Value { get }
+internal protocol SQLExpressionConvertible {
+    var sqlExpression: SQL.Expression { get }
 }
 
 extension SQL {
     internal struct Insert {
-        internal struct Value {
-            internal let expression: Expression
-            
-            internal init(_ expression: Expression) {
-                self.expression = expression
-            }
-        }
-        
         internal var table: Table
         
-        internal var values: [String: Value]
-    }
-}
-
-extension SQL.Insert.Value: Hashable {
-    internal var hashValue: Int {
-        return expression.hashValue
-    }
-    
-    internal static func ==(lhs: SQL.Insert.Value, rhs: SQL.Insert.Value) -> Bool {
-        return lhs.expression == rhs.expression
+        internal var values: [String: SQL.Expression]
     }
 }
 
@@ -48,6 +30,6 @@ extension SQL.Insert {
         return SQL("INSERT INTO \"\(table.name)\" ")
             + kvs.map { SQL($0.key) }.joined(separator: ", ").parenthesized
             + SQL(" VALUES ")
-            + kvs.map { $0.value.expression.sql }.joined(separator: ", ").parenthesized
+            + kvs.map { $0.value.sql }.joined(separator: ", ").parenthesized
     }
 }

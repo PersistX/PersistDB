@@ -151,9 +151,9 @@ extension SQL.Expression: Hashable {
     }
 }
 
-extension SQL.Expression: InsertValueConvertible {
-    internal var insertValue: SQL.Insert.Value {
-        return SQL.Insert.Value(self)
+extension SQL.Expression: SQLExpressionConvertible {
+    internal var sqlExpression: SQL.Expression {
+        return self
     }
 }
 

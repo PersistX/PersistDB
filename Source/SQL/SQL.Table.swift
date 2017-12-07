@@ -28,7 +28,7 @@ extension SQL.Table: Hashable {
 }
 
 extension SQL.Table {
-    internal func insert(_ values: [String: InsertValueConvertible]) -> SQL.Insert {
-        return SQL.Insert(table: self, values: values.mapValues { $0.insertValue })
+    internal func insert(_ values: [String: SQLExpressionConvertible]) -> SQL.Insert {
+        return SQL.Insert(table: self, values: values.mapValues { $0.sqlExpression })
     }
 }
