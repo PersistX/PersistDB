@@ -13,10 +13,6 @@ public final class Store {
     public convenience init() {
         self.init(Database())
     }
-    
-    public convenience init(at url: URL) {
-        self.init(Database())
-    }
 }
 
 extension Store {
