@@ -47,13 +47,13 @@ extension PartialKeyPath where Root: PersistDB.Model {
 }
 
 extension ModelValue {
-    fileprivate var sql: SQL.Expression {
+    internal var sql: SQL.Expression {
         return .value(Self.anyValue.encode(self).sql)
     }
 }
 
 extension Optional where Wrapped: ModelValue {
-    fileprivate var sql: SQL.Expression {
+    internal var sql: SQL.Expression {
         return .value(map(Wrapped.anyValue.encode)?.sql ?? .null)
     }
 }

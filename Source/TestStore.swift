@@ -18,7 +18,7 @@ extension SQL.Insert {
     fileprivate init(_ row: TestStore.Row) {
         self.init(
             table: row.table,
-            values: row.values.mapValues(SQL.Expression.value)
+            values: row.values
         )
     }
 }
@@ -47,16 +47,14 @@ extension SQL.Schema {
 public final class TestStore {
     fileprivate struct Row {
         let table: SQL.Table
-        let values: [String: SQL.Value]
+        let values: [String: SQL.Expression]
         
-        init<Model>(_ id: Model.ID, _ predicates: [Predicate<Model>]) {
-            let idValue = Model.ID.anyValue.encode(id).sql
-            let pairs = [("id", idValue)] + predicates.map { predicate -> (String, SQL.Value) in
-                guard case let .binary(.equal, .column(column), .value(value)) = predicate.sql else {
-                    fatalError("TestStore predicates must be `property == value`")
-                }
-                
-                return (column.name, value)
+        init<Model>(_ id: Model.ID, _ valueSet: ValueSet<Model>) {
+            let schema = Model.schema
+            let idValue = SQL.Expression.value(Model.ID.anyValue.encode(id).sql)
+            let pairs = [("id", idValue)] + valueSet.assignments.map { assignment -> (String, SQL.Expression) in
+                let column = schema.properties(for: assignment.keyPath).last!.path
+                return (column, assignment.sql)
             }
             table = SQL.Table(String(describing: Model.self))
             values = Dictionary(uniqueKeysWithValues: pairs)
@@ -72,7 +70,7 @@ public final class TestStore {
     }
     
     public convenience init<A>(
-        _ a: [A.ID: [Predicate<A>]]
+        _ a: [A.ID: ValueSet<A>]
     ) {
         let aRows = a.map(Row.init)
         self.init(
