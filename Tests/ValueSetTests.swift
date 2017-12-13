@@ -4,10 +4,10 @@ import XCTest
 class ValueSetSufficientForInsertTests: XCTestCase {
     func testEveryPropertySet() {
         let valueSet: ValueSet<Author> = [
-            \.id == Author.ID(1),
-            \.name == "Some Gal",
-            \.born == 1930,
-            \.died == nil
+            \Author.id == Author.ID(1),
+            \Author.name == "Some Gal",
+            \Author.born == 1930,
+            \Author.died == nil,
         ]
         XCTAssertTrue(valueSet.sufficientForInsert)
     }

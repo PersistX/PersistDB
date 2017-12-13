@@ -60,6 +60,6 @@ class ModelTests: XCTestCase {
                 .init(name: "author", type: .integer),
             ]
         )
-        XCTAssertEqual(Book.sql, expected)
+        XCTAssertEqual(Book.anySchema.sql, expected)
     }
 }
