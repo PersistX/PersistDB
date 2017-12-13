@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE10ED731FE198F9008FFE25 /* Insert.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED721FE198F9008FFE25 /* Insert.swift */; };
 		BE10ED751FE19A8E008FFE25 /* ValueSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */; };
 		BE1DC6041EE3AC9400A0671F /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6031EE3AC9400A0671F /* Query.swift */; };
 		BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6051EE3ACC600A0671F /* QueryTests.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BE10ED721FE198F9008FFE25 /* Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insert.swift; sourceTree = "<group>"; };
 		BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueSetTests.swift; sourceTree = "<group>"; };
 		BE1DC6031EE3AC9400A0671F /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		BE1DC6051EE3ACC600A0671F /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				BE7740D21EFFDB8F00D1F5A5 /* SQL */,
 				BE7361011FD5A01500B675B4 /* Database.swift */,
 				BEA083D41F3FE92B002AB2C1 /* Expression.swift */,
+				BE10ED721FE198F9008FFE25 /* Insert.swift */,
 				BECF33921EEBA6A600F9FC88 /* Model.swift */,
 				BE5AD1CC1F30AADB0055BF9F /* Ordering.swift */,
 				BE1DC6071EE3B34800A0671F /* Predicate.swift */,
@@ -354,6 +357,7 @@
 				BE7740EC1EFFDC5500D1F5A5 /* SQL.swift in Sources */,
 				BEC1C23F1F1DA61800D29EFF /* Primitive.swift in Sources */,
 				BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */,
+				BE10ED731FE198F9008FFE25 /* Insert.swift in Sources */,
 				BE7361021FD5A01500B675B4 /* Database.swift in Sources */,
 				BECF33931EEBA6A600F9FC88 /* Model.swift in Sources */,
 				BE7740E71EFFDC5500D1F5A5 /* SQL.Expression.swift in Sources */,
