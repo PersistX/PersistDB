@@ -24,7 +24,7 @@ public final class Store {
 }
 
 extension Store {
-    func fetch<Projection: ModelProjection>(
+    public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<Projection, NoError> {
         let projection = Projection.projection
