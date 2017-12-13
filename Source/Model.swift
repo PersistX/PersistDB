@@ -58,11 +58,11 @@ extension Model {
     }
 }
 
-extension Model {
-    internal static var sql: SQL.Schema {
+extension AnySchema {
+    internal var sql: SQL.Schema {
         return SQL.Schema(
-            table: SQL.Table(String(describing: Self.self)),
-            columns: Set(anySchema.properties.values.flatMap { $0.sql })
+            table: SQL.Table(name),
+            columns: Set(properties.values.flatMap { $0.sql })
         )
     }
 }

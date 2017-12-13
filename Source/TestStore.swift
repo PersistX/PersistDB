@@ -23,24 +23,19 @@ extension SQL.Insert {
     }
 }
 
-extension SQL.Schema {
-    fileprivate init<Model: PersistDB.Model>(_ schema: Schema<Model>) {
-        let table = SQL.Table(String(describing: Model.self))
-        let columns: [SQL.Schema.Column] = schema
-            .properties
-            .values
-            .flatMap { property in
-                guard case let .value(type, _) = property.type else { return nil }
-                return SQL.Schema.Column(
-                    name: property.path,
-                    type: type.anyValue.encoded.sql,
-                    nullable: true,
-                    unique: false,
-                    primaryKey: property.path == "id"
-                )
+extension Schemata.AnyModel {
+    /// An adjusted schema for testing where all fields are nullable.
+    fileprivate static var testSchema: AnySchema {
+        var schema = anySchema
+        schema.properties = schema.properties.mapValues { p in
+            guard case let .value(type, false) = p.type else {
+                return p
             }
-        
-        self.init(table: table, columns: Set(columns))
+            var result = p
+            result.type = .value(type, nullable: true)
+            return result
+        }
+        return schema
     }
 }
 
@@ -63,9 +58,11 @@ public final class TestStore {
     
     let store: Store
     
-    private init(schemas: [SQL.Schema], inserts: [SQL.Insert]) {
-        store = Store()
-        schemas.forEach(store.db.create)
+    private init(
+        types: [Schemata.AnyModel.Type],
+        inserts: [SQL.Insert]
+    ) {
+        store = Store(for: types.map { $0.testSchema })
         inserts.forEach(store.db.insert)
     }
     
@@ -74,7 +71,7 @@ public final class TestStore {
     ) {
         let aRows = a.map(Row.init)
         self.init(
-            schemas: [SQL.Schema(A.schema)],
+            types: [A.self],
             inserts: aRows.map(SQL.Insert.init)
         )
     }

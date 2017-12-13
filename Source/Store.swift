@@ -6,12 +6,20 @@ import Schemata
 public final class Store {
     internal let db: Database
     
-    private init(_ db: Database) {
+    private init(_ db: Database, for schemas: [AnySchema]) {
         self.db = db
+        
+        for schema in schemas {
+            db.create(schema.sql)
+        }
     }
     
-    public convenience init() {
-        self.init(Database())
+    public convenience init(for schemas: [AnySchema]) {
+        self.init(Database(), for: schemas)
+    }
+    
+    public convenience init(for types: [Schemata.AnyModel.Type]) {
+        self.init(Database(), for: types.map { $0.anySchema })
     }
 }
 
