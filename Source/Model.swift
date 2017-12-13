@@ -58,6 +58,16 @@ extension Model {
     }
 }
 
+extension Model {
+    internal static var idKeyPath: KeyPath<Self, ID> {
+        return schema
+            .properties
+            .values
+            .first { $0.path == "id" }!
+            .keyPath as! KeyPath<Self, ID>
+    }
+}
+
 extension AnySchema {
     internal var sql: SQL.Schema {
         return SQL.Schema(
