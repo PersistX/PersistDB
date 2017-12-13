@@ -24,6 +24,10 @@ public final class Store {
 }
 
 extension Store {
+    public func insert<Model>(_ insert: Insert<Model>) {
+        db.insert(insert.sql)
+    }
+    
     public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<Projection, NoError> {
