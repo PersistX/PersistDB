@@ -4,7 +4,7 @@ import Result
 import Schemata
 
 public final class Store {
-    internal let db: Database
+    fileprivate let db: Database
     
     private init(_ db: Database, for schemas: [AnySchema]) {
         self.db = db
