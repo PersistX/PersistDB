@@ -21,6 +21,12 @@ extension Insert: Hashable {
     }
 }
 
+extension Insert: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Assignment<Model>...) {
+        valueSet = ValueSet(elements)
+    }
+}
+
 extension Insert {
     internal var sql: SQL.Insert {
         let table = SQL.Table(Model.schema.name)
