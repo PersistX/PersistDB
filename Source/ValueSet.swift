@@ -32,6 +32,10 @@ public func == <Model, Value: ModelValue>(
 
 public struct ValueSet<Model: PersistDB.Model> {
     public var assignments: [Assignment<Model>]
+    
+    public init(_ assignments: [Assignment<Model>]) {
+        self.assignments = assignments
+    }
 }
 
 extension ValueSet: Hashable {
