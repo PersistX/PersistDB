@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE10ED751FE19A8E008FFE25 /* ValueSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */; };
 		BE1DC6041EE3AC9400A0671F /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6031EE3AC9400A0671F /* Query.swift */; };
 		BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6051EE3ACC600A0671F /* QueryTests.swift */; };
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
@@ -59,6 +60,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueSetTests.swift; sourceTree = "<group>"; };
 		BE1DC6031EE3AC9400A0671F /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		BE1DC6051EE3ACC600A0671F /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		BE1DC6071EE3B34800A0671F /* Predicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicate.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				BE1DC6051EE3ACC600A0671F /* QueryTests.swift */,
 				BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */,
 				BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */,
+				BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */,
 				BE89D6061EBE3A0100CEC4D1 /* Info.plist */,
 			);
 			path = Tests;
@@ -368,6 +371,7 @@
 				BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */,
 				BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */,
 				BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */,
+				BE10ED751FE19A8E008FFE25 /* ValueSetTests.swift in Sources */,
 				BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */,
 				BEC1C2411F1DA64400D29EFF /* PrimitiveTests.swift in Sources */,
 				BE7740E51EFFDC4E00D1F5A5 /* SQL.TableTests.swift in Sources */,

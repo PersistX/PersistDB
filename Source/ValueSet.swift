@@ -49,3 +49,14 @@ extension ValueSet: ExpressibleByArrayLiteral {
         assignments = elements
     }
 }
+
+extension ValueSet {
+    internal var sufficientForInsert: Bool {
+        let assigned = Set(assignments.map { $0.keyPath })
+        for property in Model.schema.properties.values {
+            if case .value(_, true) = property.type { continue }
+            guard assigned.contains(property.keyPath) else { return false }
+        }
+        return true
+    }
+}
