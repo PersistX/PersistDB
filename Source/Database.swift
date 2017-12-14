@@ -1,13 +1,15 @@
 import SQLite3
 
 /// A row from a SQL database.
-internal struct Row: Hashable, ExpressibleByDictionaryLiteral {
+internal struct Row {
     internal var dictionary: [String: Value]
     
     init(_ dictionary: [String: Value]) {
         self.dictionary = dictionary
     }
-    
+}
+
+extension Row: Hashable {
     var hashValue: Int {
         return dictionary.reduce(0) { $0 ^ $1.key.hashValue ^ $1.value.hashValue }
     }
@@ -15,7 +17,9 @@ internal struct Row: Hashable, ExpressibleByDictionaryLiteral {
     static func == (lhs: Row, rhs: Row) -> Bool {
         return lhs.dictionary == rhs.dictionary
     }
-    
+}
+
+extension Row: ExpressibleByDictionaryLiteral {
     init(dictionaryLiteral elements: (String, SQL.Value)...) {
         var dictionary: [String: SQL.Value] = [:]
         for (key, value) in elements {
