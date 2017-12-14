@@ -151,12 +151,6 @@ extension SQL.Expression: Hashable {
     }
 }
 
-extension SQL.Expression: SQLExpressionConvertible {
-    internal var sqlExpression: SQL.Expression {
-        return self
-    }
-}
-
 extension SQL.Expression {
     /// An ascending ordering.
     internal var ascending: SQL.Ordering {

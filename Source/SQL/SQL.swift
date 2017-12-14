@@ -90,12 +90,6 @@ extension SQL.Value: ExpressibleByIntegerLiteral {
     }
 }
 
-extension SQL.Value: SQLExpressionConvertible {
-    internal var sqlExpression: SQL.Expression {
-        return .value(self)
-    }
-}
-
 extension String {
     static let PlaceholderRegex = try! NSRegularExpression(
         pattern: "(\\?) | '[^']*' | --[^\\n]* | /\\* (?:(?!\\*/).)* \\*/",

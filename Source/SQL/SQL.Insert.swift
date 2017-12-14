@@ -1,9 +1,5 @@
 import Foundation
 
-internal protocol SQLExpressionConvertible {
-    var sqlExpression: SQL.Expression { get }
-}
-
 extension SQL {
     internal struct Insert {
         internal var table: Table

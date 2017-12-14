@@ -21,10 +21,10 @@ extension Author {
         
         fileprivate var insert: SQL.Insert {
             return Author.table.insert([
-                "id": SQL.Value.integer(id.int),
-                "name": SQL.Value.text(name),
-                "born": SQL.Value.integer(born),
-                "died": died.map(SQL.Value.integer) ?? SQL.Value.null
+                "id": .value(.integer(id.int)),
+                "name": .value(.text(name)),
+                "born": .value(.integer(born)),
+                "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null)
             ])
         }
         
@@ -75,9 +75,9 @@ extension Book {
         
         fileprivate var insert: SQL.Insert {
             return Book.table.insert([
-                "id": SQL.Value.text(id.string),
-                "author": SQL.Value.integer(author.int),
-                "title": SQL.Value.text(title)
+                "id": .value(.text(id.string)),
+                "author": .value(.integer(author.int)),
+                "title": .value(.text(title)),
             ])
         }
         
