@@ -18,11 +18,15 @@ extension Schemata.AnyModel {
     fileprivate static var testSchema: AnySchema {
         var schema = anySchema
         schema.properties = schema.properties.mapValues { p in
-            guard case let .value(type, false) = p.type else {
-                return p
-            }
             var result = p
-            result.type = .value(type, nullable: true)
+            switch result.type {
+            case let .toOne(type, false):
+                result.type = .toOne(type, nullable: true)
+            case let .value(type, false):
+                result.type = .value(type, nullable: true)
+            default:
+                break
+            }
             return result
         }
         return schema

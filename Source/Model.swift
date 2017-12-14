@@ -23,9 +23,9 @@ extension AnyProperty {
             dataType = nil
             nullable = false
             
-        case .toOne:
+        case let .toOne(_, null):
             dataType = .integer
-            nullable = false
+            nullable = null
             
         case let .value(type, null):
             dataType = type.anyValue.encoded.sql

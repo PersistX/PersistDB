@@ -32,7 +32,7 @@ extension PartialKeyPath where Root: PersistDB.Model {
             switch property.type {
             case .toMany:
                 fatalError()
-            case let .toOne(model):
+            case let .toOne(model, _):
                 let rhs = SQL.Column(
                     table: SQL.Table(String(describing: model)),
                     name: "id"
