@@ -58,8 +58,13 @@ extension ValueSet {
     internal var sufficientForInsert: Bool {
         let assigned = Set(assignments.map { $0.keyPath })
         for property in Model.schema.properties.values {
-            if case .value(_, true) = property.type { continue }
-            guard assigned.contains(property.keyPath) else { return false }
+            switch property.type {
+            case .value(_, false), .toOne(_, false):
+                guard assigned.contains(property.keyPath)
+                    else { return false }
+            case .value(_, true), .toOne(_, true), .toMany:
+                break
+            }
         }
         return true
     }
