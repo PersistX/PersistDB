@@ -121,4 +121,8 @@ internal class Database {
     func query(_ query: SQL.Query) -> [Row] {
         return execute(query.sql)
     }
+    
+    func update(_ update: SQL.Update) {
+        execute(update.sql)
+    }
 }

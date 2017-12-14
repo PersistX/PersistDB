@@ -134,5 +134,9 @@ class TestDB {
     func query(_ query: SQL.Query) -> [Row] {
         return db.query(query)
     }
+    
+    func update(_ update: SQL.Update) {
+        db.update(update)
+    }
 }
 
