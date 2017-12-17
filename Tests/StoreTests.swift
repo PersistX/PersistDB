@@ -44,4 +44,32 @@ class StoreTests: XCTestCase {
         XCTAssertEqual(info.born, author.born)
         XCTAssertEqual(info.died, author.died)
     }
+    
+    func testInsertUpdateFetch() {
+        let store = Store(for: fixtures)
+        
+        let author = Author.jrrTolkien
+        let insert: Insert<Author> = [
+            \Author.id == author.id,
+            \Author.name == author.name,
+            \Author.born == author.born,
+            \Author.died == author.died,
+        ]
+        let update = Update<Author>(
+            predicate: \Author.id == author.id,
+            valueSet: [ \Author.born == 100, \Author.died == 200 ]
+        )
+        
+        store.insert(insert)
+        store.update(update)
+        let info: AuthorInfo = store
+            .fetch(Author.all)
+            .first()!
+            .value!
+        
+        XCTAssertEqual(info.id, author.id)
+        XCTAssertEqual(info.name, author.name)
+        XCTAssertEqual(info.born, 100)
+        XCTAssertEqual(info.died, 200)
+    }
 }

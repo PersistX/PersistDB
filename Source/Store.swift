@@ -58,4 +58,8 @@ extension Store {
             .map(Projection.projection.makeValue)
         return SignalProducer<Projection, NoError>(values)
     }
+    
+    public func update<Model>(_ update: Update<Model>) {
+        db.update(update.sql)
+    }
 }
