@@ -11,6 +11,8 @@
 		BE10ED751FE19A8E008FFE25 /* ValueSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */; };
 		BE10ED7A1FE2E416008FFE25 /* SQL.Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED781FE2E234008FFE25 /* SQL.Update.swift */; };
 		BE10ED7C1FE2FB2E008FFE25 /* SQL.UpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED7B1FE2FB2E008FFE25 /* SQL.UpdateTests.swift */; };
+		BE10ED7E1FE60267008FFE25 /* SQL.Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED7D1FE60267008FFE25 /* SQL.Delete.swift */; };
+		BE10ED801FE6030D008FFE25 /* SQL.DeleteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED7F1FE6030D008FFE25 /* SQL.DeleteTests.swift */; };
 		BE1DC6041EE3AC9400A0671F /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6031EE3AC9400A0671F /* Query.swift */; };
 		BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6051EE3ACC600A0671F /* QueryTests.swift */; };
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
@@ -67,6 +69,8 @@
 		BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueSetTests.swift; sourceTree = "<group>"; };
 		BE10ED781FE2E234008FFE25 /* SQL.Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Update.swift; sourceTree = "<group>"; };
 		BE10ED7B1FE2FB2E008FFE25 /* SQL.UpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.UpdateTests.swift; sourceTree = "<group>"; };
+		BE10ED7D1FE60267008FFE25 /* SQL.Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Delete.swift; sourceTree = "<group>"; };
+		BE10ED7F1FE6030D008FFE25 /* SQL.DeleteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.DeleteTests.swift; sourceTree = "<group>"; };
 		BE1DC6031EE3AC9400A0671F /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		BE1DC6051EE3ACC600A0671F /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		BE1DC6071EE3B34800A0671F /* Predicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicate.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				BEA083D91F40C9DA002AB2C1 /* SQL.Column.swift */,
+				BE10ED7D1FE60267008FFE25 /* SQL.Delete.swift */,
 				BE7740D81EFFDC3800D1F5A5 /* SQL.Expression.swift */,
 				BE7740D61EFFDC3800D1F5A5 /* SQL.Insert.swift */,
 				BE7740D71EFFDC3800D1F5A5 /* SQL.Ordering.swift */,
@@ -155,6 +160,7 @@
 		BE7740D41EFFDBBB00D1F5A5 /* SQL */ = {
 			isa = PBXGroup;
 			children = (
+				BE10ED7F1FE6030D008FFE25 /* SQL.DeleteTests.swift */,
 				BE7740DF1EFFDC4500D1F5A5 /* SQL.ExpressionTests.swift */,
 				BE7740E01EFFDC4500D1F5A5 /* SQL.QueryTests.swift */,
 				BE7740DE1EFFDC4500D1F5A5 /* SQL.TableTests.swift */,
@@ -362,6 +368,7 @@
 				BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */,
 				BE7740EB1EFFDC5500D1F5A5 /* SQL.Ordering.swift in Sources */,
 				BE7740EC1EFFDC5500D1F5A5 /* SQL.swift in Sources */,
+				BE10ED7E1FE60267008FFE25 /* SQL.Delete.swift in Sources */,
 				BEC1C23F1F1DA61800D29EFF /* Primitive.swift in Sources */,
 				BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */,
 				BE10ED731FE198F9008FFE25 /* Insert.swift in Sources */,
@@ -380,6 +387,7 @@
 				BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */,
 				BEA083D71F3FE977002AB2C1 /* ExpressionTests.swift in Sources */,
 				BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */,
+				BE10ED801FE6030D008FFE25 /* SQL.DeleteTests.swift in Sources */,
 				BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */,
 				BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */,
 				BE10ED751FE19A8E008FFE25 /* ValueSetTests.swift in Sources */,

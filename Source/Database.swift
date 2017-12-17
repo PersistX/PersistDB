@@ -114,6 +114,10 @@ internal class Database {
         execute(schema.sql)
     }
     
+    func delete(_ delete: SQL.Delete) {
+        execute(delete.sql)
+    }
+    
     func insert(_ insert: SQL.Insert) {
         execute(insert.sql)
     }

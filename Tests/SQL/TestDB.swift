@@ -131,6 +131,10 @@ class TestDB {
         fixtures.forEach { db.execute($0) }
     }
     
+    func delete(_ delete: SQL.Delete) {
+        db.delete(delete)
+    }
+    
     func query(_ query: SQL.Query) -> [Row] {
         return db.query(query)
     }
