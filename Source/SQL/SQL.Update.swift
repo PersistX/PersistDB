@@ -18,6 +18,7 @@ extension SQL.Update: Hashable {
     internal static func ==(lhs: SQL.Update, rhs: SQL.Update) -> Bool {
         return lhs.table == rhs.table
             && lhs.values == rhs.values
+            && lhs.predicate == rhs.predicate
     }
 }
 
