@@ -45,6 +45,28 @@ class StoreTests: XCTestCase {
         XCTAssertEqual(info.died, author.died)
     }
     
+    func testInsertDeleteFetch() {
+        let store = Store(for: fixtures)
+        
+        let author = Author.jrrTolkien
+        let insert: Insert<Author> = [
+            \Author.id == author.id,
+            \Author.name == author.name,
+            \Author.born == author.born,
+            \Author.died == author.died,
+        ]
+        let delete = Delete<Author>(\Author.id == author.id)
+        
+        store.insert(insert)
+        store.delete(delete)
+        let info: AuthorInfo? = store
+            .fetch(Author.all)
+            .first()?
+            .value
+        
+        XCTAssertNil(info)
+    }
+    
     func testInsertUpdateFetch() {
         let store = Store(for: fixtures)
         

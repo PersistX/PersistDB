@@ -24,6 +24,10 @@ public final class Store {
 }
 
 extension Store {
+    public func delete<Model>(_ delete: Delete<Model>) {
+        db.delete(delete.sql)
+    }
+    
     public func insert<Model>(_ insert: Insert<Model>) {
         db.insert(insert.sql)
     }
