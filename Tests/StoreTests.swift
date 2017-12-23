@@ -17,45 +17,6 @@ extension Insert where Model == Author {
     }
 }
 
-private struct AuthorInfo {
-    let id: Author.ID
-    let name: String
-    let born: Int
-    let died: Int?
-}
-
-extension AuthorInfo: ModelProjection {
-    static let projection = Projection<Author, AuthorInfo>(
-        AuthorInfo.init,
-        \.id,
-        \.name,
-        \.born,
-        \.died
-    )
-}
-
-extension AuthorInfo {
-    init(_ data: Author.Data) {
-        id = data.id
-        name = data.name
-        born = data.born
-        died = data.died
-    }
-}
-
-extension AuthorInfo: Hashable {
-    var hashValue: Int {
-        return id.hashValue
-    }
-    
-    static func == (lhs: AuthorInfo, rhs: AuthorInfo) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-            && lhs.born == rhs.born
-            && lhs.died == rhs.died
-    }
-}
-
 extension SignalProducer {
     var firstValue: Value? {
         return first()?.value
