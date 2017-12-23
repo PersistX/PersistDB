@@ -1,4 +1,6 @@
 import PersistDB
+import ReactiveSwift
+import Result
 import Schemata
 import XCTest
 
@@ -32,6 +34,34 @@ extension AuthorInfo: ModelProjection {
     )
 }
 
+extension AuthorInfo {
+    init(_ data: Author.Data) {
+        id = data.id
+        name = data.name
+        born = data.born
+        died = data.died
+    }
+}
+
+extension AuthorInfo: Hashable {
+    var hashValue: Int {
+        return id.hashValue
+    }
+    
+    static func == (lhs: AuthorInfo, rhs: AuthorInfo) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.name == rhs.name
+            && lhs.born == rhs.born
+            && lhs.died == rhs.died
+    }
+}
+
+extension SignalProducer {
+    var firstValue: Value? {
+        return first()?.value
+    }
+}
+
 class StoreTests: XCTestCase {
     var store: Store!
     
@@ -44,24 +74,24 @@ class StoreTests: XCTestCase {
         super.tearDown()
         store = nil
     }
-    
-    func testInsertFetch() {
+}
+
+class StoreFetchTests: StoreTests {
+    func testSingleResult() {
         let author = Author.jrrTolkien
         let insert = Insert<Author>(author)
         
         store.insert(insert)
         let info: AuthorInfo = store
             .fetch(Author.all)
-            .first()!
-            .value!
+            .firstValue!
         
-        XCTAssertEqual(info.id, author.id)
-        XCTAssertEqual(info.name, author.name)
-        XCTAssertEqual(info.born, author.born)
-        XCTAssertEqual(info.died, author.died)
+        XCTAssertEqual(info, AuthorInfo(author))
     }
-    
-    func testInsertDeleteFetch() {
+}
+
+class StoreDeleteTests: StoreTests {
+    func testWithPredicate() {
         let author = Author.jrrTolkien
         let insert = Insert<Author>(author)
         let delete = Delete<Author>(\Author.id == author.id)
@@ -70,13 +100,14 @@ class StoreTests: XCTestCase {
         store.delete(delete)
         let info: AuthorInfo? = store
             .fetch(Author.all)
-            .first()?
-            .value
+            .firstValue
         
         XCTAssertNil(info)
     }
-    
-    func testInsertUpdateFetch() {
+}
+
+class StoreUpdateTests: StoreTests {
+    func testUpdateValues() {
         let author = Author.jrrTolkien
         let insert = Insert<Author>(author)
         let update = Update<Author>(
@@ -88,8 +119,7 @@ class StoreTests: XCTestCase {
         store.update(update)
         let info: AuthorInfo = store
             .fetch(Author.all)
-            .first()!
-            .value!
+            .firstValue!
         
         XCTAssertEqual(info.id, author.id)
         XCTAssertEqual(info.name, author.name)
