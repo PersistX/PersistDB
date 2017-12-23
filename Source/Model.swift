@@ -83,11 +83,12 @@ extension Projection {
         var result: [PartialKeyPath<Model>: Any] = [:]
         for (keyPath, value) in values {
             let property = schema.properties(for: keyPath).last!
-            guard case let .value(type, _) = property.type else {
+            guard case let .value(type, isOptional) = property.type else {
                 fatalError()
             }
             let primitive = value.primitive(type.anyValue.encoded)
-            result[keyPath] = type.anyValue.decode(primitive).value!
+            let decoded =  type.anyValue.decode(primitive).value
+            result[keyPath] = isOptional ? .some(decoded as Any) : decoded!
         }
         return makeValue(result)
     }

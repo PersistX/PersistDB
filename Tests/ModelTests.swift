@@ -78,4 +78,18 @@ class ProjectionFromSQLResultTests: XCTestCase {
         
         XCTAssertEqual(value, AuthorInfo(author))
     }
+    
+    func testWithNilValue() {
+        let author = Author.orsonScottCard
+        let values: [PartialKeyPath<Author>: SQL.Value] = [
+            \Author.id: .integer(author.id.int),
+            \Author.name: .text(author.name),
+            \Author.born: .integer(author.born),
+            \Author.died: .null,
+        ]
+        
+        let value = AuthorInfo.projection.makeValue(values)
+        
+        XCTAssertEqual(value, AuthorInfo(author))
+    }
 }

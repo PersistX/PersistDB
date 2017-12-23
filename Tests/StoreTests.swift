@@ -50,6 +50,18 @@ class StoreFetchTests: StoreTests {
         XCTAssertEqual(info, AuthorInfo(author))
     }
     
+    func testNilValue() {
+        let author = Author.Data.orsonScottCard
+        let insert = Insert<Author>(author)
+        
+        store.insert(insert)
+        let info: AuthorInfo = store
+            .fetch(Author.all)
+            .firstValue!
+        
+        XCTAssertEqual(info, AuthorInfo(author))
+    }
+    
     func testPerformWorkOnSubscription() {
         let author = Author.jrrTolkien
         let insert = Insert<Author>(author)
