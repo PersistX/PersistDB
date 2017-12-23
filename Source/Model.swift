@@ -76,3 +76,19 @@ extension AnySchema {
         )
     }
 }
+
+extension Projection {
+    internal func makeValue(_ values: [PartialKeyPath<Model>: SQL.Value]) -> Value? {
+        let schema = Model.schema
+        var result: [PartialKeyPath<Model>: Any] = [:]
+        for (keyPath, value) in values {
+            let property = schema.properties(for: keyPath).last!
+            guard case let .value(type, _) = property.type else {
+                fatalError()
+            }
+            let primitive = value.primitive(type.anyValue.encoded)
+            result[keyPath] = type.anyValue.decode(primitive).value!
+        }
+        return makeValue(result)
+    }
+}

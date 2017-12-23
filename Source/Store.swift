@@ -47,20 +47,13 @@ extension Store {
         return SignalProducer { [db = self.db] observer, _ in
             let values = db
                 .query(SQL.Query(results: results, predicates: sql.predicates, order: sql.order))
-                .map { values in
-                    var result: [PartialKeyPath<Projection.Model>: Any] = [:]
-                    for (alias, value) in values.dictionary {
-                        let keyPath = keyPaths[alias]!
-                        let property = Projection.Model.schema.properties(for: keyPath).last!
-                        guard case let .value(type, _) = property.type else {
-                            fatalError()
-                        }
-                        let primitive = value.primitive(type.anyValue.encoded)
-                        result[keyPath] = type.anyValue.decode(primitive).value!
-                    }
-                    return result
+                .map { row -> [PartialKeyPath<Projection.Model>: SQL.Value] in
+                    return Dictionary(uniqueKeysWithValues: row.dictionary.map { alias, value in
+                        let keyPath = keyPaths[alias]! as PartialKeyPath<Projection.Model>
+                        return (keyPath, value)
+                    })
                 }
-                .map(Projection.projection.makeValue)
+                .flatMap(Projection.projection.makeValue)
             values.forEach(observer.send(value:))
             observer.sendCompleted()
         }
