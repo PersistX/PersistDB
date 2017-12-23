@@ -4,6 +4,17 @@ import XCTest
 
 private let fixtures: [AnyModel.Type] = [Author.self, Book.self]
 
+extension Insert where Model == Author {
+    fileprivate init(_ data: Author.Data) {
+        self.init([
+            \Author.id == data.id,
+            \Author.name == data.name,
+            \Author.born == data.born,
+            \Author.died == data.died,
+        ])
+    }
+}
+
 private struct AuthorInfo {
     let id: Author.ID
     let name: String
@@ -22,16 +33,21 @@ extension AuthorInfo: ModelProjection {
 }
 
 class StoreTests: XCTestCase {
+    var store: Store!
+    
+    override func setUp() {
+        super.setUp()
+        store = Store(for: [Author.self, Book.self])
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        store = nil
+    }
+    
     func testInsertFetch() {
-        let store = Store(for: fixtures)
-        
         let author = Author.jrrTolkien
-        let insert: Insert<Author> = [
-            \Author.id == author.id,
-            \Author.name == author.name,
-            \Author.born == author.born,
-            \Author.died == author.died,
-        ]
+        let insert = Insert<Author>(author)
         
         store.insert(insert)
         let info: AuthorInfo = store
@@ -46,15 +62,8 @@ class StoreTests: XCTestCase {
     }
     
     func testInsertDeleteFetch() {
-        let store = Store(for: fixtures)
-        
         let author = Author.jrrTolkien
-        let insert: Insert<Author> = [
-            \Author.id == author.id,
-            \Author.name == author.name,
-            \Author.born == author.born,
-            \Author.died == author.died,
-        ]
+        let insert = Insert<Author>(author)
         let delete = Delete<Author>(\Author.id == author.id)
         
         store.insert(insert)
@@ -68,15 +77,8 @@ class StoreTests: XCTestCase {
     }
     
     func testInsertUpdateFetch() {
-        let store = Store(for: fixtures)
-        
         let author = Author.jrrTolkien
-        let insert: Insert<Author> = [
-            \Author.id == author.id,
-            \Author.name == author.name,
-            \Author.born == author.born,
-            \Author.died == author.died,
-        ]
+        let insert = Insert<Author>(author)
         let update = Update<Author>(
             predicate: \Author.id == author.id,
             valueSet: [ \Author.born == 100, \Author.died == 200 ]
