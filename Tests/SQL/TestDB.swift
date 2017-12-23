@@ -5,6 +5,26 @@ extension Author.ID {
     static let jrrTolkien = Author.ID(2)
 }
 
+extension Author.Data {
+    fileprivate var insert: SQL.Insert {
+        return Author.table.insert([
+            "id": .value(.integer(id.int)),
+            "name": .value(.text(name)),
+            "born": .value(.integer(born)),
+            "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null)
+            ])
+    }
+    
+    var row: Row {
+        return [
+            "id": .integer(id.int),
+            "name": .text(name),
+            "born": .integer(born),
+            "died": died.map(SQL.Value.integer) ?? .null,
+        ]
+    }
+}
+
 extension Author {
     enum Table {
         static let id = SQL.Expression.column(Author.table["id"])
@@ -13,35 +33,7 @@ extension Author {
         static let died = SQL.Expression.column(Author.table["died"])
     }
     
-    struct Data {
-        let id: Author.ID
-        let name: String
-        let born: Int
-        let died: Int?
-        
-        fileprivate var insert: SQL.Insert {
-            return Author.table.insert([
-                "id": .value(.integer(id.int)),
-                "name": .value(.text(name)),
-                "born": .value(.integer(born)),
-                "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null)
-            ])
-        }
-        
-        var row: Row {
-            return [
-                "id": .integer(id.int),
-                "name": .text(name),
-                "born": .integer(born),
-                "died": died.map(SQL.Value.integer) ?? .null,
-            ]
-        }
-    }
-    
     static let table = SQL.Table("authors")
-    
-    static let orsonScottCard = Data(id: .orsonScottCard, name: "Orson Scott Card", born: 1951, died: nil)
-    static let jrrTolkien = Data(id: .jrrTolkien, name: "J.R.R. Tolkien", born: 1892, died: 1973)
     
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
@@ -61,6 +53,24 @@ extension Book.ISBN {
     static let childrenOfTheMind = Book.ISBN("978-0812522396")
 }
 
+extension Book.Data {
+    fileprivate var insert: SQL.Insert {
+        return Book.table.insert([
+            "id": .value(.text(id.string)),
+            "author": .value(.integer(author.int)),
+            "title": .value(.text(title)),
+        ])
+    }
+    
+    var row: Row {
+        return [
+            "id": .text(id.string),
+            "author": .integer(author.int),
+            "title": .text(title),
+        ]
+    }
+}
+
 extension Book {
     enum Table {
         static let id = SQL.Expression.column(Book.table["id"])
@@ -68,38 +78,9 @@ extension Book {
         static let title = SQL.Expression.column(Book.table["title"])
     }
     
-    struct Data {
-        let id: Book.ISBN
-        let title: String
-        let author: Author.ID
-        
-        fileprivate var insert: SQL.Insert {
-            return Book.table.insert([
-                "id": .value(.text(id.string)),
-                "author": .value(.integer(author.int)),
-                "title": .value(.text(title)),
-            ])
-        }
-        
-        var row: Row {
-            return [
-                "id": .text(id.string),
-                "author": .integer(author.int),
-                "title": .text(title),
-            ]
-        }
-    }
-    
     static let table = SQL.Table("books")
     
-    static let theHobbit = Data(id: .theHobbit, title: "The Hobbit", author: Author.jrrTolkien.id)
-    static let theLordOfTheRings = Data(id: .theLordOfTheRings, title: "The Lord of the Rings", author: Author.jrrTolkien.id)
     static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
-    
-    static let endersGame = Data(id: .endersGame, title: "Ender's Game", author: .orsonScottCard)
-    static let speakerForTheDead = Data(id: .speakerForTheDead, title: "Speaker for the Dead", author: .orsonScottCard)
-    static let xenocide = Data(id: .xenocide, title: "Xenocide", author: .orsonScottCard)
-    static let childrenOfTheMind = Data(id: .childrenOfTheMind, title: "Children of the Mind", author: .orsonScottCard)
     static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
     
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
