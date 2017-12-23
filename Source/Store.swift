@@ -44,23 +44,26 @@ extension Store {
             return SQL.Result(keyPath.sql, alias: aliases[keyPath])
         }
         let sql = query.sql
-        let values = db
-            .query(SQL.Query(results: results, predicates: sql.predicates, order: sql.order))
-            .map { values in
-                var result: [PartialKeyPath<Projection.Model>: Any] = [:]
-                for (alias, value) in values.dictionary {
-                    let keyPath = keyPaths[alias]!
-                    let property = Projection.Model.schema.properties(for: keyPath).last!
-                    guard case let .value(type, _) = property.type else {
-                        fatalError()
+        return SignalProducer { [db = self.db] observer, _ in
+            let values = db
+                .query(SQL.Query(results: results, predicates: sql.predicates, order: sql.order))
+                .map { values in
+                    var result: [PartialKeyPath<Projection.Model>: Any] = [:]
+                    for (alias, value) in values.dictionary {
+                        let keyPath = keyPaths[alias]!
+                        let property = Projection.Model.schema.properties(for: keyPath).last!
+                        guard case let .value(type, _) = property.type else {
+                            fatalError()
+                        }
+                        let primitive = value.primitive(type.anyValue.encoded)
+                        result[keyPath] = type.anyValue.decode(primitive).value!
                     }
-                    let primitive = value.primitive(type.anyValue.encoded)
-                    result[keyPath] = type.anyValue.decode(primitive).value!
+                    return result
                 }
-                return result
-            }
-            .map(Projection.projection.makeValue)
-        return SignalProducer<Projection, NoError>(values)
+                .map(Projection.projection.makeValue)
+            values.forEach(observer.send(value:))
+            observer.sendCompleted()
+        }
     }
     
     public func update<Model>(_ update: Update<Model>) {

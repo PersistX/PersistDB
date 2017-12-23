@@ -88,6 +88,16 @@ class StoreFetchTests: StoreTests {
         
         XCTAssertEqual(info, AuthorInfo(author))
     }
+    
+    func testPerformWorkOnSubscription() {
+        let author = Author.jrrTolkien
+        let insert = Insert<Author>(author)
+        let producer: SignalProducer<AuthorInfo, NoError> = store.fetch(Author.all)
+        
+        store.insert(insert)
+        
+        XCTAssertEqual(producer.firstValue, AuthorInfo(author))
+    }
 }
 
 class StoreDeleteTests: StoreTests {
