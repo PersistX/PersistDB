@@ -8,12 +8,14 @@ private let fixtures: [AnyModel.Type] = [Author.self, Book.self]
 
 extension Insert where Model == Author {
     fileprivate init(_ data: Author.Data) {
-        self.init([
+        let assignments: [Assignment<Author>] = [
             \Author.id == data.id,
             \Author.name == data.name,
+            \Author.givenName == data.givenName,
             \Author.born == data.born,
             \Author.died == data.died,
-        ])
+        ]
+        self.init(ValueSet(assignments))
     }
 }
 

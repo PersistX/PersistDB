@@ -3,22 +3,24 @@ import XCTest
 
 class ValueSetSufficientForInsertTests: XCTestCase {
     func testEveryPropertySet() {
-        let valueSet: ValueSet<Author> = [
-            \Author.id == Author.ID(1),
-            \Author.name == "Some Gal",
-            \Author.born == 1930,
-            \Author.died == nil,
+        let assignments: [Assignment<Author>] = [
+            \.id == Author.ID(1),
+            \.name == "Some Gal",
+            \.givenName == "Someantha Gal",
+            \.born == 1930,
+            \.died == nil,
         ]
-        XCTAssertTrue(valueSet.sufficientForInsert)
+        XCTAssertTrue(ValueSet(assignments).sufficientForInsert)
     }
     
     func testWithoutOptionalProperties() {
-        let valueSet: ValueSet<Author> = [
+        let assignments: [Assignment<Author>] = [
             \.id == Author.ID(1),
             \.name == "Some Gal",
+            \.givenName == "Someantha Gal",
             \.born == 1930,
         ]
-        XCTAssertTrue(valueSet.sufficientForInsert)
+        XCTAssertTrue(ValueSet(assignments).sufficientForInsert)
     }
     
     func testMissingProperties() {

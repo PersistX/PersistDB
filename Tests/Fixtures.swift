@@ -138,6 +138,7 @@ struct Author {
     
     let id: ID
     let name: String
+    let givenName: String
     let born: Int
     let died: Int?
     let books: Set<Book>
@@ -161,6 +162,7 @@ extension Author: Hashable {
     static func == (lhs: Author, rhs: Author) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
+            && lhs.givenName == rhs.givenName
             && lhs.born == rhs.born
             && lhs.died == rhs.died
             && lhs.books == rhs.books
@@ -179,6 +181,7 @@ extension Author: PersistDB.Model {
         Author.init,
         \.id ~ "id",
         \.name ~ "name",
+        \.givenName ~ "givenName",
         \.born ~ "born",
         \.died ~ "died",
         \.books ~ \Book.author
@@ -201,6 +204,7 @@ extension Author {
     internal struct Data {
         let id: Author.ID
         let name: String
+        let givenName: String
         let born: Int
         let died: Int?
     }
@@ -210,18 +214,21 @@ extension Author.Data {
     static let orsonScottCard = Author.Data(
         id: .orsonScottCard,
         name: "Orson Scott Card",
+        givenName: "Orson Scott Card",
         born: 1951,
         died: nil
     )
     static let jrrTolkien = Author.Data(
         id: .jrrTolkien,
         name: "J.R.R. Tolkien",
+        givenName: "John Ronald Reuel Tolkien",
         born: 1892,
         died: 1973
     )
     static let isaacAsimov = Author.Data(
         id: .isaacAsimov,
         name: "Isaac Asimov",
+        givenName: "Isaak Ozimov",
         born: 1920,
         died: 1992
     )
