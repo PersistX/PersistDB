@@ -42,9 +42,9 @@ class StoreTests: XCTestCase {
         }
     }
     
-    fileprivate func delete(_ data: Author.Data...) {
-        for d in data {
-            store.delete(Delete(\Author.id == d.id))
+    fileprivate func delete(_ ids: Author.ID...) {
+        for id in ids {
+            store.delete(Delete(\Author.id == id))
         }
     }
     
