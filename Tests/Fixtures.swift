@@ -247,11 +247,16 @@ extension AuthorInfo: ModelProjection {
 }
 
 extension AuthorInfo {
-    init(_ data: Author.Data) {
+    init(
+        _ data: Author.Data,
+        name: String? = nil,
+        born: Int? = nil,
+        died: Int?? = nil
+    ) {
         id = data.id
-        name = data.name
-        born = data.born
-        died = data.died
+        self.name = name ?? data.name
+        self.born = born ?? data.born
+        self.died = died ?? data.died
     }
 }
 

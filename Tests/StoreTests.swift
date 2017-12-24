@@ -48,6 +48,10 @@ class StoreTests: XCTestCase {
         }
     }
     
+    fileprivate func update(_ id: Author.ID, _ valueSet: ValueSet<Author>) {
+        store.update(Update(predicate: \Author.id == id, valueSet: valueSet))
+    }
+    
     fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]? {
         return store.fetch(query).collect().firstValue
     }
@@ -88,18 +92,10 @@ class StoreDeleteTests: StoreTests {
 
 class StoreUpdateTests: StoreTests {
     func testUpdateValues() {
-        let update = Update<Author>(
-            predicate: \Author.id == Author.ID.jrrTolkien,
-            valueSet: [ \Author.born == 100, \Author.died == 200 ]
-        )
-        
         insert(.jrrTolkien)
-        store.update(update)
-        let info = fetch()![0]
         
-        XCTAssertEqual(info.id, Author.ID.jrrTolkien)
-        XCTAssertEqual(info.name, Author.Data.jrrTolkien.name)
-        XCTAssertEqual(info.born, 100)
-        XCTAssertEqual(info.died, 200)
+        update(.jrrTolkien, [ \.born == 100, \.died == 200 ])
+        
+        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien, born: 100, died: 200) ])
     }
 }
