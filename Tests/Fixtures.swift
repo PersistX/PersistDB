@@ -194,6 +194,7 @@ extension Author: PersistDB.Model {
 extension Author.ID {
     static let orsonScottCard = Author.ID(1)
     static let jrrTolkien = Author.ID(2)
+    static let isaacAsimov = Author.ID(3)
 }
 
 extension Author {
@@ -217,6 +218,12 @@ extension Author.Data {
         name: "J.R.R. Tolkien",
         born: 1892,
         died: 1973
+    )
+    static let isaacAsimov = Author.Data(
+        id: .isaacAsimov,
+        name: "Isaac Asimov",
+        born: 1920,
+        died: 1992
     )
 }
 
