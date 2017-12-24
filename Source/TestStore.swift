@@ -11,6 +11,10 @@ private struct ID<A: PersistDB.Model>: ModelProjection {
     static var projection: Projection<Model, ID<Model>> {
         return Projection<Model, ID<Model>>(ID.init, Model.idKeyPath)
     }
+    
+    static func == (lhs: ID, rhs: ID) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 extension Schemata.AnyModel {
