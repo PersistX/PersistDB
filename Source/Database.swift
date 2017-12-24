@@ -122,6 +122,17 @@ internal class Database {
         execute(insert.sql)
     }
     
+    func perform(_ action: SQL.Action) {
+        switch action {
+        case let .insert(sql):
+            insert(sql)
+        case let .delete(sql):
+            delete(sql)
+        case let .update(sql):
+            update(sql)
+        }
+    }
+    
     func query(_ query: SQL.Query) -> [Row] {
         return execute(query.sql)
     }
