@@ -39,7 +39,7 @@ class StoreTests: XCTestCase {
 
 class StoreFetchTests: StoreTests {
     func testSingleResult() {
-        let author = Author.jrrTolkien
+        let author = Author.Data.jrrTolkien
         let insert = Insert<Author>(author)
         
         store.insert(insert)
@@ -63,7 +63,7 @@ class StoreFetchTests: StoreTests {
     }
     
     func testPerformWorkOnSubscription() {
-        let author = Author.jrrTolkien
+        let author = Author.Data.jrrTolkien
         let insert = Insert<Author>(author)
         let producer: SignalProducer<AuthorInfo, NoError> = store.fetch(Author.all)
         
@@ -75,7 +75,7 @@ class StoreFetchTests: StoreTests {
 
 class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
-        let author = Author.jrrTolkien
+        let author = Author.Data.jrrTolkien
         let insert = Insert<Author>(author)
         let delete = Delete<Author>(\Author.id == author.id)
         
@@ -91,7 +91,7 @@ class StoreDeleteTests: StoreTests {
 
 class StoreUpdateTests: StoreTests {
     func testUpdateValues() {
-        let author = Author.jrrTolkien
+        let author = Author.Data.jrrTolkien
         let insert = Insert<Author>(author)
         let update = Update<Author>(
             predicate: \Author.id == author.id,

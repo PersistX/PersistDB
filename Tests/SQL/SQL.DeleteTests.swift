@@ -19,7 +19,7 @@ class SQLDeleteTests: XCTestCase {
         let predicate = SQL.Expression.binary(
             .equal,
             .column(table["name"]),
-            .value(.text(Author.jrrTolkien.name))
+            .value(.text(Author.Data.jrrTolkien.name))
         )
         let delete = SQL.Delete(
             table: table,
@@ -32,7 +32,7 @@ class SQLDeleteTests: XCTestCase {
         XCTAssertEqual(
             Set(db.query(query)),
             [
-                Author.orsonScottCard.row,
+                Author.Data.orsonScottCard.row,
             ]
         )
     }

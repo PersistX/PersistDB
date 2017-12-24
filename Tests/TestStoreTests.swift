@@ -4,17 +4,17 @@ import XCTest
 class TestStoreTests: XCTestCase {
     func testQuery() {
         let theHobbit = Book.ISBN("the-hobbit")
-        let query = Book.all.filter(\Book.title == Book.theHobbit.title)
+        let query = Book.all.filter(\Book.title == Book.Data.theHobbit.title)
         let store = TestStore(
             [
                 .theHobbit: [
-                    \Book.title == Book.theHobbit.title,
+                    \Book.title == Book.Data.theHobbit.title,
                 ],
                 theHobbit: [
-                    \Book.title == Book.theHobbit.title,
+                    \Book.title == Book.Data.theHobbit.title,
                 ],
                 .theLordOfTheRings: [
-                    \Book.title == Book.theLordOfTheRings.title,
+                    \Book.title == Book.Data.theLordOfTheRings.title,
                 ]
             ]
         )
@@ -24,7 +24,7 @@ class TestStoreTests: XCTestCase {
     func testQueryWithImplicitlyNilColumn() {
         let query = Author.all.filter(\Author.died == nil)
         let store = TestStore(
-            [ .jrrTolkien: [ \Author.name == Author.jrrTolkien.name ]]
+            [ .jrrTolkien: [ \Author.name == Author.Data.jrrTolkien.name ]]
         )
         XCTAssertEqual(store.fetch(query), [.jrrTolkien])
     }

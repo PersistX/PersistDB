@@ -66,7 +66,7 @@ class ModelTests: XCTestCase {
 
 class ProjectionFromSQLResultTests: XCTestCase {
     func test() {
-        let author = Author.jrrTolkien
+        let author = Author.Data.jrrTolkien
         let values: [PartialKeyPath<Author>: SQL.Value] = [
             \Author.id: .integer(author.id.int),
             \Author.name: .text(author.name),
@@ -80,7 +80,7 @@ class ProjectionFromSQLResultTests: XCTestCase {
     }
     
     func testWithNilValue() {
-        let author = Author.orsonScottCard
+        let author = Author.Data.orsonScottCard
         let values: [PartialKeyPath<Author>: SQL.Value] = [
             \Author.id: .integer(author.id.int),
             \Author.name: .text(author.name),

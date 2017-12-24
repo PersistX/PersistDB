@@ -19,7 +19,7 @@ class SQLUpdateTests: XCTestCase {
         let predicate = SQL.Expression.binary(
             .equal,
             .column(table["name"]),
-            .value(.text(Author.jrrTolkien.name))
+            .value(.text(Author.Data.jrrTolkien.name))
         )
         let update = SQL.Update(
             table: table,
@@ -36,10 +36,10 @@ class SQLUpdateTests: XCTestCase {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Author.orsonScottCard.row,
+                Author.Data.orsonScottCard.row,
                 Row([
-                    "id": .integer(Author.jrrTolkien.id.int),
-                    "name": .text(Author.jrrTolkien.name),
+                    "id": .integer(Author.ID.jrrTolkien.int),
+                    "name": .text(Author.Data.jrrTolkien.name),
                     "born": .integer(1792),
                     "died": .integer(1873),
                 ]),
@@ -65,14 +65,14 @@ class SQLUpdateTests: XCTestCase {
             Set(db.query(query)),
             Set([
                 Row([
-                    "id": .integer(Author.orsonScottCard.id.int),
-                    "name": .text(Author.orsonScottCard.name),
+                    "id": .integer(Author.ID.orsonScottCard.int),
+                    "name": .text(Author.Data.orsonScottCard.name),
                     "born": .integer(1792),
                     "died": .integer(1873),
                 ]),
                 Row([
-                    "id": .integer(Author.jrrTolkien.id.int),
-                    "name": .text(Author.jrrTolkien.name),
+                    "id": .integer(Author.ID.jrrTolkien.int),
+                    "name": .text(Author.Data.jrrTolkien.name),
                     "born": .integer(1792),
                     "died": .integer(1873),
                 ]),

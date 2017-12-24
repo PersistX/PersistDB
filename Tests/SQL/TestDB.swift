@@ -55,6 +55,10 @@ extension Book.Data {
             "title": .text(title),
         ]
     }
+    
+    
+    static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
+    static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
 }
 
 extension Book {
@@ -65,9 +69,6 @@ extension Book {
     }
     
     static let table = SQL.Table("books")
-    
-    static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
-    static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
     
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .text, primaryKey: true),
@@ -82,15 +83,15 @@ class TestDB {
     init() {
         let fixtures: [SQL] = [
             Author.sqlSchema.sql,
-            Author.orsonScottCard.insert.sql,
-            Author.jrrTolkien.insert.sql,
+            Author.Data.orsonScottCard.insert.sql,
+            Author.Data.jrrTolkien.insert.sql,
             Book.sqlSchema.sql,
-            Book.theHobbit.insert.sql,
-            Book.theLordOfTheRings.insert.sql,
-            Book.endersGame.insert.sql,
-            Book.speakerForTheDead.insert.sql,
-            Book.xenocide.insert.sql,
-            Book.childrenOfTheMind.insert.sql,
+            Book.Data.theHobbit.insert.sql,
+            Book.Data.theLordOfTheRings.insert.sql,
+            Book.Data.endersGame.insert.sql,
+            Book.Data.speakerForTheDead.insert.sql,
+            Book.Data.xenocide.insert.sql,
+            Book.Data.childrenOfTheMind.insert.sql,
         ]
         
         db = Database()

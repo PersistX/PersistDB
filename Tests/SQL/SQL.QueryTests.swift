@@ -26,8 +26,8 @@ class SQLQueryTests: XCTestCase {
     func testNotEqualWithDifferentPredicates() {
         let query = SQL.Query.select([ .wildcard(Book.table) ])
         XCTAssertNotEqual(
-            query.where(Book.Table.author == .value(.integer(Author.jrrTolkien.id.int))),
-            query.where(Book.Table.author == .value(.integer(Author.orsonScottCard.id.int)))
+            query.where(Book.Table.author == .value(.integer(Author.ID.jrrTolkien.int))),
+            query.where(Book.Table.author == .value(.integer(Author.ID.orsonScottCard.int)))
         )
     }
     
@@ -47,7 +47,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set(Book.byJRRTolkien + Book.byOrsonScottCard)
+            Set(Book.Data.byJRRTolkien + Book.Data.byOrsonScottCard)
         )
     }
     
@@ -58,8 +58,8 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row(["id": .integer(Author.orsonScottCard.id.int)]),
-                Row(["id": .integer(Author.jrrTolkien.id.int)]),
+                Row(["id": .integer(Author.ID.orsonScottCard.int)]),
+                Row(["id": .integer(Author.ID.jrrTolkien.int)]),
             ])
         )
     }
@@ -75,11 +75,11 @@ class SQLQueryTests: XCTestCase {
             Set(db.query(query)),
             Set([
                 Row([
-                    "id": .integer(Author.orsonScottCard.id.int),
+                    "id": .integer(Author.ID.orsonScottCard.int),
                     "name": .text("Orson Scott Card"),
                 ]),
                 Row([
-                    "id": .integer(Author.jrrTolkien.id.int),
+                    "id": .integer(Author.ID.jrrTolkien.int),
                     "name": .text("J.R.R. Tolkien"),
                 ]),
             ])
@@ -103,11 +103,11 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
             .where(Book.Table.author == Author.Table.id)
-            .where(Author.Table.id == .value(.integer(Author.jrrTolkien.id.int)))
+            .where(Author.Table.id == .value(.integer(Author.ID.jrrTolkien.int)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set(Book.byJRRTolkien)
+            Set(Book.Data.byJRRTolkien)
         )
     }
     
@@ -118,7 +118,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
+            Set([Author.Data.orsonScottCard.row])
         )
     }
     
@@ -129,7 +129,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
+            Set([Author.Data.orsonScottCard.row])
         )
     }
     
@@ -137,11 +137,11 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
             .where(Book.Table.author == Author.Table.id)
-            .where(Author.Table.id != .value(.integer(Author.jrrTolkien.id.int)))
+            .where(Author.Table.id != .value(.integer(Author.ID.jrrTolkien.int)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set(Book.byOrsonScottCard)
+            Set(Book.Data.byOrsonScottCard)
         )
     }
     
@@ -152,7 +152,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
+            Set([Author.Data.jrrTolkien.row])
         )
     }
     
@@ -163,7 +163,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
+            Set([Author.Data.jrrTolkien.row])
         )
     }
     
@@ -174,7 +174,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
+            Set([Author.Data.jrrTolkien.row])
         )
     }
     
@@ -185,7 +185,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
+            Set([Author.Data.orsonScottCard.row])
         )
     }
     
@@ -196,7 +196,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.jrrTolkien.row])
+            Set([Author.Data.jrrTolkien.row])
         )
     }
     
@@ -207,7 +207,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
+            Set([Author.Data.orsonScottCard.row])
         )
     }
     
@@ -217,13 +217,13 @@ class SQLQueryTests: XCTestCase {
         let title = Book.Table.title
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
-            .where(title == .value(.text(Book.endersGame.title)) || title == .value(.text(Book.xenocide.title)))
+            .where(title == .value(.text(Book.Data.endersGame.title)) || title == .value(.text(Book.Data.xenocide.title)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Book.endersGame.row,
-                Book.xenocide.row,
+                Book.Data.endersGame.row,
+                Book.Data.xenocide.row,
             ])
         )
     }
@@ -231,11 +231,11 @@ class SQLQueryTests: XCTestCase {
     func testNot() {
         let query = SQL.Query
             .select([ .wildcard(Author.table) ])
-            .where(!(Author.Table.name == .value(.text(Author.jrrTolkien.name))))
+            .where(!(Author.Table.name == .value(.text(Author.Data.jrrTolkien.name))))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set([Author.orsonScottCard.row])
+            Set([Author.Data.orsonScottCard.row])
         )
     }
     
@@ -248,9 +248,9 @@ class SQLQueryTests: XCTestCase {
         )
         let query = SQL.Query
             .select([ SQL.Result(maximum) ])
-            .where(Author.Table.id == .value(.integer(Author.jrrTolkien.id.int)))
+            .where(Author.Table.id == .value(.integer(Author.ID.jrrTolkien.int)))
         
-        let row: Row = [maximum.sql.debugDescription: .integer(Author.jrrTolkien.died!)]
+        let row: Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.died!)]
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -265,9 +265,9 @@ class SQLQueryTests: XCTestCase {
         )
         let query = SQL.Query
             .select([ SQL.Result(maximum) ])
-            .where(Author.Table.id == .value(.integer(Author.jrrTolkien.id.int)))
+            .where(Author.Table.id == .value(.integer(Author.ID.jrrTolkien.int)))
         
-        let row: Row = [maximum.sql.debugDescription: .integer(Author.jrrTolkien.born)]
+        let row: Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.born)]
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -281,7 +281,7 @@ class SQLQueryTests: XCTestCase {
         let join = SQL.Expression.join(
             SQL.Column(table: Book.table, name: "author"),
             SQL.Column(table: Author.table, name: "id"),
-            Author.Table.name == .value(.text(Author.jrrTolkien.name))
+            Author.Table.name == .value(.text(Author.Data.jrrTolkien.name))
         )
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
@@ -290,7 +290,7 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
-            Set(Book.byJRRTolkien)
+            Set(Book.Data.byJRRTolkien)
         )
     }
     
@@ -311,12 +311,12 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             db.query(query),
             [
-                Book.theHobbit.row,
-                Book.theLordOfTheRings.row,
-                Book.childrenOfTheMind.row,
-                Book.endersGame.row,
-                Book.speakerForTheDead.row,
-                Book.xenocide.row,
+                Book.Data.theHobbit.row,
+                Book.Data.theLordOfTheRings.row,
+                Book.Data.childrenOfTheMind.row,
+                Book.Data.endersGame.row,
+                Book.Data.speakerForTheDead.row,
+                Book.Data.xenocide.row,
             ]
         )
     }
@@ -329,13 +329,13 @@ class SQLQueryTests: XCTestCase {
         )
         let query = SQL.Query
             .select([ SQL.Result(join).as("authorName") ])
-            .where(Book.Table.title == .value(.text(Book.theHobbit.title)))
+            .where(Book.Table.title == .value(.text(Book.Data.theHobbit.title)))
         
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             db.query(query),
             [
-                ["authorName": .text(Author.jrrTolkien.name)],
+                ["authorName": .text(Author.Data.jrrTolkien.name)],
             ]
         )
     }
@@ -343,7 +343,7 @@ class SQLQueryTests: XCTestCase {
     // MARK: - Collections
     
     func testContains() {
-        let books = [ Book.theHobbit, Book.xenocide ]
+        let books = [ Book.Data.theHobbit, Book.Data.xenocide ]
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
             .where(books.map { $0.title }.contains(Book.Table.title))
@@ -359,8 +359,8 @@ class SQLQueryTests: XCTestCase {
     func testMultipleWhereMethods() {
         let query = SQL.Query
             .select([ .wildcard(Book.table) ])
-            .where(Book.Table.author != .value(.integer(Author.jrrTolkien.id.int)))
-            .where(Book.Table.author != .value(.integer(Author.orsonScottCard.id.int)))
+            .where(Book.Table.author != .value(.integer(Author.ID.jrrTolkien.int)))
+            .where(Book.Table.author != .value(.integer(Author.ID.orsonScottCard.int)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -378,12 +378,12 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             db.query(query),
             [
-                Book.childrenOfTheMind.row,
-                Book.endersGame.row,
-                Book.speakerForTheDead.row,
-                Book.theHobbit.row,
-                Book.theLordOfTheRings.row,
-                Book.xenocide.row,
+                Book.Data.childrenOfTheMind.row,
+                Book.Data.endersGame.row,
+                Book.Data.speakerForTheDead.row,
+                Book.Data.theHobbit.row,
+                Book.Data.theLordOfTheRings.row,
+                Book.Data.xenocide.row,
             ]
         )
     }
@@ -396,12 +396,12 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             db.query(query),
             [
-                Book.xenocide.row,
-                Book.theLordOfTheRings.row,
-                Book.theHobbit.row,
-                Book.speakerForTheDead.row,
-                Book.endersGame.row,
-                Book.childrenOfTheMind.row,
+                Book.Data.xenocide.row,
+                Book.Data.theLordOfTheRings.row,
+                Book.Data.theHobbit.row,
+                Book.Data.speakerForTheDead.row,
+                Book.Data.endersGame.row,
+                Book.Data.childrenOfTheMind.row,
             ]
         )
     }
@@ -418,12 +418,12 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             db.query(query),
             [
-                Book.theHobbit.row,
-                Book.theLordOfTheRings.row,
-                Book.childrenOfTheMind.row,
-                Book.endersGame.row,
-                Book.speakerForTheDead.row,
-                Book.xenocide.row,
+                Book.Data.theHobbit.row,
+                Book.Data.theLordOfTheRings.row,
+                Book.Data.childrenOfTheMind.row,
+                Book.Data.endersGame.row,
+                Book.Data.speakerForTheDead.row,
+                Book.Data.xenocide.row,
             ]
         )
     }
@@ -438,13 +438,13 @@ class SQLQueryTests: XCTestCase {
         XCTAssertEqual(
             db.query(query),
             [
-                Book.theHobbit.row,
-                Book.theLordOfTheRings.row,
-                Book.childrenOfTheMind.row,
-                Book.endersGame.row,
-                Book.speakerForTheDead.row,
-                Book.xenocide.row,
-                ]
+                Book.Data.theHobbit.row,
+                Book.Data.theLordOfTheRings.row,
+                Book.Data.childrenOfTheMind.row,
+                Book.Data.endersGame.row,
+                Book.Data.speakerForTheDead.row,
+                Book.Data.xenocide.row,
+            ]
         )
     }
 }

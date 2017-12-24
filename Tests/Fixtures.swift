@@ -88,14 +88,40 @@ extension Book {
         let title: String
         let author: Author.ID
     }
+}
+
+extension Book.Data {
+    static let theHobbit = Book.Data(
+        id: .theHobbit,
+        title: "The Hobbit",
+        author: .jrrTolkien
+    )
+    static let theLordOfTheRings = Book.Data(
+        id: .theLordOfTheRings,
+        title: "The Lord of the Rings",
+        author: .jrrTolkien
+    )
     
-    static let theHobbit = Data(id: .theHobbit, title: "The Hobbit", author: Author.jrrTolkien.id)
-    static let theLordOfTheRings = Data(id: .theLordOfTheRings, title: "The Lord of the Rings", author: Author.jrrTolkien.id)
-    
-    static let endersGame = Data(id: .endersGame, title: "Ender's Game", author: .orsonScottCard)
-    static let speakerForTheDead = Data(id: .speakerForTheDead, title: "Speaker for the Dead", author: .orsonScottCard)
-    static let xenocide = Data(id: .xenocide, title: "Xenocide", author: .orsonScottCard)
-    static let childrenOfTheMind = Data(id: .childrenOfTheMind, title: "Children of the Mind", author: .orsonScottCard)
+    static let endersGame = Book.Data(
+        id: .endersGame,
+        title: "Ender's Game",
+        author: .orsonScottCard
+    )
+    static let speakerForTheDead = Book.Data(
+        id: .speakerForTheDead,
+        title: "Speaker for the Dead",
+        author: .orsonScottCard
+    )
+    static let xenocide = Book.Data(
+        id: .xenocide,
+        title: "Xenocide",
+        author: .orsonScottCard
+    )
+    static let childrenOfTheMind = Book.Data(
+        id: .childrenOfTheMind,
+        title: "Children of the Mind",
+        author: .orsonScottCard
+    )
 }
 
 
@@ -177,9 +203,21 @@ extension Author {
         let born: Int
         let died: Int?
     }
-    
-    static let orsonScottCard = Data(id: .orsonScottCard, name: "Orson Scott Card", born: 1951, died: nil)
-    static let jrrTolkien = Data(id: .jrrTolkien, name: "J.R.R. Tolkien", born: 1892, died: 1973)
+}
+
+extension Author.Data {
+    static let orsonScottCard = Author.Data(
+        id: .orsonScottCard,
+        name: "Orson Scott Card",
+        born: 1951,
+        died: nil
+    )
+    static let jrrTolkien = Author.Data(
+        id: .jrrTolkien,
+        name: "J.R.R. Tolkien",
+        born: 1892,
+        died: 1973
+    )
 }
 
 // MARK: - AuthorInfo
