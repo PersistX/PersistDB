@@ -35,77 +35,70 @@ class StoreTests: XCTestCase {
         super.tearDown()
         store = nil
     }
+    
+    fileprivate func insert(_ data: Author.Data...) {
+        for d in data {
+            store.insert(Insert(d))
+        }
+    }
+    
+    fileprivate func delete(_ data: Author.Data...) {
+        for d in data {
+            store.delete(Delete(\Author.id == d.id))
+        }
+    }
+    
+    fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]? {
+        return store.fetch(query).collect().firstValue
+    }
 }
 
 class StoreFetchTests: StoreTests {
     func testSingleResult() {
-        let author = Author.Data.jrrTolkien
-        let insert = Insert<Author>(author)
+        insert(.jrrTolkien)
         
-        store.insert(insert)
-        let info: AuthorInfo = store
-            .fetch(Author.all)
-            .firstValue!
-        
-        XCTAssertEqual(info, AuthorInfo(author))
+        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
     }
     
     func testNilValue() {
-        let author = Author.Data.orsonScottCard
-        let insert = Insert<Author>(author)
+        insert(.orsonScottCard)
         
-        store.insert(insert)
-        let info: AuthorInfo = store
-            .fetch(Author.all)
-            .firstValue!
-        
-        XCTAssertEqual(info, AuthorInfo(author))
+        XCTAssertEqual(fetch()!, [ AuthorInfo(.orsonScottCard) ])
     }
     
     func testPerformWorkOnSubscription() {
-        let author = Author.Data.jrrTolkien
-        let insert = Insert<Author>(author)
         let producer: SignalProducer<AuthorInfo, NoError> = store.fetch(Author.all)
         
-        store.insert(insert)
+        insert(.jrrTolkien)
         
-        XCTAssertEqual(producer.firstValue, AuthorInfo(author))
+        XCTAssertEqual(producer.firstValue, AuthorInfo(.jrrTolkien))
     }
 }
 
 class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
-        let author = Author.Data.jrrTolkien
-        let insert = Insert<Author>(author)
-        let delete = Delete<Author>(\Author.id == author.id)
+        insert(.jrrTolkien)
+        XCTAssert(!fetch()!.isEmpty)
         
-        store.insert(insert)
-        store.delete(delete)
-        let info: AuthorInfo? = store
-            .fetch(Author.all)
-            .firstValue
+        delete(.jrrTolkien)
         
-        XCTAssertNil(info)
+        XCTAssert(fetch()!.isEmpty)
     }
 }
 
 class StoreUpdateTests: StoreTests {
     func testUpdateValues() {
-        let author = Author.Data.jrrTolkien
-        let insert = Insert<Author>(author)
         let update = Update<Author>(
-            predicate: \Author.id == author.id,
+            predicate: \Author.id == Author.ID.jrrTolkien,
             valueSet: [ \Author.born == 100, \Author.died == 200 ]
         )
         
-        store.insert(insert)
+        insert(.jrrTolkien)
         store.update(update)
-        let info: AuthorInfo = store
-            .fetch(Author.all)
-            .firstValue!
+        let info = fetch()![0]
         
-        XCTAssertEqual(info.id, author.id)
-        XCTAssertEqual(info.name, author.name)
+        XCTAssertEqual(info.id, Author.ID.jrrTolkien)
+        XCTAssertEqual(info.name, Author.Data.jrrTolkien.name)
         XCTAssertEqual(info.born, 100)
         XCTAssertEqual(info.died, 200)
     }
