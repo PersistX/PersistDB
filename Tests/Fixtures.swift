@@ -72,6 +72,16 @@ extension Book: PersistDB.Model {
     ]
 }
 
+extension Book.ISBN {
+    static let theHobbit = Book.ISBN("978-0547928227")
+    static let theLordOfTheRings = Book.ISBN("978-0544003415")
+    
+    static let endersGame = Book.ISBN("978-0312853235")
+    static let speakerForTheDead = Book.ISBN("978-0312853259")
+    static let xenocide = Book.ISBN("978-0812509250")
+    static let childrenOfTheMind = Book.ISBN("978-0812522396")
+}
+
 extension Book {
     struct Data {
         let id: Book.ISBN
@@ -153,6 +163,11 @@ extension Author: PersistDB.Model {
         Ordering(\Author.born),
         Ordering(\Author.died),
     ]
+}
+
+extension Author.ID {
+    static let orsonScottCard = Author.ID(1)
+    static let jrrTolkien = Author.ID(2)
 }
 
 extension Author {
