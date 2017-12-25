@@ -101,3 +101,174 @@ class StoreUpdateTests: StoreTests {
         XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien, born: 100, died: 200) ])
     }
 }
+
+class StoreObserveTests: StoreTests {
+    private let query = Author
+        .all
+        .filter(\.born >= 1900)
+        .sort(by: \.name)
+    private var observation: SignalProducer<[AuthorInfo], NoError>!
+    private var observed: [AuthorInfo]?
+    
+    override func setUp() {
+        super.setUp()
+        
+        observation = store
+            .observe(query)
+            .skip(first: 1)
+            .take(first: 1)
+            .replayLazily(upTo: 1)
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        
+        observation = nil
+        observed = nil
+    }
+    
+    private func observe(_ block: () -> ()) {
+        observation.startWithValues {
+            self.observed = $0
+        }
+        
+        block()
+        
+        _ = observation
+            .timeout(after: 0.01, raising: NSError(), on: QueueScheduler())
+            .wait()
+    }
+    
+    func testSendsInitialResultsWhenEmpty() {
+        insert(.jrrTolkien)
+        XCTAssertEqual(store.observe(query).firstValue!, fetch(query)!)
+    }
+    
+    func testSendsInitialResultsWhenNotEmpty() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+
+        XCTAssertEqual(store.observe(query).firstValue!, fetch(query)!)
+    }
+    
+    func testSendsAfterMatchingInsert() {
+        observe {
+            insert(.isaacAsimov)
+        }
+        
+        XCTAssertEqual(observed!, [AuthorInfo(.isaacAsimov)])
+    }
+    
+    func testDoesNotSendAfterNonMatchingInsert() {
+        observe {
+            insert(.jrrTolkien)
+        }
+        
+        XCTAssertNil(observed)
+    }
+    
+    func testSendsAfterMatchingDelete() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        observe {
+            delete(.isaacAsimov)
+        }
+        
+        XCTAssertEqual(observed!, [AuthorInfo(.orsonScottCard)])
+    }
+    
+    func testDoesNotSendAfterNonMatchingDelete() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        observe {
+            delete(.jrrTolkien)
+        }
+        
+        XCTAssertNil(observed)
+    }
+    
+    func testSendsAfterUpdateThatChangesProjectedValue() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        observe {
+            update(.orsonScottCard, [ \.died == 3002 ])
+        }
+        
+        XCTAssertEqual(
+            observed!,
+            [
+                AuthorInfo(.isaacAsimov),
+                AuthorInfo(.orsonScottCard, died: 3002),
+            ]
+        )
+    }
+    
+    func testSendsAfterUpdateThatChangesSorting() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        let name = "An Orson Scott Card"
+        observe {
+            update(.orsonScottCard, [ \.name == name ])
+        }
+        
+        XCTAssertEqual(
+            observed!,
+            [
+                AuthorInfo(.orsonScottCard, name: name),
+                AuthorInfo(.isaacAsimov),
+            ]
+        )
+    }
+    
+    func testSendsAfterUpdateThatAddsObject() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        observe {
+            update(.jrrTolkien, [ \.born == 1900 ])
+        }
+        
+        XCTAssertEqual(
+            observed!,
+            [
+                AuthorInfo(.isaacAsimov),
+                AuthorInfo(.jrrTolkien, born: 1900),
+                AuthorInfo(.orsonScottCard),
+            ]
+        )
+    }
+    
+    func testSendsAfterUpdateThatRemovesObject() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        observe {
+            update(.orsonScottCard, [ \.born == 2 ])
+        }
+        
+        XCTAssertEqual(
+            observed!,
+            [
+                AuthorInfo(.isaacAsimov),
+            ]
+        )
+    }
+    
+    func testDoesNotSendAfterUpdateToMatchingEntityThatDoesNotAffectResult() {
+        insert(.isaacAsimov)
+        
+        observe {
+            update(.isaacAsimov, [ \.givenName == "Isaac Asimov" ])
+        }
+        
+        XCTAssertNil(observed)
+    }
+    
+    func testDoesNotSendAfterUpdateToNonMatchingEntity() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+        
+        observe {
+            update(.jrrTolkien, [ \.name == Author.Data.jrrTolkien.givenName ])
+        }
+        
+        XCTAssertNil(observed)
+    }
+}
+

@@ -5,6 +5,7 @@ import Schemata
 
 public final class Store {
     fileprivate let db: Database
+    fileprivate let actions = Signal<SQL.Action, NoError>.pipe()
     
     private init(_ db: Database, for schemas: [AnySchema]) {
         self.db = db
@@ -12,6 +13,8 @@ public final class Store {
         for schema in schemas {
             db.create(schema.sql)
         }
+        
+        actions.output.observeValues(db.perform)
     }
     
     public convenience init(for schemas: [AnySchema]) {
@@ -24,14 +27,20 @@ public final class Store {
 }
 
 extension Store {
-    public func delete<Model>(_ delete: Delete<Model>) {
-        db.delete(delete.sql)
-    }
-    
     public func insert<Model>(_ insert: Insert<Model>) {
-        db.insert(insert.sql)
+        actions.input.send(value: .insert(insert.sql))
     }
     
+    public func delete<Model>(_ delete: Delete<Model>) {
+        actions.input.send(value: .delete(delete.sql))
+    }
+    
+    public func update<Model>(_ update: Update<Model>) {
+        actions.input.send(value: .update(update.sql))
+    }
+}
+
+extension Store {
     public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<Projection, NoError> {
@@ -59,7 +68,16 @@ extension Store {
         }
     }
     
-    public func update<Model>(_ update: Update<Model>) {
-        db.update(update.sql)
+    public func observe<Projection: ModelProjection>(
+        _ query: Query<Projection.Model>
+    ) -> SignalProducer<[Projection], NoError> {
+        let invalidated = actions.output
+            .map { _ in () }
+        return fetch(query)
+            .collect()
+            .concat(.never)
+            .take(until: invalidated)
+            .repeat(.max)
+            .skipRepeats { $0 == $1 }
     }
 }
