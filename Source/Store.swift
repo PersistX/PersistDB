@@ -41,31 +41,24 @@ extension Store {
 }
 
 extension Store {
-    public func fetch<Projection: ModelProjection>(
-        _ query: Query<Projection.Model>
+    private func fetch<Projection>(
+        _ projected: ProjectedQuery<Projection>
     ) -> SignalProducer<Projection, NoError> {
-        let projection = Projection.projection
-        let keyPaths = Dictionary(uniqueKeysWithValues: projection.keyPaths.map { keyPath in
-            (UUID().uuidString, keyPath)
-        })
-        let aliases = Dictionary(uniqueKeysWithValues: keyPaths.map { ($1, $0) })
-        let results = projection.keyPaths.map { keyPath in
-            return SQL.Result(keyPath.sql, alias: aliases[keyPath])
-        }
-        let sql = query.sql
         return SignalProducer { [db = self.db] observer, _ in
             let values = db
-                .query(SQL.Query(results: results, predicates: sql.predicates, order: sql.order))
-                .map { row -> [PartialKeyPath<Projection.Model>: SQL.Value] in
-                    return Dictionary(uniqueKeysWithValues: row.dictionary.map { alias, value in
-                        let keyPath = keyPaths[alias]! as PartialKeyPath<Projection.Model>
-                        return (keyPath, value)
-                    })
-                }
+                .query(projected.sql)
+                .map(projected.values(for:))
                 .flatMap(Projection.projection.makeValue)
             values.forEach(observer.send(value:))
             observer.sendCompleted()
         }
+    }
+    
+    public func fetch<Projection: ModelProjection>(
+        _ query: Query<Projection.Model>
+    ) -> SignalProducer<Projection, NoError> {
+        let projected = ProjectedQuery<Projection>(query)
+        return fetch(projected)
     }
     
     public func observe<Projection: ModelProjection>(
@@ -73,7 +66,8 @@ extension Store {
     ) -> SignalProducer<[Projection], NoError> {
         let invalidated = actions.output
             .map { _ in () }
-        return fetch(query)
+        let projected = ProjectedQuery<Projection>(query)
+        return fetch(projected)
             .collect()
             .concat(.never)
             .take(until: invalidated)
