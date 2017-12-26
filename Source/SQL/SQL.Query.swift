@@ -82,7 +82,7 @@ extension SQL.Query {
     }
     
     /// The tables that are a part of this query.
-    private var tables: Set<SQL.Table> {
+    fileprivate var tables: Set<SQL.Table> {
         let results = self.results.map { $0.tables }
         let predicates = self.predicates.map { $0.tables }
         let order = self.order.map { $0.expression.tables }
@@ -135,5 +135,25 @@ extension SQL.Query: Hashable {
         return lhs.results == rhs.results
             && lhs.predicates == rhs.predicates
             && lhs.order == rhs.order
+    }
+}
+
+extension SQL.Query {
+    private var columns: Set<SQL.Column> {
+        let results = self.results.map { $0.expression.columns }
+        let predicates = self.predicates.map { $0.columns }
+        let order = self.order.map { $0.expression.columns }
+        return (results + predicates + order).reduce(Set()) { $0.union($1) }
+    }
+    
+    internal func affected(by action: SQL.Action) -> Bool {
+        switch action {
+        case let .insert(insert):
+            return !columns.isDisjoint(with: insert.columns)
+        case let .delete(delete):
+            return tables.contains(delete.table)
+        case let .update(update):
+            return !columns.isDisjoint(with: update.columns)
+        }
     }
 }

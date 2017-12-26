@@ -448,3 +448,195 @@ class SQLQueryTests: XCTestCase {
         )
     }
 }
+
+class SQLQueryAffectedByTests: XCTestCase {
+    let query = SQL.Query
+        .select([ .init(Author.Table.name, alias: "foo") ])
+        .where(.binary(.isNot, Author.Table.died, .value(.null)))
+        .sorted(by: SQL.Ordering(Author.Table.born, .ascending))
+    
+    let joined = SQL.Query
+        .select([
+            .init(.join(
+                Book.table["author"],
+                Author.table["id"],
+                Author.Table.name
+            ), alias: "foo")
+        ])
+        .where(.binary(
+            .isNot,
+            .join(Book.table["author"], Author.table["id"], Author.Table.died),
+            .value(.null)
+        ))
+        .sorted(by: SQL.Ordering(
+            .join(Book.table["author"], Author.table["id"], Author.Table.born),
+            .ascending
+        ))
+    
+    func testNotAffectedByInsertInAnotherTable() {
+        let insert = SQL.Insert(
+            table: Book.table,
+            values: [
+                "name": .value(.text("name")),
+                "born": .value(.text("born")),
+                "died": .value(.text("died")),
+            ]
+        )
+        
+        XCTAssertFalse(query.affected(by: .insert(insert)))
+    }
+    
+    func testAffectedByInsert() {
+        let insert = SQL.Insert(
+            table: Author.table,
+            values: [
+                "name": .value(.text("name")),
+                "born": .value(.text("born")),
+                "died": .value(.text("died")),
+            ]
+        )
+        
+        XCTAssertTrue(query.affected(by: .insert(insert)))
+    }
+    
+    func testAffectedByInsertedInJoinedQuery() {
+        let insert = SQL.Insert(
+            table: Author.table,
+            values: [
+                "name": .value(.text("name")),
+                "born": .value(.text("born")),
+                "died": .value(.text("died")),
+            ]
+        )
+        
+        XCTAssertTrue(joined.affected(by: .insert(insert)))
+    }
+    
+    func testNotAffectedByDeleteInAnotherTable() {
+        let delete = SQL.Delete(table: Book.table, predicate: nil)
+        XCTAssertFalse(query.affected(by: .delete(delete)))
+    }
+    
+    func testAffectedByDelete() {
+        let delete = SQL.Delete(table: Author.table, predicate: nil)
+        XCTAssertTrue(query.affected(by: .delete(delete)))
+    }
+    
+    func testJoinedAffectedByDelete() {
+        let delete = SQL.Delete(table: Author.table, predicate: nil)
+        XCTAssertTrue(joined.affected(by: .delete(delete)))
+    }
+    
+    func testNotAffectedByUpdateInAnotherTable() {
+        let update = SQL.Update(
+            table: Book.table,
+            values: [
+                "name": .value(.text("name"))
+            ],
+            predicate: nil
+        )
+        XCTAssertFalse(query.affected(by: .update(update)))
+    }
+    
+    func testNotAffectedByUpdateToUnusedColumn() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "givenName": .value(.text("givenName"))
+            ],
+            predicate: nil
+        )
+        XCTAssertFalse(query.affected(by: .update(update)))
+    }
+    
+    func testNotAffectedByUpdateToUnusedJoinedColumn() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "givenName": .value(.text("givenName"))
+            ],
+            predicate: nil
+        )
+        XCTAssertFalse(joined.affected(by: .update(update)))
+    }
+    
+    func testAffectedByUpdateToSortColumn() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "born": .value(.integer(1000))
+            ],
+            predicate: nil
+        )
+        XCTAssertTrue(query.affected(by: .update(update)))
+    }
+    
+    func testAffectedByUpdateToJoinedSortColumn() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "born": .value(.integer(1000))
+            ],
+            predicate: nil
+        )
+        XCTAssertTrue(joined.affected(by: .update(update)))
+    }
+    
+    func testAffectedByUpdateToFilterColumn() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "died": .value(.integer(1000))
+            ],
+            predicate: nil
+        )
+        XCTAssertTrue(query.affected(by: .update(update)))
+    }
+    
+    func testAffectedByUpdateToJoinedFilterColumn() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "died": .value(.integer(1000))
+            ],
+            predicate: nil
+        )
+        XCTAssertTrue(joined.affected(by: .update(update)))
+    }
+    
+    func testAffectedByUpdateToJoinedAliasedColumnResult() {
+        let update = SQL.Update(
+            table: Author.table,
+            values: [
+                "name": .value(.text("givenName"))
+            ],
+            predicate: nil
+        )
+        XCTAssertTrue(joined.affected(by: .update(update)))
+    }
+    
+    func testAffectedByUpdateToDoubleJoinedAliasedColumnResult() {
+        let publisher = SQL.Table("Publisher")
+        let query = SQL.Query
+            .select([.init(
+                .join(
+                    Book.table["author"],
+                    Author.table["id"],
+                    .join(
+                        Author.table["publisher"],
+                        publisher["id"],
+                        .column(publisher["name"])
+                    )
+                ),
+                alias: "foo"
+            )])
+        let update = SQL.Update(
+            table: publisher,
+            values: [
+                "name": .value(.text("givenName"))
+            ],
+            predicate: nil
+        )
+        XCTAssertTrue(query.affected(by: .update(update)))
+    }
+}

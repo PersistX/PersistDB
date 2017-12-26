@@ -23,6 +23,10 @@ extension SQL.Update: Hashable {
 }
 
 extension SQL.Update {
+    internal var columns: Set<SQL.Column> {
+        return Set(values.keys.map { table[$0] })
+    }
+    
     internal var sql: SQL {
         let kvs = values.map { SQL("\($0.key) = ") + $0.value.sql }
         let predicate = self.predicate.map { SQL(" WHERE ") + $0.sql }

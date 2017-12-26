@@ -88,6 +88,14 @@ extension SQL.Expression {
         return result
     }
     
+    var columns: Set<SQL.Column> {
+        var result: Set<SQL.Column> = []
+        for case let .column(column) in expressions {
+            result.insert(column)
+        }
+        return result
+    }
+    
     var tables: Set<SQL.Table> {
         var result: Set<SQL.Table> = []
         for expr in expressions {

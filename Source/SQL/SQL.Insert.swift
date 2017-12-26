@@ -21,6 +21,10 @@ extension SQL.Insert: Hashable {
 }
 
 extension SQL.Insert {
+    internal var columns: Set<SQL.Column> {
+        return Set(values.keys.map { table[$0] })
+    }
+    
     internal var sql: SQL {
         let kvs = Array(values)
         return SQL("INSERT INTO \"\(table.name)\" ")
