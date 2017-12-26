@@ -25,6 +25,14 @@ extension Author.Data {
 
 extension Author {
     enum Table {
+        static let allColumns = [
+            SQL.Result(id),
+            SQL.Result(name),
+            SQL.Result(givenName),
+            SQL.Result(born),
+            SQL.Result(died),
+        ]
+        
         static let id = SQL.Expression.column(Author.table["id"])
         static let name = SQL.Expression.column(Author.table["name"])
         static let givenName = SQL.Expression.column(Author.table["givenName"])
@@ -67,6 +75,12 @@ extension Book.Data {
 
 extension Book {
     enum Table {
+        static let allColumns = [
+            SQL.Result(id),
+            SQL.Result(author),
+            SQL.Result(title),
+        ]
+        
         static let id = SQL.Expression.column(Book.table["id"])
         static let author = SQL.Expression.column(Book.table["author"])
         static let title = SQL.Expression.column(Book.table["title"])

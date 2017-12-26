@@ -1,102 +1,38 @@
 import Foundation
 
-extension SQL {
-    /// A result in a SQL query.
-    internal enum ResultType {
-        case expression(Expression)
-        case wildcard(Table)
-        
-        var sql: SQL {
-            switch self {
-            case let .expression(expression):
-                return expression.sql
-            case let .wildcard(table):
-                return SQL("\"\(table.name)\".*")
-            }
-        }
-        
-        var tables: Set<Table> {
-            switch self {
-            case let .expression(expression):
-                return expression.tables
-            case let .wildcard(table):
-                return [table]
-            }
-        }
-    }
-}
-
-extension SQL.ResultType: Hashable {
-    var hashValue: Int {
-        switch self {
-        case let .expression(expression):
-            return expression.hashValue
-        case let .wildcard(table):
-            return table.hashValue
-        }
-    }
-    
-    static func == (lhs: SQL.ResultType, rhs: SQL.ResultType) -> Bool {
-        switch (lhs, rhs) {
-        case let (.expression(lhs), .expression(rhs)):
-            return lhs == rhs
-        case let (.wildcard(lhs), .wildcard(rhs)):
-            return lhs == rhs
-        default:
-            return false
-        }
-    }
-}
 
 extension SQL {
     /// Something that can be used as a result in a SQL query.
     internal struct Result: Hashable {
-        private let result: ResultType
+        internal let expression: Expression
         private let alias: String?
         
-        internal static func wildcard(_ table: Table) -> Result {
-            return Result(.wildcard(table))
-        }
-        
-        private init(_ result: ResultType, alias: String? = nil) {
-            self.result = result
-            self.alias = alias
-        }
-        
         internal init(_ expression: Expression, alias: String? = nil) {
-            self.init(.expression(expression), alias: alias)
-        }
-        
-        var expression: SQL.Expression? {
-            switch result {
-            case let .expression(expr):
-                return expr
-            case .wildcard:
-                return nil
-            }
+            self.expression = expression
+            self.alias = alias
         }
         
         var sql: SQL {
             if let alias = alias {
-                return result.sql + " AS '\(alias)'"
+                return expression.sql + " AS '\(alias)'"
             }
-            return result.sql
+            return expression.sql
         }
         
         var tables: Set<Table> {
-            return result.tables
+            return expression.tables
         }
         
         internal var hashValue: Int {
-            return result.hashValue
+            return expression.hashValue
         }
         
         internal static func == (lhs: Result, rhs: Result) -> Bool {
-            return lhs.result == rhs.result
+            return lhs.expression == rhs.expression && lhs.alias == rhs.alias
         }
         
         func `as`(_ alias: String) -> Result {
-            return Result(result, alias: alias)
+            return Result(expression, alias: alias)
         }
     }
 }
@@ -161,7 +97,7 @@ extension SQL.Query {
         let whereSQL: SQL
         let predicates
             = self.predicates
-            + self.results.flatMap { $0.expression?.joins ?? [] }
+            + self.results.flatMap { $0.expression.joins }
             + self.predicates.flatMap { $0.joins }
             + self.order.flatMap { $0.expression.joins }
         if predicates.isEmpty {

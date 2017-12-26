@@ -28,7 +28,7 @@ class SQLDeleteTests: XCTestCase {
         
         db.delete(delete)
         
-        let query = SQL.Query.select([ .wildcard(table) ])
+        let query = SQL.Query.select(Author.Table.allColumns)
         XCTAssertEqual(
             Set(db.query(query)),
             [
@@ -46,7 +46,7 @@ class SQLDeleteTests: XCTestCase {
         
         db.delete(delete)
         
-        let query = SQL.Query.select([ .wildcard(table) ])
+        let query = SQL.Query.select(Author.Table.allColumns)
         XCTAssertEqual(
             Set(db.query(query)),
             []

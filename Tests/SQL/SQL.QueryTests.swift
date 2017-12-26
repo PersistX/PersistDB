@@ -24,7 +24,7 @@ class SQLQueryTests: XCTestCase {
     }
     
     func testNotEqualWithDifferentPredicates() {
-        let query = SQL.Query.select([ .wildcard(Book.table) ])
+        let query = SQL.Query.select(Book.Table.allColumns)
         XCTAssertNotEqual(
             query.where(Book.Table.author == .value(.integer(Author.ID.jrrTolkien.int))),
             query.where(Book.Table.author == .value(.integer(Author.ID.orsonScottCard.int)))
@@ -32,7 +32,7 @@ class SQLQueryTests: XCTestCase {
     }
     
     func testNotEqualWithDifferentOrder() {
-        let query = SQL.Query.select([ .wildcard(Book.table) ])
+        let query = SQL.Query.select(Book.Table.allColumns)
         XCTAssertNotEqual(
             query.sorted(by: Book.Table.author.ascending),
             query.sorted(by: Book.Table.author.descending)
@@ -43,7 +43,7 @@ class SQLQueryTests: XCTestCase {
     
     func testSelectingAWildcard() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -101,7 +101,7 @@ class SQLQueryTests: XCTestCase {
     
     func testEqual() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(Book.Table.author == Author.Table.id)
             .where(Author.Table.id == .value(.integer(Author.ID.jrrTolkien.int)))
         XCTAssertEqual(query, query)
@@ -113,7 +113,7 @@ class SQLQueryTests: XCTestCase {
     
     func testEqualsNil() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(Author.Table.died == .value(.null))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -124,7 +124,7 @@ class SQLQueryTests: XCTestCase {
     
     func testNilEquals() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(.value(.null) == Author.Table.died)
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -135,7 +135,7 @@ class SQLQueryTests: XCTestCase {
     
     func testNotEqual() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(Book.Table.author == Author.Table.id)
             .where(Author.Table.id != .value(.integer(Author.ID.jrrTolkien.int)))
         XCTAssertEqual(query, query)
@@ -147,7 +147,7 @@ class SQLQueryTests: XCTestCase {
     
     func testDoesNotEqualNil() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(Author.Table.died != .value(.null))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -158,7 +158,7 @@ class SQLQueryTests: XCTestCase {
     
     func testNilDoesNotEqual() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(.value(.null) != Author.Table.died)
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -169,7 +169,7 @@ class SQLQueryTests: XCTestCase {
     
     func testLessThan() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(Author.Table.born < .value(.integer(1951)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -180,7 +180,7 @@ class SQLQueryTests: XCTestCase {
     
     func testGreaterThan() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(Author.Table.born > .value(.integer(1950)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -191,7 +191,7 @@ class SQLQueryTests: XCTestCase {
     
     func testLessThanOrEqual() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(Author.Table.born <= .value(.integer(1892)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -202,7 +202,7 @@ class SQLQueryTests: XCTestCase {
     
     func testGreaterThanOrEqual() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(Author.Table.born >= .value(.integer(1951)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -216,7 +216,7 @@ class SQLQueryTests: XCTestCase {
     func testOr() {
         let title = Book.Table.title
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(title == .value(.text(Book.Data.endersGame.title)) || title == .value(.text(Book.Data.xenocide.title)))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -230,7 +230,7 @@ class SQLQueryTests: XCTestCase {
     
     func testNot() {
         let query = SQL.Query
-            .select([ .wildcard(Author.table) ])
+            .select(Author.Table.allColumns)
             .where(!(Author.Table.name == .value(.text(Author.Data.jrrTolkien.name))))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -284,7 +284,7 @@ class SQLQueryTests: XCTestCase {
             Author.Table.name == .value(.text(Author.Data.jrrTolkien.name))
         )
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(join)
     
         XCTAssertEqual(query, query)
@@ -301,7 +301,7 @@ class SQLQueryTests: XCTestCase {
             .column(SQL.Column(table: Author.table, name: "name"))
         )
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .sorted(by:
                 join.ascending,
                 Book.Table.title.ascending
@@ -345,7 +345,7 @@ class SQLQueryTests: XCTestCase {
     func testContains() {
         let books = [ Book.Data.theHobbit, Book.Data.xenocide ]
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(books.map { $0.title }.contains(Book.Table.title))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -358,7 +358,7 @@ class SQLQueryTests: XCTestCase {
     
     func testMultipleWhereMethods() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(Book.Table.author != .value(.integer(Author.ID.jrrTolkien.int)))
             .where(Book.Table.author != .value(.integer(Author.ID.orsonScottCard.int)))
         XCTAssertEqual(query, query)
@@ -372,7 +372,7 @@ class SQLQueryTests: XCTestCase {
     
     func testSortedByAscending() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .sorted(by: Book.Table.title.ascending)
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -390,7 +390,7 @@ class SQLQueryTests: XCTestCase {
     
     func testSortedByDescending() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .sorted(by: Book.Table.title.descending)
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -408,7 +408,7 @@ class SQLQueryTests: XCTestCase {
     
     func testSortedByWithMultipleDescriptors() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(Book.Table.author == Author.Table.id)
             .sorted(by:
                 Author.Table.name.ascending,
@@ -430,7 +430,7 @@ class SQLQueryTests: XCTestCase {
     
     func testSortedByWithMultipleCalls() {
         let query = SQL.Query
-            .select([ .wildcard(Book.table) ])
+            .select(Book.Table.allColumns)
             .where(Book.Table.author == Author.Table.id)
             .sorted(by: Book.Table.title.ascending)
             .sorted(by: Author.Table.name.ascending)

@@ -32,7 +32,7 @@ class SQLUpdateTests: XCTestCase {
         
         db.update(update)
         
-        let query = SQL.Query.select([ .wildcard(table) ])
+        let query = SQL.Query.select(Author.Table.allColumns)
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
@@ -61,7 +61,7 @@ class SQLUpdateTests: XCTestCase {
         
         db.update(update)
         
-        let query = SQL.Query.select([ .wildcard(table) ])
+        let query = SQL.Query.select(Author.Table.allColumns)
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
