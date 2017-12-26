@@ -6,15 +6,17 @@ extension Author.Data {
         return Author.table.insert([
             "id": .value(.integer(id.int)),
             "name": .value(.text(name)),
+            "givenName": .value(.text(givenName)),
             "born": .value(.integer(born)),
             "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null)
-            ])
+        ])
     }
     
     var row: Row {
         return [
             "id": .integer(id.int),
             "name": .text(name),
+            "givenName": .text(givenName),
             "born": .integer(born),
             "died": died.map(SQL.Value.integer) ?? .null,
         ]
@@ -25,6 +27,7 @@ extension Author {
     enum Table {
         static let id = SQL.Expression.column(Author.table["id"])
         static let name = SQL.Expression.column(Author.table["name"])
+        static let givenName = SQL.Expression.column(Author.table["givenName"])
         static let born = SQL.Expression.column(Author.table["born"])
         static let died = SQL.Expression.column(Author.table["died"])
     }
@@ -34,6 +37,7 @@ extension Author {
     fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
         SQL.Schema.Column(name: "name", type: .text),
+        SQL.Schema.Column(name: "givenName", type: .text),
         SQL.Schema.Column(name: "born", type: .integer),
         SQL.Schema.Column(name: "died", type: .integer, nullable: true),
     ])
