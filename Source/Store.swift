@@ -64,13 +64,14 @@ extension Store {
     public func observe<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<[Projection], NoError> {
-        let invalidated = actions.output
-            .map { _ in () }
         let projected = ProjectedQuery<Projection>(query)
         return fetch(projected)
             .collect()
             .concat(.never)
-            .take(until: invalidated)
+            .take(until: actions.output
+                .filter(projected.sql.affected(by:))
+                .map { _ in () }
+            )
             .repeat(.max)
             .skipRepeats { $0 == $1 }
     }
