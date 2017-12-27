@@ -42,7 +42,7 @@ extension Author {
     
     static let table = SQL.Table("authors")
     
-    fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
+    static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
         SQL.Schema.Column(name: "name", type: .text),
         SQL.Schema.Column(name: "givenName", type: .text),
@@ -88,7 +88,7 @@ extension Book {
     
     static let table = SQL.Table("books")
     
-    fileprivate static let sqlSchema = SQL.Schema(table: table, columns: [
+    static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .text, primaryKey: true),
         SQL.Schema.Column(name: "author", type: .integer),
         SQL.Schema.Column(name: "title", type: .text),

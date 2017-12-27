@@ -168,4 +168,37 @@ internal class Database {
     func update(_ update: SQL.Update) {
         execute(update.sql)
     }
+    
+    static let sqliteMaster = SQL.Table("sqlite_master")
+    static let schemaQuery = SQL.Query
+        .select([ .init(.column(sqliteMaster["tbl_name"])) ])
+        .where(.binary(
+            .equal,
+            .column(sqliteMaster["type"]),
+            .value(.text("table"))
+        ))
+    
+    func schema() -> Set<SQL.Schema> {
+        let schemas = self
+            .query(Database.schemaQuery)
+            .map { row -> SQL.Schema in
+                let name = row.dictionary["tbl_name"]!.text!
+                let pragma = SQL("PRAGMA table_info(\(name))")
+                let columns = self.execute(pragma)
+                    .map { row -> SQL.Schema.Column in
+                        let values = row.dictionary
+                        return SQL.Schema.Column(
+                            name: values["name"]!.text!,
+                            type: SQL.Schema.DataType(rawValue: values["type"]!.text!)!,
+                            nullable: values["notnull"]!.integer == 0,
+                            primaryKey: values["pk"]!.integer == 1
+                        )
+                    }
+                return SQL.Schema(
+                    table: SQL.Table(name),
+                    columns: Set(columns)
+                )
+            }
+        return Set(schemas)
+    }
 }

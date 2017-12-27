@@ -4,12 +4,12 @@ extension SQL {
     /// A description of a table in a database.
     internal struct Schema {
         /// The type of data in a column.
-        internal enum DataType {
-            case text
-            case numeric
-            case integer
-            case real
-            case blob
+        internal enum DataType: String {
+            case text = "TEXT"
+            case numeric = "NUMERIC"
+            case integer = "INTEGER"
+            case real = "REAL"
+            case blob = "BLOB"
         }
         
         /// A description of a column in a database.
@@ -70,18 +70,7 @@ extension SQL.Schema: Hashable {
 
 extension SQL.Schema.DataType {
     fileprivate var sql: SQL {
-        switch self {
-        case .blob:
-            return SQL("BLOB")
-        case .integer:
-            return SQL("INTEGER")
-        case .numeric:
-            return SQL("NUMERIC")
-        case .real:
-            return SQL("REAL")
-        case .text:
-            return SQL("TEXT")
-        }
+        return SQL(rawValue)
     }
 }
 

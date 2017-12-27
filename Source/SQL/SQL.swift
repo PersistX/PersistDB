@@ -22,6 +22,24 @@ extension SQL {
                 return SQL("?", parameters: self)
             }
         }
+        
+        var integer: Int? {
+            switch self {
+            case let .integer(integer):
+                return integer
+            default:
+                return nil
+            }
+        }
+        
+        var text: String? {
+            switch self {
+            case let .text(text):
+                return text
+            default:
+                return nil
+            }
+        }
     }
 }
 

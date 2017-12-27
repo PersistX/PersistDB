@@ -17,6 +17,7 @@
 		BE10ED841FE60763008FFE25 /* Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10ED831FE60763008FFE25 /* Delete.swift */; };
 		BE1B3E6D1FF03551001620A9 /* SQL.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1B3E6C1FF03551001620A9 /* SQL.Action.swift */; };
 		BE1B3E6F1FF1E78F001620A9 /* ProjectedQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1B3E6E1FF1E78F001620A9 /* ProjectedQuery.swift */; };
+		BE1B3E731FF41986001620A9 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1B3E721FF41986001620A9 /* DatabaseTests.swift */; };
 		BE1DC6041EE3AC9400A0671F /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6031EE3AC9400A0671F /* Query.swift */; };
 		BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6051EE3ACC600A0671F /* QueryTests.swift */; };
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
@@ -79,6 +80,7 @@
 		BE10ED831FE60763008FFE25 /* Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delete.swift; sourceTree = "<group>"; };
 		BE1B3E6C1FF03551001620A9 /* SQL.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Action.swift; sourceTree = "<group>"; };
 		BE1B3E6E1FF1E78F001620A9 /* ProjectedQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectedQuery.swift; sourceTree = "<group>"; };
+		BE1B3E721FF41986001620A9 /* DatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
 		BE1DC6031EE3AC9400A0671F /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		BE1DC6051EE3ACC600A0671F /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		BE1DC6071EE3B34800A0671F /* Predicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicate.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 			isa = PBXGroup;
 			children = (
 				BE7740D41EFFDBBB00D1F5A5 /* SQL */,
+				BE1B3E721FF41986001620A9 /* DatabaseTests.swift */,
 				BEA083D61F3FE977002AB2C1 /* ExpressionTests.swift */,
 				BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */,
 				BECF33941EEBA6BA00F9FC88 /* ModelTests.swift */,
@@ -402,6 +405,7 @@
 				BE5AD1CB1F2E5C860055BF9F /* TestStoreTests.swift in Sources */,
 				BE1DC6061EE3ACC600A0671F /* QueryTests.swift in Sources */,
 				BEA083D71F3FE977002AB2C1 /* ExpressionTests.swift in Sources */,
+				BE1B3E731FF41986001620A9 /* DatabaseTests.swift in Sources */,
 				BE7740E31EFFDC4E00D1F5A5 /* SQL.QueryTests.swift in Sources */,
 				BE10ED801FE6030D008FFE25 /* SQL.DeleteTests.swift in Sources */,
 				BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */,
