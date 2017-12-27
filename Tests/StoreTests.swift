@@ -26,7 +26,7 @@ extension SignalProducer {
 }
 
 class StoreTests: XCTestCase {
-    var store: Store!
+    var store: Store?
     
     override func setUp() {
         super.setUp()
@@ -40,22 +40,22 @@ class StoreTests: XCTestCase {
     
     fileprivate func insert(_ data: Author.Data...) {
         for d in data {
-            store.insert(Insert(d))
+            store?.insert(Insert(d))
         }
     }
     
     fileprivate func delete(_ ids: Author.ID...) {
         for id in ids {
-            store.delete(Delete(\Author.id == id))
+            store?.delete(Delete(\Author.id == id))
         }
     }
     
     fileprivate func update(_ id: Author.ID, _ valueSet: ValueSet<Author>) {
-        store.update(Update(predicate: \Author.id == id, valueSet: valueSet))
+        store?.update(Update(predicate: \Author.id == id, valueSet: valueSet))
     }
     
     fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]? {
-        return store.fetch(query).collect().firstValue
+        return store?.fetch(query).collect().firstValue
     }
 }
 
@@ -73,7 +73,7 @@ class StoreFetchTests: StoreTests {
     }
     
     func testPerformWorkOnSubscription() {
-        let producer: SignalProducer<AuthorInfo, NoError> = store.fetch(Author.all)
+        let producer: SignalProducer<AuthorInfo, NoError> = store!.fetch(Author.all)
         
         insert(.jrrTolkien)
         
@@ -113,7 +113,7 @@ class StoreObserveTests: StoreTests {
     override func setUp() {
         super.setUp()
         
-        observation = store
+        observation = store!
             .observe(query)
             .skip(first: 1)
             .take(first: 1)
@@ -141,13 +141,13 @@ class StoreObserveTests: StoreTests {
     
     func testSendsInitialResultsWhenEmpty() {
         insert(.jrrTolkien)
-        XCTAssertEqual(store.observe(query).firstValue!, fetch(query)!)
+        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query)!)
     }
     
     func testSendsInitialResultsWhenNotEmpty() {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
-        XCTAssertEqual(store.observe(query).firstValue!, fetch(query)!)
+        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query)!)
     }
     
     func testSendsAfterMatchingInsert() {
