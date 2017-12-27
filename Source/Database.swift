@@ -35,11 +35,11 @@ internal class Database {
     
     /// Create an in-memory database.
     init() {
-        var local: OpaquePointer?
-        guard sqlite3_open(":memory:", &local) == SQLITE_OK else {
+        var db: OpaquePointer?
+        guard sqlite3_open(":memory:", &db) == SQLITE_OK else {
             fatalError("Couldn't open in-memory database")
         }
-        db = local!
+        self.db = db!
     }
     
     /// Execute a SQL query.
