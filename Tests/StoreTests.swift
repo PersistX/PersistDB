@@ -294,9 +294,9 @@ class StoreOpenTests: StoreTests {
             .appendingPathComponent("store.sqlite3")
     }
     
-    private func open(at url: URL) -> Store? {
+    private func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store? {
         return Store
-            .open(at: url, for: fixtures)
+            .open(at: url, for: types)
             .first()?
             .value
     }
@@ -321,5 +321,37 @@ class StoreOpenTests: StoreTests {
         _ = producer.wait()
         
         XCTAssertTrue(fileManager.fileExists(atPath: url.path))
+    }
+    
+    func testCanBeReopened() {
+        insert(.jrrTolkien)
+        
+        store = open(at: url)
+        
+        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+    }
+    
+    func testIncompatibleSchema() {
+        var author = Author.anySchema
+        author.properties[\Author.born]?.path = "bornOn"
+        
+        let result = Store
+            .open(at: url, for: [author])
+            .first()
+        
+        if case .incompatibleSchema? = result?.error {
+            
+        } else {
+            XCTFail("wrong result: " + String(describing: result))
+        }
+    }
+    
+    func testCreatesMissingModels() {
+        insert(.jrrTolkien)
+        
+        store = open(at: url, for: [ Widget.self ])
+        
+        XCTAssertNotNil(store)
+        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
     }
 }

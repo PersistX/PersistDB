@@ -4,6 +4,7 @@ import Result
 import Schemata
 
 public enum OpenError: Error {
+    case incompatibleSchema
     case unknown(AnyError)
 }
 
@@ -11,38 +12,58 @@ public final class Store {
     fileprivate let db: Database
     fileprivate let actions = Signal<SQL.Action, NoError>.pipe()
     
-    private init(_ db: Database, for schemas: [AnySchema]) {
+    private init(_ db: Database, for schemas: [AnySchema]) throws {
         self.db = db
         
+        let existing = Dictionary(uniqueKeysWithValues: db
+            .schema()
+            .map { ($0.table, $0) }
+        )
         for schema in schemas {
-            db.create(schema.sql)
+            let sql = schema.sql
+            if let existing = existing[sql.table] {
+                if existing != sql {
+                    throw OpenError.incompatibleSchema
+                }
+            } else {
+                db.create(sql)
+            }
         }
         
         actions.output.observeValues(db.perform)
     }
     
     public convenience init(for schemas: [AnySchema]) {
-        self.init(Database(), for: schemas)
+        try! self.init(Database(), for: schemas)
     }
     
     public convenience init(for types: [Schemata.AnyModel.Type]) {
-        self.init(Database(), for: types.map { $0.anySchema })
+        self.init(for: types.map { $0.anySchema })
+    }
+    
+    public static func open(
+        at url: URL,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        return SignalProducer<Store, OpenError> { observer, _ in
+            do {
+                let db = try Database(at: url)
+                let store = try Store(db, for: schemas)
+                observer.send(value: store)
+                observer.sendCompleted()
+            } catch let error as OpenError {
+                observer.send(error: error)
+            } catch let error {
+                observer.send(error: OpenError.unknown(AnyError(error)))
+            }
+        }
     }
     
     public static func open(
         at url: URL,
         for types: [Schemata.AnyModel.Type]
     ) -> SignalProducer<Store, OpenError> {
-        return SignalProducer<Store, OpenError> { observer, _ in
-            do {
-                let db = try Database(at: url)
-                let store = Store(db, for: types.map { $0.anySchema })
-                observer.send(value: store)
-                observer.sendCompleted()
-            } catch (let error) {
-                observer.send(error: OpenError.unknown(AnyError(error)))
-            }
-        }
+        return open(at: url, for: types.map { $0.anySchema })
     }
 }
 
