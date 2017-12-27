@@ -42,6 +42,10 @@ internal class Database {
         self.db = db!
     }
     
+    deinit {
+        sqlite3_close(db)
+    }
+    
     /// Execute a SQL query.
     @discardableResult func execute(_ sql: SQL) -> [Row] {
         var stmt: OpaquePointer?
