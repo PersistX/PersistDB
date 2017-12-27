@@ -272,3 +272,34 @@ class StoreObserveTests: StoreTests {
     }
 }
 
+class StoreOpenTests: StoreTests {
+    var url: URL!
+    
+    override func setUp() {
+        super.setUp()
+        
+        url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathComponent("store.sqlite3")
+        store = Store
+            .open(at: url, for: [Author.self, Book.self])
+            .first()?
+            .value
+        XCTAssertNotNil(store)
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        url = nil
+    }
+    
+    func testCreatedAtCorrectURL() {
+        XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
+    }
+    
+    func testCreatesSchemas() {
+        insert(.jrrTolkien)
+        
+        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+    }
+}

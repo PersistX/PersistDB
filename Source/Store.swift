@@ -3,6 +3,10 @@ import ReactiveSwift
 import Result
 import Schemata
 
+public enum OpenError: Error {
+    case unknown(AnyError)
+}
+
 public final class Store {
     fileprivate let db: Database
     fileprivate let actions = Signal<SQL.Action, NoError>.pipe()
@@ -23,6 +27,22 @@ public final class Store {
     
     public convenience init(for types: [Schemata.AnyModel.Type]) {
         self.init(Database(), for: types.map { $0.anySchema })
+    }
+    
+    public static func open(
+        at url: URL,
+        for types: [Schemata.AnyModel.Type]
+    ) -> SignalProducer<Store, OpenError> {
+        return SignalProducer<Store, OpenError> { observer, _ in
+            do {
+                let db = try Database(at: url)
+                let store = Store(db, for: types.map { $0.anySchema })
+                observer.send(value: store)
+                observer.sendCompleted()
+            } catch (let error) {
+                observer.send(error: OpenError.unknown(AnyError(error)))
+            }
+        }
     }
 }
 
