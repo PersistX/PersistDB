@@ -278,19 +278,27 @@ class StoreOpenTests: StoreTests {
     override func setUp() {
         super.setUp()
         
-        url = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathComponent("store.sqlite3")
-        store = Store
-            .open(at: url, for: [Author.self, Book.self])
-            .first()?
-            .value
+        url = makeTemporaryURL()
+        store = open(at: url)
         XCTAssertNotNil(store)
     }
     
     override func tearDown() {
         super.tearDown()
         url = nil
+    }
+    
+    private func makeTemporaryURL() -> URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathComponent("store.sqlite3")
+    }
+    
+    private func open(at url: URL) -> Store? {
+        return Store
+            .open(at: url, for: fixtures)
+            .first()?
+            .value
     }
     
     func testCreatedAtCorrectURL() {
@@ -301,5 +309,17 @@ class StoreOpenTests: StoreTests {
         insert(.jrrTolkien)
         
         XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+    }
+    
+    func testDoesWorkOnSubscription() {
+        let url = makeTemporaryURL()
+        let producer = Store.open(at: url, for: fixtures)
+        let fileManager = FileManager.default
+        
+        XCTAssertFalse(fileManager.fileExists(atPath: url.path))
+        
+        _ = producer.wait()
+        
+        XCTAssertTrue(fileManager.fileExists(atPath: url.path))
     }
 }
