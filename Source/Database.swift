@@ -31,6 +31,11 @@ extension Row: ExpressibleByDictionaryLiteral {
 
 /// An untyped SQLite database that can execute SQL queries.
 internal class Database {
+    internal struct Error: Swift.Error {
+        let code: Int32
+        let message: String
+    }
+    
     private var db: OpaquePointer
     
     /// Create an in-memory database.
@@ -38,6 +43,25 @@ internal class Database {
         var db: OpaquePointer?
         guard sqlite3_open(":memory:", &db) == SQLITE_OK else {
             fatalError("Couldn't open in-memory database")
+        }
+        self.db = db!
+    }
+    
+    /// Open a database at the specified URL.
+    init(at url: URL) throws {
+        try FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
+        
+        var db: OpaquePointer?
+        guard sqlite3_open(url.absoluteString, &db) == SQLITE_OK else {
+            defer { sqlite3_close(db) }
+            throw Error(
+                code: sqlite3_errcode(db),
+                message: String(validatingUTF8: sqlite3_errmsg(db))!
+            )
         }
         self.db = db!
     }
