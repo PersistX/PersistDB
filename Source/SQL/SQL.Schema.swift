@@ -17,20 +17,17 @@ extension SQL {
             var name: String
             var type: DataType
             var nullable: Bool
-            var unique: Bool
             var primaryKey: Bool
             
             internal init(
                 name: String,
                 type: DataType,
                 nullable: Bool = false,
-                unique: Bool = false,
                 primaryKey: Bool = false
             ) {
                 self.name = name
                 self.type = type
                 self.nullable = nullable
-                self.unique = unique
                 self.primaryKey = primaryKey
             }
         }
@@ -57,7 +54,6 @@ extension SQL.Schema.Column: Hashable {
         return lhs.name == rhs.name
             && lhs.type == rhs.type
             && lhs.nullable == rhs.nullable
-            && lhs.unique == rhs.unique
             && lhs.primaryKey == rhs.primaryKey
     }
 }
@@ -97,9 +93,6 @@ extension SQL.Schema.Column {
         }
         if !nullable {
             sql += " NOT NULL"
-        }
-        if unique {
-            sql += " UNIQUE"
         }
         return sql
     }
