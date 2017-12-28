@@ -158,14 +158,6 @@ class StoreObserveTests: StoreTests {
         XCTAssertEqual(observed!, [AuthorInfo(.isaacAsimov)])
     }
     
-    func testDoesNotSendAfterNonMatchingInsert() {
-        observe {
-            insert(.jrrTolkien)
-        }
-        
-        XCTAssertNil(observed)
-    }
-    
     func testSendsAfterMatchingDelete() {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
         
@@ -174,16 +166,6 @@ class StoreObserveTests: StoreTests {
         }
         
         XCTAssertEqual(observed!, [AuthorInfo(.orsonScottCard)])
-    }
-    
-    func testDoesNotSendAfterNonMatchingDelete() {
-        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
-        
-        observe {
-            delete(.jrrTolkien)
-        }
-        
-        XCTAssertNil(observed)
     }
     
     func testSendsAfterUpdateThatChangesProjectedValue() {
@@ -256,16 +238,6 @@ class StoreObserveTests: StoreTests {
         
         observe {
             update(.isaacAsimov, [ \.givenName == "Isaac Asimov" ])
-        }
-        
-        XCTAssertNil(observed)
-    }
-    
-    func testDoesNotSendAfterUpdateToNonMatchingEntity() {
-        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
-        
-        observe {
-            update(.jrrTolkien, [ \.name == Author.Data.jrrTolkien.givenName ])
         }
         
         XCTAssertNil(observed)

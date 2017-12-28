@@ -233,8 +233,7 @@ extension Store {
     /// Observe projections from the store with a query.
     ///
     /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
-    /// projections will be re-fetched. But the projections will only be sent on the producer when
-    /// they've changed.
+    /// projections will be re-fetched and re-sent.
     ///
     /// - parameters:
     ///   - query: A query matching the model entities to be projected.
@@ -255,6 +254,5 @@ extension Store {
                 .map { _ in () }
             )
             .repeat(.max)
-            .skipRepeats { $0 == $1 }
     }
 }
