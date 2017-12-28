@@ -20,3 +20,14 @@ class ExpressionTests: XCTestCase {
         XCTAssertEqual(expression.sql, sql)
     }
 }
+
+class ExpressionDateTests: XCTestCase {
+    func testNow() {
+        let expr = Expression<Book, Date>.now
+        let sql = SQL.Expression.function(.strftime, [
+            .value(.text("%s")),
+            .value(.text("now")),
+        ])
+        XCTAssertEqual(expr.sql, sql)
+    }
+}

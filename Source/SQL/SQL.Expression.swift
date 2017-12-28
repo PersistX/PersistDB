@@ -22,6 +22,7 @@ extension SQL {
         case coalesce = "COALESCE"
         case max = "MAX"
         case min = "MIN"
+        case strftime = "STRFTIME"
     }
 
     /// A SQL expression.

@@ -21,6 +21,16 @@ extension Expression: Hashable {
     }
 }
 
+extension Expression where Value == Date {
+    /// An expression that evaluates to the current datetime.
+    public static var now: Expression {
+        return Expression(.function(.strftime, [
+            .value(.text("%s")),
+            .value(.text("now")),
+        ]))
+    }
+}
+
 extension Expression where Value: ModelValue {
     public init(_ value: Value) {
         sql = .value(Value.anyValue.encode(value).sql)
