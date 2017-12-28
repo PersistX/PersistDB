@@ -1,9 +1,12 @@
 import Foundation
 
 extension SQL {
+    /// A SQL `INSERT` statement.
     internal struct Insert {
+        /// The table that the row should be inserted into.
         internal var table: Table
         
+        /// The values that make up the row, keyed by column name.
         internal var values: [String: SQL.Expression]
     }
 }
@@ -21,10 +24,12 @@ extension SQL.Insert: Hashable {
 }
 
 extension SQL.Insert {
+    /// The set of columns that are to be inserted.
     internal var columns: Set<SQL.Column> {
         return Set(values.keys.map { table[$0] })
     }
     
+    /// The SQL string representation of this `Insert`.
     internal var sql: SQL {
         let kvs = Array(values)
         return SQL("INSERT INTO \"\(table.name)\" ")
