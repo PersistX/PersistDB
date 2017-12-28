@@ -3,15 +3,35 @@ import ReactiveSwift
 import Result
 import Schemata
 
+/// An error that occurred while opening an on-disk `Store`.
 public enum OpenError: Error {
+    /// The schema of the on-disk database is incompatible with the schema of the store.
     case incompatibleSchema
+    /// An unknown error occurred. An unfortunate reality.
     case unknown(AnyError)
 }
 
+/// A store of model objects, either in memory or on disk, that can be modified, queried, and
+/// observed.
 public final class Store {
+    /// The underlying SQL database.
     fileprivate let db: Database
+    
+    /// A pipe of the actions that are mutating the store.
+    ///
+    /// Used to determine when observed queries must be refetched.
     fileprivate let actions = Signal<SQL.Action, NoError>.pipe()
     
+    /// The designated initializer.
+    ///
+    /// - parameters:
+    ///   - db: An opened SQL database that backs the store.
+    ///   - schemas: The schemas of the models in the store.
+    ///
+    /// - throws: An `OpenError` if the store cannot be created from the given database.
+    ///
+    /// As part of initialization, the store will verify the schema of and create tables in the
+    /// database.
     private init(_ db: Database, for schemas: [AnySchema]) throws {
         self.db = db
         
@@ -33,14 +53,28 @@ public final class Store {
         actions.output.observeValues(db.perform)
     }
     
+    /// Create an in-memory store for the given schemas.
     public convenience init(for schemas: [AnySchema]) {
         try! self.init(Database(), for: schemas)
     }
     
+    /// Create an in-memory store for the given model types.
     public convenience init(for types: [Schemata.AnyModel.Type]) {
         self.init(for: types.map { $0.anySchema })
     }
     
+    /// Open an on-disk store.
+    ///
+    /// - parameters:
+    ///   - url: The file URL of the store to open.
+    ///   - schemas: The schemas for the models in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// This will create a store at that URL if one doesn't already exist.
     public static func open(
         at url: URL,
         for schemas: [AnySchema]
@@ -59,6 +93,18 @@ public final class Store {
         }
     }
     
+    /// Open an on-disk store.
+    ///
+    /// - parameters:
+    ///   - url: The file URL of the store to open.
+    ///   - types: The model types in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// This will create a store at that URL if one doesn't already exist.
     public static func open(
         at url: URL,
         for types: [Schemata.AnyModel.Type]
@@ -68,20 +114,39 @@ public final class Store {
 }
 
 extension Store {
+    /// Insert a model entity into the store.
+    ///
+    /// - important: This is done asynchronously.
     public func insert<Model>(_ insert: Insert<Model>) {
         actions.input.send(value: .insert(insert.sql))
     }
     
+    /// Delete a model entity from the store.
+    ///
+    /// - important: This is done asynchronously.
     public func delete<Model>(_ delete: Delete<Model>) {
         actions.input.send(value: .delete(delete.sql))
     }
     
+    /// Update properties for a model entity in the store.
+    ///
+    /// - important: This is done asynchronously.
     public func update<Model>(_ update: Update<Model>) {
         actions.input.send(value: .update(update.sql))
     }
 }
 
 extension Store {
+    /// Fetch a projected query from the store.
+    ///
+    /// This method backs the public `fetch` and `observe` methods.
+    ///
+    /// - parameters:
+    ///   - projected: The projected query to be fetched from the store.
+    ///
+    /// - returns: A `SignalProducer` that will fetch projections for entities that match the query.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
     private func fetch<Projection>(
         _ projected: ProjectedQuery<Projection>
     ) -> SignalProducer<Projection, NoError> {
@@ -95,6 +160,14 @@ extension Store {
         }
     }
     
+    /// Fetch projections from the store with a query.
+    ///
+    /// - parameters:
+    ///   - query: A query matching the model entities to be projected.
+    ///
+    /// - returns: A `SignalProducer` that will fetch projections for entities that match the query.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
     public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<Projection, NoError> {
@@ -102,6 +175,19 @@ extension Store {
         return fetch(projected)
     }
     
+    /// Observe projections from the store with a query.
+    ///
+    /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
+    /// projections will be re-fetched. But the projections will only be sent on the producer when
+    /// they've changed.
+    ///
+    /// - parameters:
+    ///   - query: A query matching the model entities to be projected.
+    ///
+    /// - returns: A `SignalProducer` that will send sets of projections for entities that match the
+    ////           query, sending a new set whenever it's changed.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
     public func observe<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<[Projection], NoError> {
