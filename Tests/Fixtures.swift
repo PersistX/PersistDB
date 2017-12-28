@@ -288,6 +288,18 @@ struct Widget {
     let double: Double
 }
 
+extension Widget: Hashable {
+    var hashValue: Int {
+        return id.hashValue
+    }
+    
+    static func == (lhs: Widget, rhs: Widget) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.date == rhs.date
+            && lhs.double == rhs.double
+    }
+}
+
 extension Widget: PersistDB.Model {
     static let schema = Schema(
         Widget.init,
@@ -299,4 +311,13 @@ extension Widget: PersistDB.Model {
     static let defaultOrder = [
         Ordering(\Widget.date)
     ]
+}
+
+extension Widget: ModelProjection {
+    static let projection = Projection<Widget, Widget>(
+        Widget.init,
+        \Widget.id,
+        \Widget.date,
+        \Widget.double
+    )
 }
