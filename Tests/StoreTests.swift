@@ -4,7 +4,7 @@ import Result
 import Schemata
 import XCTest
 
-private let fixtures: [AnyModel.Type] = [Author.self, Book.self]
+private let fixtures: [AnyModel.Type] = [Author.self, Book.self, Widget.self]
 
 extension Insert where Model == Author {
     fileprivate init(_ data: Author.Data) {
@@ -30,7 +30,7 @@ class StoreTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        store = Store(for: [Author.self, Book.self])
+        store = Store(for: fixtures)
     }
     
     override func tearDown() {
@@ -41,6 +41,12 @@ class StoreTests: XCTestCase {
     fileprivate func insert(_ data: Author.Data...) {
         for d in data {
             store?.insert(Insert(d))
+        }
+    }
+    
+    fileprivate func insert(_ widgets: Insert<Widget>...) {
+        for w in widgets {
+            store?.insert(w)
         }
     }
     
@@ -55,6 +61,10 @@ class StoreTests: XCTestCase {
     }
     
     fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]! {
+        return store!.fetch(query).collect().firstValue
+    }
+    
+    fileprivate func fetch(_ query: Query<Widget> = Widget.all) -> [Widget]! {
         return store!.fetch(query).collect().firstValue
     }
 }
@@ -84,11 +94,13 @@ class StoreFetchTests: StoreTests {
 class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
         insert(.jrrTolkien)
-        XCTAssert(!fetch().isEmpty)
+        
+        XCTAssertEqual(fetch(), [AuthorInfo(.jrrTolkien)])
         
         delete(.jrrTolkien)
         
-        XCTAssert(fetch().isEmpty)
+        let authors: [AuthorInfo] = fetch()
+        XCTAssert(authors.isEmpty)
     }
 }
 
