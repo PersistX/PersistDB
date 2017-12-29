@@ -1,6 +1,23 @@
 import Foundation
 
 extension SQL {
+    /// The type of data in a column.
+    internal enum DataType: String {
+        case text = "TEXT"
+        case numeric = "NUMERIC"
+        case integer = "INTEGER"
+        case real = "REAL"
+        case blob = "BLOB"
+    }
+}
+
+extension SQL.DataType {
+    internal var sql: SQL {
+        return SQL(rawValue)
+    }
+}
+
+extension SQL {
     /// A SQL value to a SQL statement
     internal enum Value {
         /// An integer value

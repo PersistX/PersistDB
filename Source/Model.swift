@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 extension AnyValue.Encoded {
-    internal var sql: SQL.Schema.DataType {
+    internal var sql: SQL.DataType {
         switch self {
         case .date, .double:
             return .real
@@ -16,7 +16,7 @@ extension AnyValue.Encoded {
 
 extension AnyProperty {
     internal var sql: SQL.Schema.Column? {
-        let dataType: SQL.Schema.DataType?
+        let dataType: SQL.DataType?
         let nullable: Bool
         switch type {
         case .toMany:

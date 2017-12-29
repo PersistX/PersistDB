@@ -3,15 +3,6 @@ import Foundation
 extension SQL {
     /// A description of a table in a database.
     internal struct Schema {
-        /// The type of data in a column.
-        internal enum DataType: String {
-            case text = "TEXT"
-            case numeric = "NUMERIC"
-            case integer = "INTEGER"
-            case real = "REAL"
-            case blob = "BLOB"
-        }
-        
         /// A description of a column in a database.
         internal struct Column {
             var name: String
@@ -65,12 +56,6 @@ extension SQL.Schema: Hashable {
     
     internal static func ==(lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
         return lhs.table == rhs.table && lhs.columns == rhs.columns
-    }
-}
-
-extension SQL.Schema.DataType {
-    fileprivate var sql: SQL {
-        return SQL(rawValue)
     }
 }
 

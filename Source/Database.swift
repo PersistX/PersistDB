@@ -192,7 +192,7 @@ internal class Database {
                         let values = row.dictionary
                         return SQL.Schema.Column(
                             name: values["name"]!.text!,
-                            type: SQL.Schema.DataType(rawValue: values["type"]!.text!)!,
+                            type: SQL.DataType(rawValue: values["type"]!.text!)!,
                             nullable: values["notnull"]!.integer == 0,
                             primaryKey: values["pk"]!.integer == 1
                         )
