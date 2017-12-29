@@ -110,15 +110,15 @@ internal class Database {
                     let type = sqlite3_column_type(stmt, Int32(idx))
                     let value: SQL.Value
                     switch type {
-                    case 1:
+                    case SQLITE_INTEGER:
                         value = .integer(numericCast(sqlite3_column_int64(stmt, Int32(idx))))
                         
-                    case 3:
+                    case SQLITE_TEXT:
                         let pointer = UnsafeRawPointer(sqlite3_column_text(stmt, Int32(idx)))!
                         let cchars = pointer.bindMemory(to: CChar.self, capacity: 0)
                         value = .text(String(validatingUTF8: cchars)!)
                         
-                    case 5:
+                    case SQLITE_NULL:
                         value = .null
                         
                     default:
