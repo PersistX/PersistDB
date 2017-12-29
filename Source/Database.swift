@@ -113,6 +113,9 @@ internal class Database {
                     case SQLITE_INTEGER:
                         value = .integer(numericCast(sqlite3_column_int64(stmt, Int32(idx))))
                         
+                    case SQLITE_FLOAT:
+                        value = .real(sqlite3_column_double(stmt, Int32(idx)))
+                        
                     case SQLITE_TEXT:
                         let pointer = UnsafeRawPointer(sqlite3_column_text(stmt, Int32(idx)))!
                         let cchars = pointer.bindMemory(to: CChar.self, capacity: 0)
