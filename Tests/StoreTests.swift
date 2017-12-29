@@ -54,8 +54,8 @@ class StoreTests: XCTestCase {
         store?.update(Update(predicate: \Author.id == id, valueSet: valueSet))
     }
     
-    fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]? {
-        return store?.fetch(query).collect().firstValue
+    fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]! {
+        return store!.fetch(query).collect().firstValue
     }
 }
 
@@ -63,13 +63,13 @@ class StoreFetchTests: StoreTests {
     func testSingleResult() {
         insert(.jrrTolkien)
         
-        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
     }
     
     func testNilValue() {
         insert(.orsonScottCard)
         
-        XCTAssertEqual(fetch()!, [ AuthorInfo(.orsonScottCard) ])
+        XCTAssertEqual(fetch(), [ AuthorInfo(.orsonScottCard) ])
     }
     
     func testPerformWorkOnSubscription() {
@@ -84,11 +84,11 @@ class StoreFetchTests: StoreTests {
 class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
         insert(.jrrTolkien)
-        XCTAssert(!fetch()!.isEmpty)
+        XCTAssert(!fetch().isEmpty)
         
         delete(.jrrTolkien)
         
-        XCTAssert(fetch()!.isEmpty)
+        XCTAssert(fetch().isEmpty)
     }
 }
 
@@ -98,7 +98,7 @@ class StoreUpdateTests: StoreTests {
         
         update(.jrrTolkien, [ \.born == 100, \.died == 200 ])
         
-        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien, born: 100, died: 200) ])
+        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien, born: 100, died: 200) ])
     }
 }
 
@@ -141,13 +141,13 @@ class StoreObserveTests: StoreTests {
     
     func testSendsInitialResultsWhenEmpty() {
         insert(.jrrTolkien)
-        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query)!)
+        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query))
     }
     
     func testSendsInitialResultsWhenNotEmpty() {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
-        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query)!)
+        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query))
     }
     
     func testSendsAfterMatchingInsert() {
@@ -280,7 +280,7 @@ class StoreOpenTests: StoreTests {
     func testCreatesSchemas() {
         insert(.jrrTolkien)
         
-        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
     }
     
     func testDoesWorkOnSubscription() {
@@ -300,7 +300,7 @@ class StoreOpenTests: StoreTests {
         
         store = open(at: url)
         
-        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
     }
     
     func testIncompatibleSchema() {
@@ -324,6 +324,6 @@ class StoreOpenTests: StoreTests {
         store = open(at: url, for: [ Widget.self ])
         
         XCTAssertNotNil(store)
-        XCTAssertEqual(fetch()!, [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
     }
 }
