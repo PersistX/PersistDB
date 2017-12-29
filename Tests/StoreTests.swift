@@ -91,6 +91,20 @@ class StoreFetchTests: StoreTests {
     }
 }
 
+class StoreInsertTests: StoreTests {
+    func testWidget() {
+        let widget = Widget(id: 1, date: Date(), double: 3.2)
+        
+        insert([
+            \Widget.id == widget.id,
+            \Widget.date == widget.date,
+            \Widget.double == widget.double,
+        ])
+        
+        XCTAssertEqual(fetch(), [widget])
+    }
+}
+
 class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
         insert(.jrrTolkien)
