@@ -24,10 +24,35 @@ extension Expression: Hashable {
 extension Expression where Value == Date {
     /// An expression that evaluates to the current datetime.
     public static var now: Expression {
-        return Expression(.function(.strftime, [
+        let seconds = SQL.Expression.function(.strftime, [
             .value(.text("%s")),
             .value(.text("now")),
-        ]))
+        ])
+        let subseconds = SQL.Expression.function(.substr, [
+            .function(.strftime, [
+                .value(.text("%f")),
+                .value(.text("now")),
+            ]),
+            .value(.integer(4)),
+        ])
+        return Expression(
+            .cast(
+                .binary(
+                    .concatenate,
+                    .binary(
+                        .subtract,
+                        seconds,
+                        .value(.integer(Int(Date.timeIntervalBetween1970AndReferenceDate)))
+                    ),
+                    .binary(
+                        .concatenate,
+                        .value(.text(".")),
+                        subseconds
+                    )
+                ),
+                .real
+            )
+        )
     }
 }
 

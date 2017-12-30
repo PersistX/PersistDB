@@ -23,11 +23,20 @@ class ExpressionTests: XCTestCase {
 
 class ExpressionDateTests: XCTestCase {
     func testNow() {
-        let expr = Expression<Book, Date>.now
-        let sql = SQL.Expression.function(.strftime, [
-            .value(.text("%s")),
-            .value(.text("now")),
-        ])
-        XCTAssertEqual(expr.sql, sql)
+        let db = TestDB()
+        let query = SQL.Query
+            .select([ .init(Expression<Book, Date>.now.sql, alias: "now") ])
+        
+        let before = Date()
+        let result = db.query(query)[0]
+        let after = Date()
+            
+        let primitive = result.dictionary["now"]?.primitive(.date)
+        if case let .date(date)? = primitive {
+            XCTAssertGreaterThan(date, before)
+            XCTAssertLessThan(date, after)
+        } else {
+            XCTFail("Wrong primitive: " + String(describing: primitive))
+        }
     }
 }
