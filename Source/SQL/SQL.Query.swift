@@ -92,7 +92,16 @@ extension SQL.Query {
     /// The SQL for this query.
     internal var sql: SQL {
         let results = self.results.map { $0.sql }.joined(separator: ", ")
-        let tables = self.tables.map { "\"\($0.name)\"" }.joined(separator: ", ")
+        
+        let fromSQL: SQL
+        let tables = self.tables
+            .map { "\"\($0.name)\"" }
+            .joined(separator: ", ")
+        if tables.isEmpty {
+            fromSQL = SQL()
+        } else {
+            fromSQL = SQL(" FROM ") + tables
+        }
         
         let whereSQL: SQL
         let predicates
@@ -114,7 +123,7 @@ extension SQL.Query {
         }
         
         return "SELECT " + results
-            + " FROM " + tables
+            + fromSQL
             + whereSQL
             + orderBySQL
     }
