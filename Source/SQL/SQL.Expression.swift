@@ -6,7 +6,9 @@ extension SQL {
     }
 
     internal enum BinaryOperator: String {
+        case add = "+"
         case and = "AND"
+        case concatenate = "||"
         case equal = "=="
         case greaterThan = ">"
         case greaterThanOrEqual = ">="
@@ -16,6 +18,7 @@ extension SQL {
         case lessThanOrEqual = "<="
         case notEqual = "!="
         case or = "OR"
+        case subtract = "-"
     }
 
     internal enum Function: String {
@@ -23,11 +26,13 @@ extension SQL {
         case max = "MAX"
         case min = "MIN"
         case strftime = "STRFTIME"
+        case substr = "SUBSTR"
     }
 
     /// A SQL expression.
     internal indirect enum Expression {
         case binary(BinaryOperator, Expression, Expression)
+        case cast(Expression, DataType)
         case column(Column)
         case exists(Query)
         case function(Function, [Expression])
@@ -43,6 +48,8 @@ extension SQL.Expression {
         switch self {
         case let .binary(op, lhs, rhs):
             return (lhs.sql + " " + SQL(op.rawValue) + " " + rhs.sql).parenthesized
+        case let .cast(expr, type):
+            return "CAST" + (expr.sql + " AS " + type.sql).parenthesized
         case let .column(column):
             return column.sql
         case let .exists(query):
@@ -76,7 +83,8 @@ extension SQL.Expression {
             return exprs.reduce([self]) { $0.union($1.expressions) }
         case let .inList(expr, _),
              let .unary(_, expr),
-             let .join(_, _, expr):
+             let .join(_, _, expr),
+             let .cast(expr, _):
             return expr.expressions.union([self])
         }
     }
@@ -106,7 +114,7 @@ extension SQL.Expression {
             case let .join(a, b, _):
                 result.insert(a.table)
                 result.insert(b.table)
-            case .binary, .exists, .function, .inList, .unary, .value:
+            case .binary, .cast, .exists, .function, .inList, .unary, .value:
                 break
             }
         }
@@ -119,6 +127,8 @@ extension SQL.Expression: Hashable {
         switch self {
         case let .binary(op, lhs, rhs):
             return op.hashValue ^ lhs.hashValue ^ rhs.hashValue
+        case let .cast(expr, type):
+            return expr.hashValue ^ type.hashValue
         case let .column(column):
             return column.hashValue
         case let .exists(query):
@@ -140,6 +150,8 @@ extension SQL.Expression: Hashable {
         switch (lhs, rhs) {
         case let (.binary(op1, lhs1, rhs1), .binary(op2, lhs2, rhs2)):
             return op1 == op2 && lhs1 == lhs2 && rhs1 == rhs2
+        case let (.cast(lhs), .cast(rhs)):
+            return lhs == rhs
         case let (.column(lhs), .column(rhs)):
             return lhs == rhs
         case let (.exists(query1), .exists(query2)):
