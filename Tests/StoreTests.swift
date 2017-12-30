@@ -101,7 +101,24 @@ class StoreInsertTests: StoreTests {
             \Widget.double == widget.double,
         ])
         
-        XCTAssertEqual(fetch(), [widget])
+        let fetched: Widget = fetch()[0]
+        XCTAssertEqual(fetched, widget)
+    }
+    
+    func testDateNow() {
+        let insert: Insert<Widget> = [
+            \Widget.id == 1,
+            \Widget.date == .now,
+            \Widget.double == 3.2,
+        ]
+        
+        let before = Date()
+        self.insert(insert)
+        let after = Date()
+        
+        let widget: Widget = fetch()[0]
+        XCTAssertGreaterThan(widget.date, before)
+        XCTAssertLessThan(widget.date, after)
     }
 }
 
