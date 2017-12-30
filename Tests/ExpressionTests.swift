@@ -2,6 +2,20 @@
 import XCTest
 
 class ExpressionTests: XCTestCase {
+    var db: TestDB!
+    
+    override func setUp() {
+        super.setUp()
+        db = TestDB()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        db = nil
+    }
+}
+
+class ExpressionInitTests: ExpressionTests {
     func test_initWithValue() {
         let expression = Expression<Book, String>("foo")
         let sql = SQL.Expression.value(.text("foo"))
@@ -21,9 +35,8 @@ class ExpressionTests: XCTestCase {
     }
 }
 
-class ExpressionDateTests: XCTestCase {
+class ExpressionDateTests: ExpressionTests {
     func testNow() {
-        let db = TestDB()
         let query = SQL.Query
             .select([ .init(Expression<Book, Date>.now.sql, alias: "now") ])
         
