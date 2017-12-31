@@ -16,23 +16,3 @@ extension Primitive {
         }
     }
 }
-
-extension SQL.Value {
-    internal func primitive(_ type: AnyValue.Encoded) -> Primitive {
-        switch (self, type) {
-        case let (.real(timeInterval), .date):
-            return .date(Date(timeIntervalSinceReferenceDate: timeInterval))
-        case let (.real(double), .double):
-            return .double(double)
-        case let (.integer(integer), .int):
-            return .int(integer)
-        case (.null, _):
-            return .null
-        case let (.text(string), .string):
-            return .string(string)
-        default:
-            return .null
-        }
-    }
-}
-
