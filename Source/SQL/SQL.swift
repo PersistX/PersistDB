@@ -39,13 +39,27 @@ extension String {
 
 extension SQL {
     internal enum Parameter {
+        case generator(Generator)
         case value(Value)
+    }
+}
+
+extension SQL.Parameter {
+    func makeValue() -> SQL.Value {
+        switch self {
+        case .generator(.uuid):
+            return .text(UUID().uuidString)
+        case let .value(value):
+            return value
+        }
     }
 }
 
 extension SQL.Parameter: Hashable {
     var hashValue: Int {
         switch self {
+        case let .generator(generator):
+            return generator.hashValue
         case let .value(value):
             return value.hashValue
         }
@@ -53,8 +67,12 @@ extension SQL.Parameter: Hashable {
     
     static func == (lhs: SQL.Parameter, rhs: SQL.Parameter) -> Bool {
         switch (lhs, rhs) {
+        case let (.generator(lhs), .generator(rhs)):
+            return lhs == rhs
         case let (.value(lhs), .value(rhs)):
             return lhs == rhs
+        default:
+            return false
         }
     }
 }
@@ -62,6 +80,8 @@ extension SQL.Parameter: Hashable {
 extension SQL.Parameter: CustomStringConvertible {
     var description: String {
         switch self {
+        case let .generator(generator):
+            return generator.description
         case let .value(value):
             return value.description
         }

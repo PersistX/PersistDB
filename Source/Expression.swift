@@ -56,6 +56,13 @@ extension Expression where Value == Date {
     }
 }
 
+extension Expression where Value == UUID {
+    /// An expression that evaluates to a new UUID.
+    public static func uuid() -> Expression {
+        return Expression(.generator(.uuid))
+    }
+}
+
 extension Expression where Value: ModelValue {
     public init(_ value: Value) {
         sql = .value(Value.anyValue.encode(value).sql)

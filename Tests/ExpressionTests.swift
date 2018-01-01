@@ -53,3 +53,28 @@ class ExpressionDateTests: ExpressionTests {
         }
     }
 }
+
+class ExpressionUUIDTests: ExpressionTests {
+    func testUUID() {
+        let uuid = Expression<Book, UUID>.uuid()
+        let query = SQL.Query
+            .select([
+                .init(uuid.sql, alias: "1"),
+                .init(uuid.sql, alias: "2"),
+            ])
+        
+        let result = db.query(query)[0]
+        
+        let uuid1 = result.dictionary["1"]
+        let uuid2 = result.dictionary["2"]
+        if case let .text(string1)? = uuid1,
+            case let .text(string2)? = uuid2,
+            let uuid1 = UUID(uuidString: string1),
+            let uuid2 = UUID(uuidString: string2)
+        {
+            XCTAssertNotEqual(uuid1, uuid2)
+        } else {
+            XCTFail("Wrong result: " + String(describing: result))
+        }
+    }
+}

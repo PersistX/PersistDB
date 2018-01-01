@@ -286,6 +286,7 @@ struct Widget {
     let id: Int
     let date: Date
     let double: Double
+    let uuid: UUID
 }
 
 extension Widget: Hashable {
@@ -297,6 +298,7 @@ extension Widget: Hashable {
         return lhs.id == rhs.id
             && lhs.date == rhs.date
             && lhs.double == rhs.double
+            && lhs.uuid == rhs.uuid
     }
 }
 
@@ -305,7 +307,8 @@ extension Widget: PersistDB.Model {
         Widget.init,
         \.id ~ "id",
         \.date ~ "date",
-        \.double ~ "double"
+        \.double ~ "double",
+        \.uuid ~ "uuid"
     )
     
     static let defaultOrder = [
@@ -318,6 +321,7 @@ extension Widget: ModelProjection {
         Widget.init,
         \Widget.id,
         \Widget.date,
-        \Widget.double
+        \Widget.double,
+        \Widget.uuid
     )
 }

@@ -28,6 +28,10 @@ extension SQL {
         case strftime = "STRFTIME"
         case substr = "SUBSTR"
     }
+    
+    internal enum Generator {
+        case uuid
+    }
 
     /// A SQL expression.
     internal indirect enum Expression {
@@ -36,10 +40,42 @@ extension SQL {
         case column(Column)
         case exists(Query)
         case function(Function, [Expression])
+        case generator(Generator)
         case inList(Expression, [Value])
         case join(Column, Column, Expression)
         case unary(UnaryOperator, Expression)
         case value(Value)
+    }
+}
+
+extension SQL.Generator {
+    var sql: SQL {
+        return SQL("?", parameters: [.generator(self)])
+    }
+}
+
+extension SQL.Generator: Hashable {
+    var hashValue: Int {
+        switch self {
+        case .uuid:
+            return 1
+        }
+    }
+    
+    static func == (lhs: SQL.Generator, rhs: SQL.Generator) -> Bool {
+        switch (lhs, rhs) {
+        case (.uuid, .uuid):
+            return true
+        }
+    }
+}
+
+extension SQL.Generator: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .uuid:
+            return "{uuid}"
+        }
     }
 }
 
@@ -57,6 +93,8 @@ extension SQL.Expression {
         case let .function(function, arguments):
             let args = arguments.map { $0.sql }.joined(separator: ",")
             return SQL(function.rawValue) + args.parenthesized
+        case let .generator(generator):
+            return generator.sql
         case let .inList(expr, values):
             let vs = values.map { $0.sql }.joined(separator: ",")
             return "(" + expr.sql + " IN (" + vs + "))"
@@ -77,6 +115,7 @@ extension SQL.Expression {
                 .union([self])
         case .column,
              .exists,
+             .generator,
              .value:
             return [self]
         case let .function(_, exprs):
@@ -114,7 +153,7 @@ extension SQL.Expression {
             case let .join(a, b, _):
                 result.insert(a.table)
                 result.insert(b.table)
-            case .binary, .cast, .exists, .function, .inList, .unary, .value:
+            case .binary, .cast, .exists, .function, .generator, .inList, .unary, .value:
                 break
             }
         }
@@ -135,6 +174,8 @@ extension SQL.Expression: Hashable {
             return query.hashValue
         case let .function(function, arguments):
             return function.hashValue + arguments.reduce(0) { $0 ^ $1.hashValue }
+        case let .generator(generator):
+            return generator.hashValue
         case let .inList(expr, values):
             return expr.hashValue ^ values.reduce(0) { $0 ^ $1.hashValue }
         case let .join(left, right, expr):
@@ -158,6 +199,8 @@ extension SQL.Expression: Hashable {
             return query1 == query2
         case let (.function(function1, args1), .function(function2, args2)):
             return function1 == function2 && args1 == args2
+        case let (.generator(lhs), .generator(rhs)):
+            return lhs == rhs
         case let (.inList(expr1, values1), .inList(expr2, values2)):
             return expr1 == expr2 && values1 == values2
         case let (.join(left1, right1, expr1), .join(left2, right2, expr2)):

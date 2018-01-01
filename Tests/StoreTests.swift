@@ -93,12 +93,13 @@ class StoreFetchTests: StoreTests {
 
 class StoreInsertTests: StoreTests {
     func testWidget() {
-        let widget = Widget(id: 1, date: Date(), double: 3.2)
+        let widget = Widget(id: 1, date: Date(), double: 3.2, uuid: UUID())
         
         insert([
             \Widget.id == widget.id,
             \Widget.date == widget.date,
             \Widget.double == widget.double,
+            \Widget.uuid == widget.uuid,
         ])
         
         let fetched: Widget = fetch()[0]
@@ -110,6 +111,7 @@ class StoreInsertTests: StoreTests {
             \Widget.id == 1,
             \Widget.date == .now,
             \Widget.double == 3.2,
+            \Widget.uuid == .uuid()
         ]
         
         let before = Date()
@@ -119,6 +121,26 @@ class StoreInsertTests: StoreTests {
         let widget: Widget = fetch()[0]
         XCTAssertGreaterThan(widget.date, before)
         XCTAssertLessThan(widget.date, after)
+    }
+    
+    func testUUID() {
+        let insert1: Insert<Widget> = [
+            \Widget.id == 1,
+            \Widget.date == .now,
+            \Widget.double == 3.2,
+            \Widget.uuid == .uuid()
+        ]
+        let insert2: Insert<Widget> = [
+            \Widget.id == 2,
+            \Widget.date == .now,
+            \Widget.double == 3.3,
+            \Widget.uuid == .uuid()
+        ]
+        
+        insert(insert1, insert2)
+        
+        let widgets: [Widget] = fetch()
+        XCTAssertNotEqual(widgets[0].uuid, widgets[1].uuid)
     }
 }
 
