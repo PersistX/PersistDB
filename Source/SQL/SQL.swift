@@ -37,18 +37,53 @@ extension String {
     }
 }
 
+extension SQL {
+    internal enum Parameter {
+        case value(Value)
+    }
+}
+
+extension SQL.Parameter: Hashable {
+    var hashValue: Int {
+        switch self {
+        case let .value(value):
+            return value.hashValue
+        }
+    }
+    
+    static func == (lhs: SQL.Parameter, rhs: SQL.Parameter) -> Bool {
+        switch (lhs, rhs) {
+        case let (.value(lhs), .value(rhs)):
+            return lhs == rhs
+        }
+    }
+}
+
+extension SQL.Parameter: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case let .value(value):
+            return value.description
+        }
+    }
+}
+
 /// A SQL statement with placeholders for sanitized values.
 public struct SQL {
     /// The SQL statement.
     public private(set) var sql: String
     
     /// The parameters to the SQL statement.
-    internal private(set) var parameters: [SQL.Value]
+    internal private(set) var parameters: [SQL.Parameter]
     
-    internal init(_ sql: String, parameters: [SQL.Value]) {
+    internal init(_ sql: String, parameters: [SQL.Parameter]) {
         precondition(sql.placeholders.count == parameters.count)
         self.sql = sql
         self.parameters = parameters
+    }
+    
+    internal init(_ sql: String, parameters: [SQL.Value]) {
+        self.init(sql, parameters: parameters.map(Parameter.value))
     }
     
     internal init(_ sql: String, parameters: SQL.Value...) {
@@ -74,9 +109,14 @@ public struct SQL {
     }
     
     /// Append the given statement to the statement.
-    internal mutating func append(_ sql: String, parameters: [SQL.Value]) {
+    internal mutating func append(_ sql: String, parameters: [SQL.Parameter]) {
         self.sql += sql
         self.parameters += parameters
+    }
+    
+    /// Append the given statement to the statement.
+    internal mutating func append(_ sql: String, parameters: [SQL.Value]) {
+        append(sql, parameters: parameters.map(Parameter.value))
     }
     
     /// Append the given statement to the statement.
@@ -90,8 +130,13 @@ public struct SQL {
     }
     
     /// Create a new SQL statement by appending a SQL statement
-    internal func appending(_ sql: String, parameters: [SQL.Value]) -> SQL {
+    internal func appending(_ sql: String, parameters: [SQL.Parameter]) -> SQL {
         return SQL(self.sql + sql, parameters: self.parameters + parameters)
+    }
+    
+    /// Create a new SQL statement by appending a SQL statement
+    internal func appending(_ sql: String, parameters: [SQL.Value]) -> SQL {
+        return appending(sql, parameters: parameters.map(Parameter.value))
     }
     
     /// Create a new SQL statement by appending a SQL statement
