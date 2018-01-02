@@ -31,6 +31,13 @@ public func == <Model, Value: ModelValue>(
 }
 
 public func == <Model, Value: ModelValue>(
+    lhs: KeyPath<Model, Value?>,
+    rhs: Value
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+}
+
+public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Expression<Model, Value>
 ) -> Assignment<Model> {
@@ -40,6 +47,13 @@ public func == <Model, Value: ModelValue>(
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Expression<Model, Value?>
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+}
+
+public func == <Model, Value: ModelValue>(
+    lhs: KeyPath<Model, Value?>,
+    rhs: Expression<Model, Value>
 ) -> Assignment<Model> {
     return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
 }
