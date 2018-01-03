@@ -47,6 +47,19 @@ extension Insert {
     }
 }
 
+/// A `Store`-like object that's useful for unit tests.
+///
+/// The primary convenience of `TestStore` is that it provides a shortcut for inserting fixtures.
+/// Instead of inserting rows manually, data can be passed to the `init`. All fields are treated as
+/// optionals and any unspecified keys will have `nil` values.
+///
+///     let store = TestStore(
+///         [ id1: [ \Author.name == "…" ]]
+///     )
+///
+/// A complete example can be found in PersistDB's own tests.
+///
+/// - important: This class should **only** be used for testing.
 public final class TestStore {
     let store: Store
     
@@ -62,6 +75,7 @@ public final class TestStore {
         aRows.forEach(store.insert)
     }
     
+    /// Synchronously fetch the results of the query.
     public func fetch<Model>(
         _ query: Query<Model>
     ) -> [Model.ID] {
