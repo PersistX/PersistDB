@@ -1,6 +1,9 @@
 import ReactiveSwift
 import Schemata
 
+/// An assignment of a value or expression to a model entity's property.
+///
+/// This is meant to be used in conjunction with `ValueSet`.
 public struct Assignment<Model: PersistDB.Model> {
     internal let keyPath: PartialKeyPath<Model>
     internal let sql: SQL.Expression
@@ -58,9 +61,11 @@ public func == <Model, Value: ModelValue>(
     return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
 }
 
+/// A set of values that can be used to insert or update a model entity.
 public struct ValueSet<Model: PersistDB.Model> {
     public var assignments: [Assignment<Model>]
     
+    /// Create a value set from a list of assignments.
     public init(_ assignments: [Assignment<Model>]) {
         self.assignments = assignments
     }
@@ -83,6 +88,9 @@ extension ValueSet: ExpressibleByArrayLiteral {
 }
 
 extension ValueSet {
+    /// Test whether the value set can be used for insertion.
+    ///
+    /// In order to be sufficient, every required property must have a value.
     internal var sufficientForInsert: Bool {
         let assigned = Set(assignments.map { $0.keyPath })
         for property in Model.schema.properties.values {
