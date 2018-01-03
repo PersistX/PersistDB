@@ -459,7 +459,7 @@ class SQLQueryTests: XCTestCase {
     }
 }
 
-class SQLQueryAffectedByTests: XCTestCase {
+class SQLQueryInvalidatedByTests: XCTestCase {
     let query = SQL.Query
         .select([ .init(Author.Table.name, alias: "foo") ])
         .where(.binary(.isNot, Author.Table.died, .value(.null)))
@@ -483,7 +483,7 @@ class SQLQueryAffectedByTests: XCTestCase {
             .ascending
         ))
     
-    func testNotAffectedByInsertInAnotherTable() {
+    func testNotInvalidatedByInsertInAnotherTable() {
         let insert = SQL.Insert(
             table: Book.table,
             values: [
@@ -493,10 +493,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ]
         )
         
-        XCTAssertFalse(query.affected(by: .insert(insert)))
+        XCTAssertFalse(query.invalidated(by: .insert(insert)))
     }
     
-    func testAffectedByInsert() {
+    func testInvalidatedByInsert() {
         let insert = SQL.Insert(
             table: Author.table,
             values: [
@@ -506,10 +506,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ]
         )
         
-        XCTAssertTrue(query.affected(by: .insert(insert)))
+        XCTAssertTrue(query.invalidated(by: .insert(insert)))
     }
     
-    func testAffectedByInsertedInJoinedQuery() {
+    func testInvalidatedByInsertedInJoinedQuery() {
         let insert = SQL.Insert(
             table: Author.table,
             values: [
@@ -519,25 +519,25 @@ class SQLQueryAffectedByTests: XCTestCase {
             ]
         )
         
-        XCTAssertTrue(joined.affected(by: .insert(insert)))
+        XCTAssertTrue(joined.invalidated(by: .insert(insert)))
     }
     
-    func testNotAffectedByDeleteInAnotherTable() {
+    func testNotInvalidatedByDeleteInAnotherTable() {
         let delete = SQL.Delete(table: Book.table, predicate: nil)
-        XCTAssertFalse(query.affected(by: .delete(delete)))
+        XCTAssertFalse(query.invalidated(by: .delete(delete)))
     }
     
-    func testAffectedByDelete() {
+    func testInvalidatedByDelete() {
         let delete = SQL.Delete(table: Author.table, predicate: nil)
-        XCTAssertTrue(query.affected(by: .delete(delete)))
+        XCTAssertTrue(query.invalidated(by: .delete(delete)))
     }
     
-    func testJoinedAffectedByDelete() {
+    func testJoinedInvalidatedByDelete() {
         let delete = SQL.Delete(table: Author.table, predicate: nil)
-        XCTAssertTrue(joined.affected(by: .delete(delete)))
+        XCTAssertTrue(joined.invalidated(by: .delete(delete)))
     }
     
-    func testNotAffectedByUpdateInAnotherTable() {
+    func testNotInvalidatedByUpdateInAnotherTable() {
         let update = SQL.Update(
             table: Book.table,
             values: [
@@ -545,10 +545,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertFalse(query.affected(by: .update(update)))
+        XCTAssertFalse(query.invalidated(by: .update(update)))
     }
     
-    func testNotAffectedByUpdateToUnusedColumn() {
+    func testNotInvalidatedByUpdateToUnusedColumn() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -556,10 +556,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertFalse(query.affected(by: .update(update)))
+        XCTAssertFalse(query.invalidated(by: .update(update)))
     }
     
-    func testNotAffectedByUpdateToUnusedJoinedColumn() {
+    func testNotInvalidatedByUpdateToUnusedJoinedColumn() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -567,10 +567,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertFalse(joined.affected(by: .update(update)))
+        XCTAssertFalse(joined.invalidated(by: .update(update)))
     }
     
-    func testAffectedByUpdateToSortColumn() {
+    func testInvalidatedByUpdateToSortColumn() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -578,10 +578,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertTrue(query.affected(by: .update(update)))
+        XCTAssertTrue(query.invalidated(by: .update(update)))
     }
     
-    func testAffectedByUpdateToJoinedSortColumn() {
+    func testInvalidatedByUpdateToJoinedSortColumn() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -589,10 +589,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertTrue(joined.affected(by: .update(update)))
+        XCTAssertTrue(joined.invalidated(by: .update(update)))
     }
     
-    func testAffectedByUpdateToFilterColumn() {
+    func testInvalidatedByUpdateToFilterColumn() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -600,10 +600,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertTrue(query.affected(by: .update(update)))
+        XCTAssertTrue(query.invalidated(by: .update(update)))
     }
     
-    func testAffectedByUpdateToJoinedFilterColumn() {
+    func testInvalidatedByUpdateToJoinedFilterColumn() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -611,10 +611,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertTrue(joined.affected(by: .update(update)))
+        XCTAssertTrue(joined.invalidated(by: .update(update)))
     }
     
-    func testAffectedByUpdateToJoinedAliasedColumnResult() {
+    func testInvalidatedByUpdateToJoinedAliasedColumnResult() {
         let update = SQL.Update(
             table: Author.table,
             values: [
@@ -622,10 +622,10 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertTrue(joined.affected(by: .update(update)))
+        XCTAssertTrue(joined.invalidated(by: .update(update)))
     }
     
-    func testAffectedByUpdateToDoubleJoinedAliasedColumnResult() {
+    func testInvalidatedByUpdateToDoubleJoinedAliasedColumnResult() {
         let publisher = SQL.Table("Publisher")
         let query = SQL.Query
             .select([.init(
@@ -647,6 +647,6 @@ class SQLQueryAffectedByTests: XCTestCase {
             ],
             predicate: nil
         )
-        XCTAssertTrue(query.affected(by: .update(update)))
+        XCTAssertTrue(query.invalidated(by: .update(update)))
     }
 }

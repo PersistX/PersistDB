@@ -155,7 +155,7 @@ extension SQL.Query {
         return (results + predicates + order).reduce(Set()) { $0.union($1) }
     }
     
-    internal func affected(by action: SQL.Action) -> Bool {
+    internal func invalidated(by action: SQL.Action) -> Bool {
         switch action {
         case let .insert(insert):
             return !columns.isDisjoint(with: insert.columns)

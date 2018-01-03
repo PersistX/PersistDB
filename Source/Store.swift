@@ -250,7 +250,7 @@ extension Store {
             .collect()
             .concat(.never)
             .take(until: actions.output
-                .filter(projected.sql.affected(by:))
+                .filter(projected.sql.invalidated(by:))
                 .map { _ in () }
             )
             .repeat(.max)
