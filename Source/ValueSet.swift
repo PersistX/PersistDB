@@ -72,6 +72,11 @@ public struct ValueSet<Model: PersistDB.Model> {
 }
 
 extension ValueSet {
+    /// Create an empty value set.
+    public init() {
+        self.init([:])
+    }
+    
     /// Create a value set from a list of assignments.
     public init(_ assignments: [Assignment<Model>]) {
         self.init([:])

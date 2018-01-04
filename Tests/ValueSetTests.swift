@@ -2,6 +2,11 @@
 import XCTest
 
 class ValueSetInitTests: XCTestCase {
+    func testEmpty() {
+        let valueSet = ValueSet<Book>()
+        XCTAssertEqual(valueSet.values, [:])
+    }
+    
     func testMultipleAssignmentsWithSameKeyPath() {
         let valueSet: ValueSet<Book> = [
             \.title == "foo",
