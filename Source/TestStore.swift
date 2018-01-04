@@ -62,7 +62,8 @@ extension Insert {
 public final class TestStore {
     let store: Store
     
-    private init(for types: [Schemata.AnyModel.Type]) {
+    /// Create a test store for the given types without inserting any fixtures.
+    public init(for types: [Schemata.AnyModel.Type]) {
         store = Store(for: types.map { $0.testSchema })
     }
     
