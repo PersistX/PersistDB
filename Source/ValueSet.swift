@@ -63,27 +63,35 @@ public func == <Model, Value: ModelValue>(
 
 /// A set of values that can be used to insert or update a model entity.
 public struct ValueSet<Model: PersistDB.Model> {
-    public var assignments: [Assignment<Model>]
-    
+    /// The assignments/values that make up the value set.
+    internal var values: [PartialKeyPath<Model>: SQL.Expression]
+}
+
+extension ValueSet {
     /// Create a value set from a list of assignments.
     public init(_ assignments: [Assignment<Model>]) {
-        self.assignments = assignments
+        self.init(values: [:])
+        for assignment in assignments {
+            values[assignment.keyPath] = assignment.sql
+        }
     }
 }
 
 extension ValueSet: Hashable {
     public var hashValue: Int {
-        return assignments.map { $0.hashValue }.reduce(0, ^)
+        return values
+            .map { $0.key.hashValue ^ $0.value.hashValue }
+            .reduce(0, ^)
     }
     
     public static func ==(lhs: ValueSet, rhs: ValueSet) -> Bool {
-        return lhs.assignments == rhs.assignments
+        return lhs.values == rhs.values
     }
 }
 
 extension ValueSet: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Assignment<Model>...) {
-        assignments = elements
+        self.init(elements)
     }
 }
 
@@ -92,7 +100,7 @@ extension ValueSet {
     ///
     /// In order to be sufficient, every required property must have a value.
     internal var sufficientForInsert: Bool {
-        let assigned = Set(assignments.map { $0.keyPath })
+        let assigned = Set(values.keys)
         for property in Model.schema.properties.values {
             switch property.type {
             case .value(_, false), .toOne(_, false):

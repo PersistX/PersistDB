@@ -40,9 +40,8 @@ extension Schemata.AnyModel {
 extension Insert {
     fileprivate init(_ id: Model.ID, _ valueSet: ValueSet<Model>) {
         let idValue = SQL.Expression.value(Model.ID.anyValue.encode(id).sql)
-        let id = Assignment(keyPath: Model.idKeyPath, sql: idValue)
         var values = valueSet
-        values.assignments.insert(id, at: 0)
+        values.values[Model.idKeyPath] = idValue
         self.init(unvalidated: values)
     }
 }

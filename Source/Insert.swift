@@ -31,10 +31,10 @@ extension Insert {
     internal var sql: SQL.Insert {
         let table = SQL.Table(Model.schema.name)
         let values = valueSet
-            .assignments
-            .map { assignment -> (String, SQL.Expression) in
-                let path = Model.schema.properties[assignment.keyPath]!.path
-                return (path, assignment.sql)
+            .values
+            .map { (keyPath, sql) -> (String, SQL.Expression) in
+                let path = Model.schema.properties[keyPath]!.path
+                return (path, sql)
             }
         return SQL.Insert(
             table: table,
