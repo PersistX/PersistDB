@@ -1,5 +1,5 @@
 public struct Insert<Model: PersistDB.Model> {
-    internal let valueSet: ValueSet<Model>
+    public let valueSet: ValueSet<Model>
     
     public init(_ valueSet: ValueSet<Model>) {
         precondition(valueSet.sufficientForInsert)
