@@ -65,12 +65,16 @@ public func == <Model, Value: ModelValue>(
 public struct ValueSet<Model: PersistDB.Model> {
     /// The assignments/values that make up the value set.
     internal var values: [PartialKeyPath<Model>: SQL.Expression]
+    
+    init(_ values: [PartialKeyPath<Model>: SQL.Expression]) {
+        self.values = values
+    }
 }
 
 extension ValueSet {
     /// Create a value set from a list of assignments.
     public init(_ assignments: [Assignment<Model>]) {
-        self.init(values: [:])
+        self.init([:])
         for assignment in assignments {
             values[assignment.keyPath] = assignment.sql
         }
