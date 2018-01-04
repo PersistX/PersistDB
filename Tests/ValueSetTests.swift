@@ -1,6 +1,32 @@
 @testable import PersistDB
 import XCTest
 
+class ValueSetInitTests: XCTestCase {
+    func testMultipleAssignmentsWithSameKeyPath() {
+        let valueSet: ValueSet<Book> = [
+            \.title == "foo",
+            \.title == "bar",
+        ]
+        
+        XCTAssertEqual(valueSet.values, [\Book.title: .value(.text("bar"))])
+    }
+    
+    func testMultipleDistinctAssignments() {
+        let valueSet: ValueSet<Author> = [
+            \.born == 1900,
+            \.died == 2000,
+        ]
+        
+        XCTAssertEqual(
+            valueSet.values,
+            [
+                \Author.born: .value(.integer(1900)),
+                \Author.died: .value(.integer(2000)),
+            ]
+        )
+    }
+}
+
 class ValueSetSufficientForInsertTests: XCTestCase {
     func testEveryPropertySet() {
         let assignments: [Assignment<Author>] = [
