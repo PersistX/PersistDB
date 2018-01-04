@@ -32,6 +32,26 @@ class ValueSetInitTests: XCTestCase {
     }
 }
 
+class ValueSetUpdateTests: XCTestCase {
+    func testReplacedValue() {
+        let old: ValueSet = [ \Author.born == 1900 ]
+        let new: ValueSet = [ \Author.born == 2000 ]
+        XCTAssertEqual(old.update(with: new), new)
+    }
+    
+    func testNewValue() {
+        let old = ValueSet<Author>()
+        let new: ValueSet = [ \Author.died == 2000 ]
+        XCTAssertEqual(old.update(with: new), new)
+    }
+    
+    func testUnreplacedValue() {
+        let old: ValueSet = [ \Author.died == 2000 ]
+        let new = ValueSet<Author>()
+        XCTAssertEqual(old.update(with: new), old)
+    }
+}
+
 class ValueSetSufficientForInsertTests: XCTestCase {
     func testEveryPropertySet() {
         let assignments: [Assignment<Author>] = [

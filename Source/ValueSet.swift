@@ -86,6 +86,13 @@ extension ValueSet {
     }
 }
 
+extension ValueSet {
+    /// Create a new value set by replacing values in `self` with the values from `valueSet`.
+    public func update(with valueSet: ValueSet) -> ValueSet {
+        return ValueSet(self.values.merging(valueSet.values) { $1 })
+    }
+}
+
 extension ValueSet: Hashable {
     public var hashValue: Int {
         return values
