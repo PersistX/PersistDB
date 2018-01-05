@@ -26,7 +26,7 @@ extension PartialKeyPath where Root: PersistDB.Model {
             return SQL.Table(String(describing: property.model))[property.path]
         }
         
-        let properties = Root.schema.properties(for: self)
+        let properties = Root.anySchema.properties(for: self)
         var value: SQL.Expression = .column(column(for: properties.last!))
         for property in properties.reversed().dropFirst() {
             switch property.type {
