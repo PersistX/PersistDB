@@ -80,8 +80,7 @@ internal class Database {
         
         for idx in sql.parameters.indices {
             let p = sql.parameters[idx]
-            let v = p.makeValue()
-            switch v {
+            switch p {
             case let .integer(value):
                 sqlite3_bind_int(stmt, Int32(idx + 1), Int32(value))
             case .null:
