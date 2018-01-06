@@ -6,15 +6,16 @@ internal struct ProjectedQuery<Projection: ModelProjection> where Projection.Mod
     
     init(_ query: Query<Projection.Model>) {
         let projection = Projection.projection
-        let sql = query.sql
+        let sql = query.makeSQL()
         
         keyPaths = Dictionary(uniqueKeysWithValues: projection.keyPaths.map { keyPath in
             (UUID().uuidString, keyPath)
         })
         
         let aliases = Dictionary(uniqueKeysWithValues: keyPaths.map { ($1, $0) })
-        let results = projection.keyPaths.map { keyPath in
-            return SQL.Result(keyPath.sql, alias: aliases[keyPath])
+        let results = projection.keyPaths.map { keyPath -> SQL.Result in
+            let sql = AnyExpression(keyPath).makeSQL()
+            return SQL.Result(sql, alias: aliases[keyPath])
         }
         
         self.sql = SQL.Query(

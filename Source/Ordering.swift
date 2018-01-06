@@ -1,22 +1,31 @@
 /// An ordering that can be applied to a list of models.
 public struct Ordering<Model: PersistDB.Model> {
-    internal let sql: SQL.Ordering
+    internal let expression: AnyExpression
+    internal let ascending: Bool
     
     public init<Value>(_ keyPath: KeyPath<Model, Value>, ascending: Bool = true) {
-        sql = SQL.Ordering(keyPath.sql, ascending ? .ascending : .descending)
+        expression = AnyExpression(keyPath)
+        self.ascending = ascending
     }
     
-    internal init(_ sql: SQL.Ordering) {
-        self.sql = sql
+    internal init(_ expression: AnyExpression, ascending: Bool = true) {
+        self.expression = expression
+        self.ascending = ascending
     }
 }
 
 extension Ordering: Hashable {
     public var hashValue: Int {
-        return sql.hashValue
+        return expression.hashValue
     }
     
     public static func ==(lhs: Ordering, rhs: Ordering) -> Bool {
-        return lhs.sql == rhs.sql
+        return lhs.expression == rhs.expression && lhs.ascending == rhs.ascending
+    }
+}
+
+extension Ordering {
+    internal func makeSQL() -> SQL.Ordering {
+        return SQL.Ordering(expression.makeSQL(), ascending ? .ascending : .descending)
     }
 }

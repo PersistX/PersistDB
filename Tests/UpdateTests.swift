@@ -15,12 +15,12 @@ class UpdateSQLTests: XCTestCase {
         let sql = SQL.Update(
             table: SQL.Table("Widget"),
             values: [
-                "date": Expression<Widget, Date>.now.sql,
+                "date": AnyExpression.now.makeSQL(),
                 "double": .value(.real(4.7))
             ],
-            predicate: predicate.sql
+            predicate: predicate.expression.makeSQL()
         )
-        XCTAssertEqual(update.sql, sql)
+        XCTAssertEqual(update.makeSQL(), sql)
     }
     
     func testSQLWithoutPredicate() {
@@ -35,12 +35,12 @@ class UpdateSQLTests: XCTestCase {
         let sql = SQL.Update(
             table: SQL.Table("Widget"),
             values: [
-                "date": Expression<Widget, Date>.now.sql,
+                "date": AnyExpression.now.makeSQL(),
                 "double": .value(.real(4.7))
             ],
             predicate: nil
         )
-        XCTAssertEqual(update.sql, sql)
+        XCTAssertEqual(update.makeSQL(), sql)
         
     }
 }

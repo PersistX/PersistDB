@@ -173,21 +173,21 @@ extension Store {
     ///
     /// - important: This is done asynchronously.
     public func insert<Model>(_ insert: Insert<Model>) {
-        actions.input.send(value: .insert(insert.sql))
+        actions.input.send(value: .insert(insert.makeSQL()))
     }
     
     /// Delete a model entity from the store.
     ///
     /// - important: This is done asynchronously.
     public func delete<Model>(_ delete: Delete<Model>) {
-        actions.input.send(value: .delete(delete.sql))
+        actions.input.send(value: .delete(delete.makeSQL()))
     }
     
     /// Update properties for a model entity in the store.
     ///
     /// - important: This is done asynchronously.
     public func update<Model>(_ update: Update<Model>) {
-        actions.input.send(value: .update(update.sql))
+        actions.input.send(value: .update(update.makeSQL()))
     }
 }
 

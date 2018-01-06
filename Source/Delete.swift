@@ -17,10 +17,10 @@ extension Delete: Hashable {
 }
 
 extension Delete {
-    internal var sql: SQL.Delete {
+    internal func makeSQL() -> SQL.Delete {
         return SQL.Delete(
             table: SQL.Table(Model.schema.name),
-            predicate: predicate?.sql
+            predicate: predicate?.expression.makeSQL()
         )
     }
 }

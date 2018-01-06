@@ -40,7 +40,7 @@ extension Author {
         static let died = SQL.Expression.column(Author.table["died"])
     }
     
-    static let table = SQL.Table("authors")
+    static let table = SQL.Table("Author")
     
     static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
@@ -86,7 +86,7 @@ extension Book {
         static let title = SQL.Expression.column(Book.table["title"])
     }
     
-    static let table = SQL.Table("books")
+    static let table = SQL.Table("Book")
     
     static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .text, primaryKey: true),

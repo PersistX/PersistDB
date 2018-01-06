@@ -28,13 +28,13 @@ extension Insert: ExpressibleByArrayLiteral {
 }
 
 extension Insert {
-    internal var sql: SQL.Insert {
+    internal func makeSQL() -> SQL.Insert {
         let table = SQL.Table(Model.schema.name)
         let values = valueSet
             .values
-            .map { (keyPath, sql) -> (String, SQL.Expression) in
+            .map { (keyPath, expr) -> (String, SQL.Expression) in
                 let path = Model.schema.properties[keyPath]!.path
-                return (path, sql)
+                return (path, expr.makeSQL())
             }
         return SQL.Insert(
             table: table,

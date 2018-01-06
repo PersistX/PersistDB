@@ -6,7 +6,7 @@ import Schemata
 /// This is meant to be used in conjunction with `ValueSet`.
 public struct Assignment<Model: PersistDB.Model> {
     internal let keyPath: PartialKeyPath<Model>
-    internal let sql: SQL.Expression
+    internal let expression: AnyExpression
 }
 
 extension Assignment: Hashable {
@@ -15,7 +15,7 @@ extension Assignment: Hashable {
     }
     
     public static func ==(lhs: Assignment, rhs: Assignment) -> Bool {
-        return lhs.keyPath == rhs.keyPath && lhs.sql == rhs.sql
+        return lhs.keyPath == rhs.keyPath && lhs.expression == rhs.expression
     }
 }
 
@@ -23,50 +23,50 @@ public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+    return Assignment<Model>(keyPath: lhs, expression: AnyExpression(rhs))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+    return Assignment<Model>(keyPath: lhs, expression: AnyExpression(rhs))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+    return Assignment<Model>(keyPath: lhs, expression: AnyExpression(rhs))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Expression<Model, Value>
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+    return Assignment<Model>(keyPath: lhs, expression: rhs.expression)
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Expression<Model, Value?>
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+    return Assignment<Model>(keyPath: lhs, expression: rhs.expression)
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Expression<Model, Value>
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, sql: rhs.sql)
+    return Assignment<Model>(keyPath: lhs, expression: rhs.expression)
 }
 
 /// A set of values that can be used to insert or update a model entity.
 public struct ValueSet<Model: PersistDB.Model> {
     /// The assignments/values that make up the value set.
-    internal var values: [PartialKeyPath<Model>: SQL.Expression]
+    internal var values: [PartialKeyPath<Model>: AnyExpression]
     
-    init(_ values: [PartialKeyPath<Model>: SQL.Expression]) {
+    init(_ values: [PartialKeyPath<Model>: AnyExpression]) {
         self.values = values
     }
 }
@@ -81,7 +81,7 @@ extension ValueSet {
     public init(_ assignments: [Assignment<Model>]) {
         self.init([:])
         for assignment in assignments {
-            values[assignment.keyPath] = assignment.sql
+            values[assignment.keyPath] = assignment.expression
         }
     }
 }
