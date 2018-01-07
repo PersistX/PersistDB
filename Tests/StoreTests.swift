@@ -142,6 +142,22 @@ class StoreInsertTests: StoreTests {
         let widgets: [Widget] = fetch()
         XCTAssertNotEqual(widgets[0].uuid, widgets[1].uuid)
     }
+    
+    func testSendsID() {
+        let widget: Insert<Widget> = [
+            \Widget.id == 2,
+            \Widget.date == .now,
+            \Widget.double == 3.3,
+            \Widget.uuid == .uuid()
+        ]
+        
+        let id = store!
+            .insert(widget)
+            .first()!
+            .value!
+        
+        XCTAssertEqual(id, 2)
+    }
 }
 
 class StoreDeleteTests: StoreTests {

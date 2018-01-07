@@ -149,18 +149,33 @@ internal class Database {
         execute(delete.sql)
     }
     
-    func insert(_ insert: SQL.Insert) {
+    func insert(_ insert: SQL.Insert) -> SQL.Value {
+        execute(SQL("BEGIN TRANSACTION"))
+        defer { execute(SQL("COMMIT TRANSACTION")) }
+        
+        let primaryKey = schema(for: insert.table).primaryKey
+        let query = SQL.Query
+            .select([ .init(.column(primaryKey), alias: "id") ])
+            .where(.binary(
+                .equal,
+                .column(primaryKey),
+                insert.values[primaryKey.name]!
+            ))
         execute(insert.sql)
+        return execute(query.sql)[0].dictionary["id"]!
     }
     
-    func perform(_ action: SQL.Action) {
+    func perform(_ action: SQL.Action) -> SQL.Effect {
         switch action {
         case let .insert(sql):
-            insert(sql)
+            let id = insert(sql)
+            return .inserted(sql, id: id)
         case let .delete(sql):
             delete(sql)
+            return .deleted(sql)
         case let .update(sql):
             update(sql)
+            return .updated(sql)
         }
     }
     

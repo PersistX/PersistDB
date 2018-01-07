@@ -71,8 +71,9 @@ public final class TestStore {
         _ a: [A.ID: ValueSet<A>]
     ) {
         self.init(for: [A.self])
-        let aRows = a.map(Insert.init)
-        aRows.forEach(store.insert)
+        for (id, valueSet) in a {
+            store.insert(Insert(id, valueSet))
+        }
     }
     
     /// Synchronously fetch the results of the query.

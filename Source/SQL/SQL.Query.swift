@@ -155,13 +155,13 @@ extension SQL.Query {
         return (results + predicates + order).reduce(Set()) { $0.union($1) }
     }
     
-    internal func invalidated(by action: SQL.Action) -> Bool {
+    internal func invalidated(by action: SQL.Effect) -> Bool {
         switch action {
-        case let .insert(insert):
+        case let .inserted(insert, _):
             return !columns.isDisjoint(with: insert.columns)
-        case let .delete(delete):
+        case let .deleted(delete):
             return tables.contains(delete.table)
-        case let .update(update):
+        case let .updated(update):
             return !columns.isDisjoint(with: update.columns)
         }
     }

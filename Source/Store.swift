@@ -17,10 +17,11 @@ public final class Store {
     /// The underlying SQL database.
     fileprivate let db: Database
     
-    /// A pipe of the actions that are mutating the store.
+    /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    fileprivate let actions = Signal<SQL.Action, NoError>.pipe()
+    fileprivate let actions: Signal<(UUID, SQL.Action), NoError>.Observer
+    fileprivate let effects: Signal<(UUID, SQL.Effect), NoError>
     
     /// The designated initializer.
     ///
@@ -50,7 +51,11 @@ public final class Store {
             }
         }
         
-        actions.output.observeValues(db.perform)
+        let pipe = Signal<(UUID, SQL.Action), NoError>.pipe()
+        actions = pipe.input
+        effects = pipe.output.map { uuid, action in
+            return (uuid, db.perform(action))
+        }
     }
     
     /// Create an in-memory store for the given schemas.
@@ -172,22 +177,45 @@ extension Store {
     /// Insert a model entity into the store.
     ///
     /// - important: This is done asynchronously.
-    public func insert<Model>(_ insert: Insert<Model>) {
-        actions.input.send(value: .insert(insert.makeSQL()))
+    ///
+    /// - parameters:
+    ///   - insert: The entity to insert
+    /// - returns: A signal that sends the ID of the inserted row.
+    @discardableResult
+    public func insert<Model>(_ insert: Insert<Model>) -> SignalProducer<Model.ID, NoError> {
+        let uuid = UUID()
+        let sql = insert.makeSQL()
+        defer { actions.send(value: (uuid, .insert(sql))) }
+        
+        let effects = SignalProducer<(UUID, SQL.Effect), NoError>(self.effects)
+            .filter { $0.0 == uuid }
+            .map { $0.1 }
+            .take(first: 1)
+            .map { effect -> Model.ID in
+                guard case let .inserted(_, id) = effect else { fatalError() }
+                let anyValue = Model.ID.anyValue
+                let primitive = id.primitive(anyValue.encoded)
+                let decoded = anyValue.decode(primitive).value!
+                return decoded as! Model.ID
+            }
+            .replayLazily(upTo: 1)
+        // Start right away. Otherwise `self.effects` will send the value before subscription.
+        effects.start()
+        return effects
     }
     
     /// Delete a model entity from the store.
     ///
     /// - important: This is done asynchronously.
     public func delete<Model>(_ delete: Delete<Model>) {
-        actions.input.send(value: .delete(delete.makeSQL()))
+        actions.send(value: (UUID(), .delete(delete.makeSQL())))
     }
     
     /// Update properties for a model entity in the store.
     ///
     /// - important: This is done asynchronously.
     public func update<Model>(_ update: Update<Model>) {
-        actions.input.send(value: .update(update.makeSQL()))
+        actions.send(value: (UUID(), .update(update.makeSQL())))
     }
 }
 
@@ -249,7 +277,8 @@ extension Store {
         return fetch(projected)
             .collect()
             .concat(.never)
-            .take(until: actions.output
+            .take(until: effects
+                .map { $0.1 }
                 .filter(projected.sql.invalidated(by:))
                 .map { _ in () }
             )
