@@ -181,27 +181,32 @@ internal class Database {
             .value(.text("table"))
         ))
     
+    func schema(for table: SQL.Table) -> SQL.Schema {
+        let pragma = SQL("PRAGMA table_info(\(table.name))")
+        let columns = self.execute(pragma)
+            .map { row -> SQL.Schema.Column in
+                let values = row.dictionary
+                return SQL.Schema.Column(
+                    name: values["name"]!.text!,
+                    type: SQL.DataType(rawValue: values["type"]!.text!)!,
+                    nullable: values["notnull"]!.integer == 0,
+                    primaryKey: values["pk"]!.integer == 1
+                )
+        }
+        return SQL.Schema(
+            table: table,
+            columns: Set(columns)
+        )
+    }
+    
     func schema() -> Set<SQL.Schema> {
         let schemas = self
             .query(Database.schemaQuery)
-            .map { row -> SQL.Schema in
-                let name = row.dictionary["tbl_name"]!.text!
-                let pragma = SQL("PRAGMA table_info(\(name))")
-                let columns = self.execute(pragma)
-                    .map { row -> SQL.Schema.Column in
-                        let values = row.dictionary
-                        return SQL.Schema.Column(
-                            name: values["name"]!.text!,
-                            type: SQL.DataType(rawValue: values["type"]!.text!)!,
-                            nullable: values["notnull"]!.integer == 0,
-                            primaryKey: values["pk"]!.integer == 1
-                        )
-                    }
-                return SQL.Schema(
-                    table: SQL.Table(name),
-                    columns: Set(columns)
-                )
+            .map { row in
+                return row.dictionary["tbl_name"]!.text!
             }
+            .map(SQL.Table.init)
+            .map(self.schema(for:))
         return Set(schemas)
     }
 }
