@@ -73,6 +73,12 @@ extension SQL.Schema.Column {
 }
 
 extension SQL.Schema {
+    internal var primaryKey: SQL.Column {
+        return columns
+            .first { $0.primaryKey }
+            .map { self.table[$0.name] }!
+    }
+    
     /// SQL to create the table with the given schema.
     internal var sql: SQL {
         return SQL("CREATE TABLE \"\(table.name)\" (")
