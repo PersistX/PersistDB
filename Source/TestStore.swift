@@ -87,5 +87,16 @@ public final class TestStore {
             .first()!
             .value!
     }
+    
+    /// Synchronously fetch the results of the query.
+    public func fetch<Projection: ModelProjection>(
+        _ query: Query<Projection.Model>
+    ) -> [Projection] {
+        return store
+            .fetch(query)
+            .collect()
+            .first()!
+            .value!
+    }
 }
 

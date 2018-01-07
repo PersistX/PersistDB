@@ -1,7 +1,7 @@
 import PersistDB
 import XCTest
 
-class TestStoreFetchTests: XCTestCase {
+class TestStoreFetchIDTests: XCTestCase {
     func test() {
         let theHobbit = Book.ISBN("the-hobbit")
         let query = Book.all.filter(\Book.title == Book.Data.theHobbit.title)
@@ -27,5 +27,21 @@ class TestStoreFetchTests: XCTestCase {
             [ .jrrTolkien: [ \Author.name == Author.Data.jrrTolkien.name ]]
         )
         XCTAssertEqual(store.fetch(query), [.jrrTolkien])
+    }
+}
+
+class TestStoreFetchProjectionTests: XCTestCase {
+    func test() {
+        let widget = Widget(id: 1, date: Date(), double: 3.2, uuid: UUID())
+        let store = TestStore(
+            [ widget.id: [
+                \Widget.date == widget.date,
+                \Widget.double == widget.double,
+                \Widget.uuid == widget.uuid,
+            ] ]
+        )
+        
+        let fetched: [Widget] = store.fetch(Widget.all)
+        XCTAssertEqual(fetched, [widget])
     }
 }
