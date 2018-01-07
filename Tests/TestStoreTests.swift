@@ -1,8 +1,8 @@
 import PersistDB
 import XCTest
 
-class TestStoreTests: XCTestCase {
-    func testQuery() {
+class TestStoreFetchTests: XCTestCase {
+    func test() {
         let theHobbit = Book.ISBN("the-hobbit")
         let query = Book.all.filter(\Book.title == Book.Data.theHobbit.title)
         let store = TestStore(
@@ -21,7 +21,7 @@ class TestStoreTests: XCTestCase {
         XCTAssertEqual(store.fetch(query), [.theHobbit, theHobbit])
     }
     
-    func testQueryWithImplicitlyNilColumn() {
+    func testImplicitlyNilColumn() {
         let query = Author.all.filter(\Author.died == nil)
         let store = TestStore(
             [ .jrrTolkien: [ \Author.name == Author.Data.jrrTolkien.name ]]
