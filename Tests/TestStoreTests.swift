@@ -45,3 +45,20 @@ class TestStoreFetchProjectionTests: XCTestCase {
         XCTAssertEqual(fetched, [widget])
     }
 }
+
+class TestStoreInsertTests: XCTestCase {
+    func test() {
+        let store = TestStore(for: [ Widget.self ])
+        let widget = Widget(id: 1, date: Date(), double: 3.2, uuid: UUID())
+        let insert: Insert<Widget> = [
+            \.id == widget.id,
+            \.date == widget.date,
+            \.double == widget.double,
+            \.uuid == widget.uuid,
+        ]
+        
+        let projected: Widget = store.insert(insert)
+        
+        XCTAssertEqual(projected, widget)
+    }
+}

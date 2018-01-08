@@ -98,5 +98,19 @@ public final class TestStore {
             .first()!
             .value!
     }
+    
+    /// Insert a model entity and return a projection from it.
+    public func insert<Projection: ModelProjection>(
+        _ insert: Insert<Projection.Model>
+    ) -> Projection {
+        return store.insert(insert)
+            .map { id -> Projection in
+                let query = Projection.Model.all
+                    .filter(Projection.Model.idKeyPath == id)
+                return self.fetch(query)[0]
+            }
+            .first()!
+            .value!
+    }
 }
 
