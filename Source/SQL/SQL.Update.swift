@@ -14,7 +14,7 @@ extension SQL.Update: Hashable {
             ^ values.map { $0.key.hashValue ^ $0.value.hashValue }.reduce(0, ^)
             ^ (predicate?.hashValue ?? 0)
     }
-    
+
     internal static func ==(lhs: SQL.Update, rhs: SQL.Update) -> Bool {
         return lhs.table == rhs.table
             && lhs.values == rhs.values
@@ -26,12 +26,12 @@ extension SQL.Update {
     internal var columns: Set<SQL.Column> {
         return Set(values.keys.map { table[$0] })
     }
-    
+
     internal var sql: SQL {
         let kvs = values.map { SQL("\($0.key) = ") + $0.value.sql }
         let predicate = self.predicate.map { SQL(" WHERE ") + $0.sql }
             ?? SQL("")
-        
+
         return SQL("UPDATE \"\(table.name)\" SET ")
             + kvs.joined(separator: ", ")
             + predicate

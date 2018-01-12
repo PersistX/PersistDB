@@ -5,7 +5,7 @@ extension SQL {
     internal struct Insert {
         /// The table that the row should be inserted into.
         internal var table: Table
-        
+
         /// The values that make up the row, keyed by column name.
         internal var values: [String: SQL.Expression]
     }
@@ -16,7 +16,7 @@ extension SQL.Insert: Hashable {
         return table.hashValue
             ^ values.map { $0.key.hashValue ^ $0.value.hashValue }.reduce(0, ^)
     }
-    
+
     internal static func ==(lhs: SQL.Insert, rhs: SQL.Insert) -> Bool {
         return lhs.table == rhs.table
             && lhs.values == rhs.values
@@ -28,7 +28,7 @@ extension SQL.Insert {
     internal var columns: Set<SQL.Column> {
         return Set(values.keys.map { table[$0] })
     }
-    
+
     /// The SQL string representation of this `Insert`.
     internal var sql: SQL {
         let kvs = Array(values)

@@ -1,7 +1,7 @@
 public struct Update<Model: PersistDB.Model> {
     public var predicate: Predicate<Model>?
     public let valueSet: ValueSet<Model>
-    
+
     public init(predicate: Predicate<Model>?, valueSet: ValueSet<Model>) {
         self.predicate = predicate
         self.valueSet = valueSet
@@ -13,7 +13,7 @@ extension Update: Hashable {
         return (predicate?.hashValue ?? 0)
             ^ valueSet.hashValue
     }
-    
+
     public static func == (lhs: Update, rhs: Update) -> Bool {
         return lhs.predicate == rhs.predicate
             && lhs.valueSet == rhs.valueSet

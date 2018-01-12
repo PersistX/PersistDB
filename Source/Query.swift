@@ -5,13 +5,13 @@ import Schemata
 public struct Query<Model: PersistDB.Model> {
     /// The predicates used to filter results.
     public var predicates: [Predicate<Model>]
-    
+
     /// The orderings used to order results.
     ///
     /// - note: Results are sorted by the first ordering first. Subsequent ordering are used
     ///         to break ties.
     public var order: [Ordering<Model>]
-    
+
     /// Creates a query that returns all instances of `Model` in the store.
     public init() {
         predicates = []
@@ -24,7 +24,7 @@ extension Query: Hashable {
         return predicates.map { $0.hashValue }.reduce(0, ^)
             ^ order.map { $0.hashValue }.reduce(0, ^)
     }
-    
+
     public static func ==(lhs: Query, rhs: Query) -> Bool {
         return lhs.predicates == rhs.predicates
             && lhs.order == rhs.order
@@ -48,7 +48,7 @@ extension Query {
         result.predicates.append(predicate)
         return result
     }
-    
+
     /// Returns a query that is sorted by the given keypath.
     ///
     /// - important: Orderings are inserted into the beginning of the array.
@@ -60,7 +60,7 @@ extension Query {
         result.order.insert(descriptor, at: 0)
         return result
     }
-    
+
     /// Returns a query that is sorted by the given expression.
     ///
     /// - important: Orderings are inserted into the beginning of the array.

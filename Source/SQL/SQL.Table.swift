@@ -5,12 +5,12 @@ extension SQL {
     internal struct Table {
         /// The name of the table in the database.
         internal var name: String
-        
+
         /// Initialize the table with a given name
         internal init(_ name: String) {
             self.name = name
         }
-        
+
         internal subscript(_ name: String) -> SQL.Column {
             return SQL.Column(table: self, name: name)
         }
@@ -21,7 +21,7 @@ extension SQL.Table: Hashable {
     internal var hashValue: Int {
         return name.hashValue
     }
-    
+
     internal static func == (lhs: SQL.Table, rhs: SQL.Table) -> Bool {
         return lhs.name == rhs.name
     }

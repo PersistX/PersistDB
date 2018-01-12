@@ -5,13 +5,13 @@ import Schemata
 
 private struct ID<A: PersistDB.Model>: ModelProjection {
     typealias Model = A
-    
+
     let id: Model.ID
-    
+
     static var projection: Projection<Model, ID<Model>> {
         return Projection<Model, ID<Model>>(ID.init, Model.idKeyPath)
     }
-    
+
     static func == (lhs: ID, rhs: ID) -> Bool {
         return lhs.id == rhs.id
     }
@@ -61,12 +61,12 @@ extension Insert {
 /// - important: This class should **only** be used for testing.
 public final class TestStore {
     let store: Store
-    
+
     /// Create a test store for the given types without inserting any fixtures.
     public init(for types: [Schemata.AnyModel.Type]) {
         store = Store(for: types.map { $0.testSchema })
     }
-    
+
     public convenience init<A>(
         _ a: [A.ID: ValueSet<A>]
     ) {
@@ -75,7 +75,7 @@ public final class TestStore {
             store.insert(Insert(id, valueSet))
         }
     }
-    
+
     /// Synchronously fetch the results of the query.
     public func fetch<Model>(
         _ query: Query<Model>
@@ -87,7 +87,7 @@ public final class TestStore {
             .first()!
             .value!
     }
-    
+
     /// Synchronously fetch the results of the query.
     public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
@@ -98,7 +98,7 @@ public final class TestStore {
             .first()!
             .value!
     }
-    
+
     /// Insert a model entity and return a projection from it.
     public func insert<Projection: ModelProjection>(
         _ insert: Insert<Projection.Model>
@@ -113,4 +113,3 @@ public final class TestStore {
             .value!
     }
 }
-

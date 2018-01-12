@@ -6,31 +6,31 @@ extension SQL {
     internal struct Result: Hashable {
         internal let expression: Expression
         private let alias: String?
-        
+
         internal init(_ expression: Expression, alias: String? = nil) {
             self.expression = expression
             self.alias = alias
         }
-        
+
         var sql: SQL {
             if let alias = alias {
                 return expression.sql + " AS '\(alias)'"
             }
             return expression.sql
         }
-        
+
         var tables: Set<Table> {
             return expression.tables
         }
-        
+
         internal var hashValue: Int {
             return expression.hashValue
         }
-        
+
         internal static func == (lhs: Result, rhs: Result) -> Bool {
             return lhs.expression == rhs.expression && lhs.alias == rhs.alias
         }
-        
+
         func `as`(_ alias: String) -> Result {
             return Result(expression, alias: alias)
         }
@@ -51,18 +51,18 @@ extension SQL.Query {
     internal static func select(_ results: [SQL.Result]) -> SQL.Query {
         return SQL.Query(results: results)
     }
-    
+
     private init(results: [SQL.Result]) {
         self.results = results
     }
-    
+
     /// Filter the query by adding a predicate that limits results.
     internal func `where`(_ predicate: SQL.Expression) -> SQL.Query {
         var query = self
         query.predicates.append(predicate)
         return query
     }
-    
+
     /// Sort the results of the query.
     ///
     /// The first ordering in the list will be the primary ordering. This
@@ -72,7 +72,7 @@ extension SQL.Query {
         query.order = orderings + query.order
         return query
     }
-    
+
     /// Sort the results of the query.
     ///
     /// The first ordering in the list will be the primary ordering. This
@@ -80,7 +80,7 @@ extension SQL.Query {
     internal func sorted(by descriptors: SQL.Ordering...) -> SQL.Query {
         return sorted(by: descriptors)
     }
-    
+
     /// The tables that are a part of this query.
     fileprivate var tables: Set<SQL.Table> {
         let results = self.results.map { $0.tables }
@@ -88,11 +88,11 @@ extension SQL.Query {
         let order = self.order.map { $0.expression.tables }
         return (results + predicates + order).reduce(Set()) { $0.union($1) }
     }
-    
+
     /// The SQL for this query.
     internal var sql: SQL {
         let results = self.results.map { $0.sql }.joined(separator: ", ")
-        
+
         let fromSQL: SQL
         let tables = self.tables
             .map { "\"\($0.name)\"" }
@@ -102,7 +102,7 @@ extension SQL.Query {
         } else {
             fromSQL = SQL(" FROM ") + tables
         }
-        
+
         let whereSQL: SQL
         let predicates
             = self.predicates
@@ -114,20 +114,20 @@ extension SQL.Query {
         } else {
             whereSQL = " WHERE " + predicates.map { $0.sql }.joined(separator: " AND ")
         }
-        
+
         let orderBySQL: SQL
         if order.isEmpty {
             orderBySQL = SQL()
         } else {
             orderBySQL = " ORDER BY " + order.map { $0.sql }.joined(separator: ",")
         }
-        
+
         return "SELECT " + results
             + fromSQL
             + whereSQL
             + orderBySQL
     }
-    
+
     /// An expression that tests whether `self` has any results.
     internal var exists: SQL.Expression {
         return .exists(self)
@@ -139,7 +139,7 @@ extension SQL.Query: Hashable {
         return results.reduce(0) { $0 ^ $1.hashValue }
             + predicates.reduce(0) { $0 ^ $1.hashValue }
     }
-    
+
     internal static func == (lhs: SQL.Query, rhs: SQL.Query) -> Bool {
         return lhs.results == rhs.results
             && lhs.predicates == rhs.predicates
@@ -154,7 +154,7 @@ extension SQL.Query {
         let order = self.order.map { $0.expression.columns }
         return (results + predicates + order).reduce(Set()) { $0.union($1) }
     }
-    
+
     internal func invalidated(by action: SQL.Effect) -> Bool {
         switch action {
         case let .inserted(insert, _):

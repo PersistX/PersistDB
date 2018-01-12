@@ -16,13 +16,13 @@ public enum OpenError: Error {
 public final class Store {
     /// The underlying SQL database.
     fileprivate let db: Database
-    
+
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
     fileprivate let actions: Signal<(UUID, SQL.Action), NoError>.Observer
     fileprivate let effects: Signal<(UUID, SQL.Effect), NoError>
-    
+
     /// The designated initializer.
     ///
     /// - parameters:
@@ -35,7 +35,7 @@ public final class Store {
     /// database.
     private init(_ db: Database, for schemas: [AnySchema]) throws {
         self.db = db
-        
+
         let existing = Dictionary(uniqueKeysWithValues: db
             .schema()
             .map { ($0.table, $0) }
@@ -50,24 +50,24 @@ public final class Store {
                 db.create(sql)
             }
         }
-        
+
         let pipe = Signal<(UUID, SQL.Action), NoError>.pipe()
         actions = pipe.input
         effects = pipe.output.map { uuid, action in
             return (uuid, db.perform(action))
         }
     }
-    
+
     /// Create an in-memory store for the given schemas.
     public convenience init(for schemas: [AnySchema]) {
         try! self.init(Database(), for: schemas)
     }
-    
+
     /// Create an in-memory store for the given model types.
     public convenience init(for types: [Schemata.AnyModel.Type]) {
         self.init(for: types.map { $0.anySchema })
     }
-    
+
     /// Open an on-disk store.
     ///
     /// - parameters:
@@ -97,7 +97,7 @@ public final class Store {
             }
         }
     }
-    
+
     /// Open an on-disk store.
     ///
     /// - parameters:
@@ -116,7 +116,7 @@ public final class Store {
     ) -> SignalProducer<Store, OpenError> {
         return open(at: url, for: types.map { $0.anySchema })
     }
-    
+
     /// Open an on-disk store inside the Application Support directory.
     ///
     /// - parameters:
@@ -151,7 +151,7 @@ public final class Store {
                 return self.open(at: url, for: schemas)
             }
     }
-    
+
     /// Open an on-disk store inside the Application Support directory.
     ///
     /// - parameters:
@@ -186,7 +186,7 @@ extension Store {
         let uuid = UUID()
         let sql = insert.makeSQL()
         defer { actions.send(value: (uuid, .insert(sql))) }
-        
+
         let effects = SignalProducer<(UUID, SQL.Effect), NoError>(self.effects)
             .filter { $0.0 == uuid }
             .map { $0.1 }
@@ -203,14 +203,14 @@ extension Store {
         effects.start()
         return effects
     }
-    
+
     /// Delete a model entity from the store.
     ///
     /// - important: This is done asynchronously.
     public func delete<Model>(_ delete: Delete<Model>) {
         actions.send(value: (UUID(), .delete(delete.makeSQL())))
     }
-    
+
     /// Update properties for a model entity in the store.
     ///
     /// - important: This is done asynchronously.
@@ -242,7 +242,7 @@ extension Store {
             observer.sendCompleted()
         }
     }
-    
+
     /// Fetch projections from the store with a query.
     ///
     /// - parameters:
@@ -257,7 +257,7 @@ extension Store {
         let projected = ProjectedQuery<Projection>(query)
         return fetch(projected)
     }
-    
+
     /// Observe projections from the store with a query.
     ///
     /// When `insert`, `delete`, or `update` is called that *might* affect the result, the

@@ -22,16 +22,16 @@ extension AnyProperty {
         case .toMany:
             dataType = nil
             nullable = false
-            
+
         case let .toOne(_, null):
             dataType = .integer
             nullable = null
-            
+
         case let .value(type, null):
             dataType = type.anyValue.encoded.sql
             nullable = null
         }
-        
+
         return dataType.map { dataType in
             return SQL.Schema.Column(
                 name: path,
@@ -45,9 +45,9 @@ extension AnyProperty {
 
 public protocol Model: Schemata.Model {
     associatedtype ID: ModelValue
-    
+
     var id: ID { get }
-    
+
     static var defaultOrder: [Ordering<Self>] { get }
 }
 

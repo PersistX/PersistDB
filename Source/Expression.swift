@@ -25,17 +25,17 @@ internal indirect enum AnyExpression {
         case notEqual
         case or
     }
-    
+
     internal enum Function {
         case coalesce
         case max
         case min
     }
-    
+
     internal enum Generator {
         case uuid
     }
-    
+
     case binary(BinaryOperator, AnyExpression, AnyExpression)
     case function(Function, [AnyExpression])
     case generator(Generator)
@@ -53,7 +53,7 @@ extension AnyExpression.UnaryOperator: Hashable {
             return 0
         }
     }
-    
+
     static func == (lhs: AnyExpression.UnaryOperator, rhs: AnyExpression.UnaryOperator) -> Bool {
         switch (lhs, rhs) {
         case (.not, .not):
@@ -92,7 +92,7 @@ extension AnyExpression.BinaryOperator: Hashable {
             return 7
         }
     }
-    
+
     static func == (lhs: AnyExpression.BinaryOperator, rhs: AnyExpression.BinaryOperator) -> Bool {
         switch (lhs, rhs) {
         case (.and, .and),
@@ -144,7 +144,7 @@ extension AnyExpression.Function: Hashable {
             return 3
         }
     }
-    
+
     static func == (lhs: AnyExpression.Function, rhs: AnyExpression.Function) -> Bool {
         switch (lhs, rhs) {
         case (.coalesce, .coalesce),
@@ -161,11 +161,11 @@ extension AnyExpression {
     init<Model: PersistDB.Model>(_ keyPath: PartialKeyPath<Model>) {
         self = .keyPath(Model.anySchema.properties(for: keyPath))
     }
-    
+
     init<V: ModelValue>(_ value: V) {
         self = .value(V.anyValue.encode(value).sql)
     }
-    
+
     init<V: ModelValue>(_ value: V?) {
         self = .value(value.map(V.anyValue.encode)?.sql ?? .null)
     }
@@ -191,7 +191,7 @@ extension AnyExpression.Generator: Hashable {
             return 1
         }
     }
-    
+
     static func == (lhs: AnyExpression.Generator, rhs: AnyExpression.Generator) -> Bool {
         switch (lhs, rhs) {
         case (.uuid, .uuid):
@@ -230,7 +230,7 @@ extension AnyExpression: Hashable {
             return op.hashValue ^ expr.hashValue
         }
     }
-    
+
     static func == (lhs: AnyExpression, rhs: AnyExpression) -> Bool {
         switch (lhs, rhs) {
         case let (.binary(lhs), .binary(rhs)):
@@ -291,7 +291,7 @@ fileprivate func sql(for properties: [AnyProperty]) -> SQL.Expression {
     func column(for property: AnyProperty) -> SQL.Column {
         return SQL.Table(String(describing: property.model))[property.path]
     }
-    
+
     var value: SQL.Expression = .column(column(for: properties.last!))
     for property in properties.reversed().dropFirst() {
         switch property.type {
@@ -344,7 +344,7 @@ extension AnyExpression {
 /// An expression that can be used in `Predicate`s, `Ordering`s, etc.
 public struct Expression<Model: PersistDB.Model, Value> {
     internal let expression: AnyExpression
-    
+
     fileprivate init(_ expression: AnyExpression) {
         self.expression = expression
     }
@@ -354,7 +354,7 @@ extension Expression: Hashable {
     public var hashValue: Int {
         return expression.hashValue
     }
-    
+
     public static func == (lhs: Expression, rhs: Expression) -> Bool {
         return lhs.expression == rhs.expression
     }

@@ -68,7 +68,7 @@ extension SQL.Expression {
             return value.sql
         }
     }
-    
+
     private var expressions: Set<SQL.Expression> {
         switch self {
         case let .binary(_, lhs, rhs):
@@ -88,7 +88,7 @@ extension SQL.Expression {
             return expr.expressions.union([self])
         }
     }
-    
+
     var joins: Set<SQL.Expression> {
         var result: Set<SQL.Expression> = []
         for case let .join(a, b, _) in expressions {
@@ -96,7 +96,7 @@ extension SQL.Expression {
         }
         return result
     }
-    
+
     var columns: Set<SQL.Column> {
         var result: Set<SQL.Column> = []
         for case let .column(column) in expressions {
@@ -104,7 +104,7 @@ extension SQL.Expression {
         }
         return result
     }
-    
+
     var tables: Set<SQL.Table> {
         var result: Set<SQL.Table> = []
         for expr in expressions {
@@ -145,7 +145,7 @@ extension SQL.Expression: Hashable {
             return value.hashValue
         }
     }
-    
+
     static func == (lhs: SQL.Expression, rhs: SQL.Expression) -> Bool {
         switch (lhs, rhs) {
         case let (.binary(op1, lhs1, rhs1), .binary(op2, lhs2, rhs2)):
@@ -177,7 +177,7 @@ extension SQL.Expression {
     internal var ascending: SQL.Ordering {
         return SQL.Ordering(self, .ascending)
     }
-    
+
     /// A descending ordering.
     internal var descending: SQL.Ordering {
         return SQL.Ordering(self, .descending)

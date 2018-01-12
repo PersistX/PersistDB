@@ -9,7 +9,7 @@ extension SQL {
             var type: DataType
             var nullable: Bool
             var primaryKey: Bool
-            
+
             internal init(
                 name: String,
                 type: DataType,
@@ -22,13 +22,13 @@ extension SQL {
                 self.primaryKey = primaryKey
             }
         }
-        
+
         /// The table that the schema describes.
         internal var table: Table
-        
+
         /// The columns in the table.
         internal var columns: Set<Column>
-        
+
         internal init(table: Table, columns: Set<Column>) {
             self.table = table
             self.columns = columns
@@ -40,7 +40,7 @@ extension SQL.Schema.Column: Hashable {
     internal var hashValue: Int {
         return name.hashValue
     }
-    
+
     internal static func ==(lhs: SQL.Schema.Column, rhs: SQL.Schema.Column) -> Bool {
         return lhs.name == rhs.name
             && lhs.type == rhs.type
@@ -53,7 +53,7 @@ extension SQL.Schema: Hashable {
     internal var hashValue: Int {
         return table.hashValue
     }
-    
+
     internal static func ==(lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
         return lhs.table == rhs.table && lhs.columns == rhs.columns
     }
@@ -78,7 +78,7 @@ extension SQL.Schema {
             .first { $0.primaryKey }
             .map { self.table[$0.name] }!
     }
-    
+
     /// SQL to create the table with the given schema.
     internal var sql: SQL {
         return SQL("CREATE TABLE \"\(table.name)\" (")

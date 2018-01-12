@@ -5,16 +5,16 @@ extension SQL {
     internal enum Value {
         /// An integer value
         case integer(Int)
-        
+
         /// A null value
         case null
-        
+
         /// A floating point value
         case real(Double)
-        
+
         /// A string value
         case text(String)
-        
+
         internal var sql: SQL {
             if self == .null {
                 return SQL("NULL")
@@ -22,7 +22,7 @@ extension SQL {
                 return SQL("?", parameters: self)
             }
         }
-        
+
         var integer: Int? {
             switch self {
             case let .integer(integer):
@@ -31,7 +31,7 @@ extension SQL {
                 return nil
             }
         }
-        
+
         var text: String? {
             switch self {
             case let .text(text):
@@ -92,11 +92,11 @@ extension SQL.Value: ExpressibleByStringLiteral {
     internal init(stringLiteral value: String) {
         self = .text(value)
     }
-    
+
     internal init(unicodeScalarLiteral value: String) {
         self = .text(value)
     }
-    
+
     internal init(extendedGraphemeClusterLiteral value: String) {
         self = .text(value)
     }

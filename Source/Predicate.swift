@@ -4,7 +4,7 @@ import Schemata
 /// A logical condition used for filtering.
 public struct Predicate<Model: PersistDB.Model> {
     internal let expression: AnyExpression
-    
+
     fileprivate init(_ expression: AnyExpression) {
         self.expression = expression
     }
@@ -14,7 +14,7 @@ extension Predicate: Hashable {
     public var hashValue: Int {
         return expression.hashValue
     }
-    
+
     public static func == (lhs: Predicate, rhs: Predicate) -> Bool {
         return lhs.expression == rhs.expression
     }
@@ -145,12 +145,12 @@ extension Predicate {
     public static func &&(lhs: Predicate, rhs: Predicate) -> Predicate {
         return Predicate(lhs.expression && rhs.expression)
     }
-    
+
     /// Creates a predicate that's true when either predicates is true.
     public static func ||(lhs: Predicate, rhs: Predicate) -> Predicate {
         return Predicate(lhs.expression || rhs.expression)
     }
-    
+
     /// Creates a predicate that's true when the given predicate is false.
     public static prefix func !(predicate: Predicate) -> Predicate {
         return Predicate(!predicate.expression)

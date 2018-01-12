@@ -13,7 +13,7 @@ extension Assignment: Hashable {
     public var hashValue: Int {
         return keyPath.hashValue
     }
-    
+
     public static func ==(lhs: Assignment, rhs: Assignment) -> Bool {
         return lhs.keyPath == rhs.keyPath && lhs.expression == rhs.expression
     }
@@ -65,7 +65,7 @@ public func == <Model, Value: ModelValue>(
 public struct ValueSet<Model: PersistDB.Model> {
     /// The assignments/values that make up the value set.
     internal var values: [PartialKeyPath<Model>: AnyExpression]
-    
+
     init(_ values: [PartialKeyPath<Model>: AnyExpression]) {
         self.values = values
     }
@@ -76,7 +76,7 @@ extension ValueSet {
     public init() {
         self.init([:])
     }
-    
+
     /// Create a value set from a list of assignments.
     public init(_ assignments: [Assignment<Model>]) {
         self.init([:])
@@ -99,7 +99,7 @@ extension ValueSet: Hashable {
             .map { $0.key.hashValue ^ $0.value.hashValue }
             .reduce(0, ^)
     }
-    
+
     public static func ==(lhs: ValueSet, rhs: ValueSet) -> Bool {
         return lhs.values == rhs.values
     }

@@ -22,7 +22,7 @@ extension String {
         pattern: "(\\?) | '[^']*' | --[^\\n]* | /\\* (?:(?!\\*/).)* \\*/",
         options: [ .allowCommentsAndWhitespace, .dotMatchesLineSeparators ]
     )
-    
+
     internal var placeholders: IndexSet {
         let range = NSRange(location: 0, length: count)
         let matches = String.PlaceholderRegex.matches(in: self, range: range)
@@ -41,24 +41,24 @@ extension String {
 public struct SQL {
     /// The SQL statement.
     public private(set) var sql: String
-    
+
     /// The parameters to the SQL statement.
     internal private(set) var parameters: [SQL.Value]
-    
+
     internal init(_ sql: String, parameters: [SQL.Value]) {
         precondition(sql.placeholders.count == parameters.count)
         self.sql = sql
         self.parameters = parameters
     }
-    
+
     internal init(_ sql: String, parameters: SQL.Value...) {
         self.init(sql, parameters: parameters)
     }
-    
+
     public init() {
         self.init("")
     }
-    
+
     /// A textual representation of self, suitable for debugging.
     public var debugDescription: String {
         var result = sql
@@ -67,43 +67,43 @@ public struct SQL {
             let replacement = parameter.description
             let adjusted = result.index(result.startIndex, offsetBy: index + offset)
             result.replaceSubrange(adjusted...adjusted, with: replacement)
-            
+
             offset += replacement.count - 1
         }
         return String(result)
     }
-    
+
     /// Append the given statement to the statement.
     internal mutating func append(_ sql: String, parameters: [SQL.Value]) {
         self.sql += sql
         self.parameters += parameters
     }
-    
+
     /// Append the given statement to the statement.
     internal mutating func append(_ sql: String, parameters: SQL.Value...) {
         append(sql, parameters: parameters)
     }
-    
+
     /// Append the given statement to the statement.
     internal mutating func append(_ sql: SQL) {
         append(sql.sql, parameters: sql.parameters)
     }
-    
+
     /// Create a new SQL statement by appending a SQL statement
     internal func appending(_ sql: String, parameters: [SQL.Value]) -> SQL {
         return SQL(self.sql + sql, parameters: self.parameters + parameters)
     }
-    
+
     /// Create a new SQL statement by appending a SQL statement
     internal func appending(_ sql: String, parameters: SQL.Value...) -> SQL {
         return appending(sql, parameters: parameters)
     }
-    
+
     /// Create a new SQL statement by appending a SQL statement
     internal func appending(_ sql: SQL) -> SQL {
         return appending(sql.sql, parameters: sql.parameters)
     }
-    
+
     /// Returns a version of the statement that's surrounded by paretheses.
     internal var parenthesized: SQL {
         return "(" + self + ")"
