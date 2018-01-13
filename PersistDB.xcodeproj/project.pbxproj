@@ -285,6 +285,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB" */;
 			buildPhases = (
+				BEBC36BD2009935E000E3AAB /* Run Standards */,
 				BE89D5F11EBE3A0100CEC4D1 /* Sources */,
 				BE89D5F21EBE3A0100CEC4D1 /* Frameworks */,
 				BE89D5F31EBE3A0100CEC4D1 /* Headers */,
@@ -303,6 +304,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BE89D60D1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDBTests" */;
 			buildPhases = (
+				BEBC36BE20099903000E3AAB /* Run Standards */,
 				BE89D5FB1EBE3A0100CEC4D1 /* Sources */,
 				BE89D5FC1EBE3A0100CEC4D1 /* Frameworks */,
 				BE89D5FD1EBE3A0100CEC4D1 /* Resources */,
@@ -373,6 +375,37 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BEBC36BD2009935E000E3AAB /* Run Standards */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Standards";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Source\"";
+		};
+		BEBC36BE20099903000E3AAB /* Run Standards */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Standards";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Tests\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BE89D5F11EBE3A0100CEC4D1 /* Sources */ = {

@@ -7,3 +7,6 @@
 [submodule "Carthage/Checkouts/ReactiveSwift"]
 	path = Carthage/Checkouts/ReactiveSwift
 	url = https://github.com/ReactiveCocoa/ReactiveSwift.git
+[submodule "Carthage/Checkouts/Standards"]
+	path = Carthage/Checkouts/Standards
+	url = https://github.com/PersistX/Standards.git
