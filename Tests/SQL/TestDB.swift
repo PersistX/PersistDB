@@ -1,6 +1,5 @@
 @testable import PersistDB
 
-
 extension Author.Data {
     fileprivate var insert: SQL.Insert {
         return Author.table.insert([
@@ -8,7 +7,7 @@ extension Author.Data {
             "name": .value(.text(name)),
             "givenName": .value(.text(givenName)),
             "born": .value(.integer(born)),
-            "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null)
+            "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null),
         ])
     }
 
@@ -67,7 +66,6 @@ extension Book.Data {
             "title": .text(title),
         ]
     }
-    
 
     static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
     static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
@@ -129,4 +127,3 @@ class TestDB {
         db.update(update)
     }
 }
-

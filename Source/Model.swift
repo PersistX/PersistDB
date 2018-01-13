@@ -33,7 +33,7 @@ extension AnyProperty {
         }
 
         return dataType.map { dataType in
-            return SQL.Schema.Column(
+            SQL.Schema.Column(
                 name: path,
                 type: dataType,
                 nullable: nullable,
@@ -87,7 +87,7 @@ extension Projection {
                 fatalError()
             }
             let primitive = value.primitive(type.anyValue.encoded)
-            let decoded =  type.anyValue.decode(primitive).value
+            let decoded = type.anyValue.decode(primitive).value
             result[keyPath] = isOptional ? .some(decoded as Any) : decoded!
         }
         return makeValue(result)

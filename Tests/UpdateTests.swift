@@ -16,7 +16,7 @@ class UpdateSQLTests: XCTestCase {
             table: SQL.Table("Widget"),
             values: [
                 "date": AnyExpression.now.makeSQL(),
-                "double": .value(.real(4.7))
+                "double": .value(.real(4.7)),
             ],
             predicate: predicate.expression.makeSQL()
         )
@@ -36,11 +36,10 @@ class UpdateSQLTests: XCTestCase {
             table: SQL.Table("Widget"),
             values: [
                 "date": AnyExpression.now.makeSQL(),
-                "double": .value(.real(4.7))
+                "double": .value(.real(4.7)),
             ],
             predicate: nil
         )
         XCTAssertEqual(update.makeSQL(), sql)
-        
     }
 }

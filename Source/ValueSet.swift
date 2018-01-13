@@ -14,7 +14,7 @@ extension Assignment: Hashable {
         return keyPath.hashValue
     }
 
-    public static func ==(lhs: Assignment, rhs: Assignment) -> Bool {
+    public static func == (lhs: Assignment, rhs: Assignment) -> Bool {
         return lhs.keyPath == rhs.keyPath && lhs.expression == rhs.expression
     }
 }
@@ -89,7 +89,7 @@ extension ValueSet {
 extension ValueSet {
     /// Create a new value set by replacing values in `self` with the values from `valueSet`.
     public func update(with valueSet: ValueSet) -> ValueSet {
-        return ValueSet(self.values.merging(valueSet.values) { $1 })
+        return ValueSet(values.merging(valueSet.values) { $1 })
     }
 }
 
@@ -100,7 +100,7 @@ extension ValueSet: Hashable {
             .reduce(0, ^)
     }
 
-    public static func ==(lhs: ValueSet, rhs: ValueSet) -> Bool {
+    public static func == (lhs: ValueSet, rhs: ValueSet) -> Bool {
         return lhs.values == rhs.values
     }
 }
@@ -121,7 +121,7 @@ extension ValueSet {
             switch property.type {
             case .value(_, false), .toOne(_, false):
                 guard assigned.contains(property.keyPath)
-                    else { return false }
+                else { return false }
             case .value(_, true), .toOne(_, true), .toMany:
                 break
             }

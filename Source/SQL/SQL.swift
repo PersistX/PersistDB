@@ -111,25 +111,25 @@ public struct SQL {
 }
 
 /// Create a new SQL statement by appending a SQL statement
-internal func +(lhs: SQL, rhs: SQL) -> SQL {
+internal func + (lhs: SQL, rhs: SQL) -> SQL {
     return lhs.appending(rhs)
 }
 
 /// Create a new SQL statement by appending a SQL statement
-internal func +(lhs: SQL, rhs: String) -> SQL {
+internal func + (lhs: SQL, rhs: String) -> SQL {
     return lhs.appending(rhs)
 }
 
 /// Create a new SQL statement by appending a SQL statement
-internal func +(lhs: String, rhs: SQL) -> SQL {
+internal func + (lhs: String, rhs: SQL) -> SQL {
     return SQL(lhs).appending(rhs)
 }
 
-internal func +=(lhs: inout SQL, rhs: SQL) {
+internal func += (lhs: inout SQL, rhs: SQL) {
     lhs.append(rhs)
 }
 
-internal func +=(lhs: inout SQL, rhs: String) {
+internal func += (lhs: inout SQL, rhs: String) {
     lhs.append(rhs)
 }
 
@@ -138,14 +138,14 @@ extension SQL: Hashable {
         return parameters.reduce(sql.hashValue) { $0 ^ $1.hashValue }
     }
 
-    public static func ==(lhs: SQL, rhs: SQL) -> Bool {
+    public static func == (lhs: SQL, rhs: SQL) -> Bool {
         return lhs.sql == rhs.sql && lhs.parameters == rhs.parameters
     }
 }
 
 extension Sequence where Iterator.Element == SQL {
     internal func joined(separator: String) -> SQL {
-        var result: SQL? = nil
+        var result: SQL?
         for sql in self {
             if let accumulated = result {
                 result = accumulated + separator + sql

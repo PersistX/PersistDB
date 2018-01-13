@@ -385,6 +385,7 @@ extension Expression where Value: OptionalProtocol, Value.Wrapped: ModelValue {
         expression = .value(value.map(Value.Wrapped.anyValue.encode)?.sql ?? .null)
     }
 }
+
 // MARK: - Operators
 
 internal func == (lhs: AnyExpression, rhs: AnyExpression) -> AnyExpression {

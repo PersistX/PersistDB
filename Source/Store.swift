@@ -36,9 +36,10 @@ public final class Store {
     private init(_ db: Database, for schemas: [AnySchema]) throws {
         self.db = db
 
-        let existing = Dictionary(uniqueKeysWithValues: db
-            .schema()
-            .map { ($0.table, $0) }
+        let existing = Dictionary(
+            uniqueKeysWithValues: db
+                .schema()
+                .map { ($0.table, $0) }
         )
         for schema in schemas {
             let sql = schema.sql
@@ -136,7 +137,7 @@ public final class Store {
     ) -> SignalProducer<Store, OpenError> {
         return SignalProducer(value: fileName)
             .attemptMap { fileName in
-                return try FileManager
+                try FileManager
                     .default
                     .url(
                         for: .applicationSupportDirectory,
@@ -148,7 +149,7 @@ public final class Store {
             }
             .mapError(OpenError.unknown)
             .flatMap(.latest) { url in
-                return self.open(at: url, for: schemas)
+                self.open(at: url, for: schemas)
             }
     }
 
@@ -277,10 +278,11 @@ extension Store {
         return fetch(projected)
             .collect()
             .concat(.never)
-            .take(until: effects
-                .map { $0.1 }
-                .filter(projected.sql.invalidated(by:))
-                .map { _ in () }
+            .take(
+                until: effects
+                    .map { $0.1 }
+                    .filter(projected.sql.invalidated(by:))
+                    .map { _ in () }
             )
             .repeat(.max)
     }

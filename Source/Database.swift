@@ -198,7 +198,7 @@ internal class Database {
 
     func schema(for table: SQL.Table) -> SQL.Schema {
         let pragma = SQL("PRAGMA table_info(\(table.name))")
-        let columns = self.execute(pragma)
+        let columns = execute(pragma)
             .map { row -> SQL.Schema.Column in
                 let values = row.dictionary
                 return SQL.Schema.Column(
@@ -207,7 +207,7 @@ internal class Database {
                     nullable: values["notnull"]!.integer == 0,
                     primaryKey: values["pk"]!.integer == 1
                 )
-        }
+            }
         return SQL.Schema(
             table: table,
             columns: Set(columns)
@@ -215,13 +215,12 @@ internal class Database {
     }
 
     func schema() -> Set<SQL.Schema> {
-        let schemas = self
-            .query(Database.schemaQuery)
+        let schemas = query(Database.schemaQuery)
             .map { row in
                 return row.dictionary["tbl_name"]!.text!
             }
             .map(SQL.Table.init)
-            .map(self.schema(for:))
+            .map(schema(for:))
         return Set(schemas)
     }
 }

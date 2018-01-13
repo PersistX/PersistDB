@@ -14,7 +14,7 @@ class PrimitiveTests: XCTestCase {
     }
 
     func test_sql_int() {
-        XCTAssertEqual(Primitive.int(123456789).sql, .integer(123456789))
+        XCTAssertEqual(Primitive.int(123_456_789).sql, .integer(123_456_789))
     }
 
     func test_sql_null() {

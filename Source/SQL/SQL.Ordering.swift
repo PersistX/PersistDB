@@ -37,7 +37,7 @@ extension SQL.Ordering: Hashable {
         return expression.hashValue
     }
 
-    internal static func ==(lhs: SQL.Ordering, rhs: SQL.Ordering) -> Bool {
+    internal static func == (lhs: SQL.Ordering, rhs: SQL.Ordering) -> Bool {
         return lhs.expression == rhs.expression && lhs.direction == rhs.direction
     }
 }

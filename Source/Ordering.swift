@@ -19,7 +19,7 @@ extension Ordering: Hashable {
         return expression.hashValue
     }
 
-    public static func ==(lhs: Ordering, rhs: Ordering) -> Bool {
+    public static func == (lhs: Ordering, rhs: Ordering) -> Bool {
         return lhs.expression == rhs.expression && lhs.ascending == rhs.ascending
     }
 }

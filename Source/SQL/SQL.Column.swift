@@ -32,4 +32,3 @@ extension SQL.Column {
         return SQL("\"\(table.name)\".\"\(name)\"")
     }
 }
-

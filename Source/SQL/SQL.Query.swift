@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension SQL {
     /// Something that can be used as a result in a SQL query.
     internal struct Result: Hashable {
@@ -108,7 +107,7 @@ extension SQL.Query {
             = self.predicates
             + self.results.flatMap { $0.expression.joins }
             + self.predicates.flatMap { $0.joins }
-            + self.order.flatMap { $0.expression.joins }
+            + order.flatMap { $0.expression.joins }
         if predicates.isEmpty {
             whereSQL = SQL()
         } else {

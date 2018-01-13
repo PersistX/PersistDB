@@ -53,7 +53,7 @@ class SQLQueryTests: XCTestCase {
 
     func testSelectingOneExpression() {
         let query = SQL.Query
-            .select([ SQL.Result(Author.Table.id)  ])
+            .select([ SQL.Result(Author.Table.id) ])
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -288,8 +288,9 @@ class SQLQueryTests: XCTestCase {
         )
         let query = SQL.Query
             .select(Book.Table.allColumns)
-            .sorted(by:
-                join.ascending,
+            .sorted(
+                by:
+                    join.ascending,
                 Book.Table.title.ascending
             )
 
@@ -396,8 +397,9 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select(Book.Table.allColumns)
             .where(.binary(.equal, Book.Table.author, Author.Table.id))
-            .sorted(by:
-                Author.Table.name.ascending,
+            .sorted(
+                by:
+                    Author.Table.name.ascending,
                 Book.Table.title.ascending
             )
         XCTAssertEqual(query, query)
@@ -447,7 +449,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
                 Book.table["author"],
                 Author.table["id"],
                 Author.Table.name
-            ), alias: "foo")
+            ), alias: "foo"),
         ])
         .where(.binary(
             .isNot,
@@ -517,7 +519,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Book.table,
             values: [
-                "name": .value(.text("name"))
+                "name": .value(.text("name")),
             ],
             predicate: nil
         )
@@ -528,7 +530,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "givenName": .value(.text("givenName"))
+                "givenName": .value(.text("givenName")),
             ],
             predicate: nil
         )
@@ -539,7 +541,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "givenName": .value(.text("givenName"))
+                "givenName": .value(.text("givenName")),
             ],
             predicate: nil
         )
@@ -550,7 +552,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "born": .value(.integer(1000))
+                "born": .value(.integer(1000)),
             ],
             predicate: nil
         )
@@ -561,7 +563,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "born": .value(.integer(1000))
+                "born": .value(.integer(1000)),
             ],
             predicate: nil
         )
@@ -572,7 +574,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "died": .value(.integer(1000))
+                "died": .value(.integer(1000)),
             ],
             predicate: nil
         )
@@ -583,7 +585,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "died": .value(.integer(1000))
+                "died": .value(.integer(1000)),
             ],
             predicate: nil
         )
@@ -594,7 +596,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: Author.table,
             values: [
-                "name": .value(.text("givenName"))
+                "name": .value(.text("givenName")),
             ],
             predicate: nil
         )
@@ -619,7 +621,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         let update = SQL.Update(
             table: publisher,
             values: [
-                "name": .value(.text("givenName"))
+                "name": .value(.text("givenName")),
             ],
             predicate: nil
         )

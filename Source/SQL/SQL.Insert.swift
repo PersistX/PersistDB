@@ -17,7 +17,7 @@ extension SQL.Insert: Hashable {
             ^ values.map { $0.key.hashValue ^ $0.value.hashValue }.reduce(0, ^)
     }
 
-    internal static func ==(lhs: SQL.Insert, rhs: SQL.Insert) -> Bool {
+    internal static func == (lhs: SQL.Insert, rhs: SQL.Insert) -> Bool {
         return lhs.table == rhs.table
             && lhs.values == rhs.values
     }

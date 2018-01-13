@@ -25,7 +25,7 @@ extension Query: Hashable {
             ^ order.map { $0.hashValue }.reduce(0, ^)
     }
 
-    public static func ==(lhs: Query, rhs: Query) -> Bool {
+    public static func == (lhs: Query, rhs: Query) -> Bool {
         return lhs.predicates == rhs.predicates
             && lhs.order == rhs.order
     }

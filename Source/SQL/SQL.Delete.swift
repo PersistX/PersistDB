@@ -12,7 +12,7 @@ extension SQL.Delete: Hashable {
         return table.hashValue ^ (predicate?.hashValue ?? 0)
     }
 
-    internal static func ==(lhs: SQL.Delete, rhs: SQL.Delete) -> Bool {
+    internal static func == (lhs: SQL.Delete, rhs: SQL.Delete) -> Bool {
         return lhs.table == rhs.table
             && lhs.predicate == rhs.predicate
     }

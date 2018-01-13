@@ -53,4 +53,3 @@ class SQLDeleteTests: XCTestCase {
         )
     }
 }
-

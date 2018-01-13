@@ -41,7 +41,7 @@ extension SQL.Schema.Column: Hashable {
         return name.hashValue
     }
 
-    internal static func ==(lhs: SQL.Schema.Column, rhs: SQL.Schema.Column) -> Bool {
+    internal static func == (lhs: SQL.Schema.Column, rhs: SQL.Schema.Column) -> Bool {
         return lhs.name == rhs.name
             && lhs.type == rhs.type
             && lhs.nullable == rhs.nullable
@@ -54,7 +54,7 @@ extension SQL.Schema: Hashable {
         return table.hashValue
     }
 
-    internal static func ==(lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
+    internal static func == (lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
         return lhs.table == rhs.table && lhs.columns == rhs.columns
     }
 }

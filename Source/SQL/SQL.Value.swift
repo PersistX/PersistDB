@@ -72,7 +72,7 @@ extension SQL.Value: Hashable {
         }
     }
 
-    internal static func ==(lhs: SQL.Value, rhs: SQL.Value) -> Bool {
+    internal static func == (lhs: SQL.Value, rhs: SQL.Value) -> Bool {
         switch (lhs, rhs) {
         case let (.integer(left), .integer(right)):
             return left == right
