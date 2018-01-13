@@ -11,7 +11,7 @@ extension Author.Data {
             "died": .value(died.map(SQL.Value.integer) ?? SQL.Value.null)
         ])
     }
-    
+
     var row: Row {
         return [
             "id": .integer(id.int),
@@ -32,16 +32,16 @@ extension Author {
             SQL.Result(born),
             SQL.Result(died),
         ]
-        
+
         static let id = SQL.Expression.column(Author.table["id"])
         static let name = SQL.Expression.column(Author.table["name"])
         static let givenName = SQL.Expression.column(Author.table["givenName"])
         static let born = SQL.Expression.column(Author.table["born"])
         static let died = SQL.Expression.column(Author.table["died"])
     }
-    
+
     static let table = SQL.Table("Author")
-    
+
     static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .integer, primaryKey: true),
         SQL.Schema.Column(name: "name", type: .text),
@@ -59,7 +59,7 @@ extension Book.Data {
             "title": .value(.text(title)),
         ])
     }
-    
+
     var row: Row {
         return [
             "id": .text(id.string),
@@ -68,7 +68,7 @@ extension Book.Data {
         ]
     }
     
-    
+
     static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
     static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
 }
@@ -80,14 +80,14 @@ extension Book {
             SQL.Result(author),
             SQL.Result(title),
         ]
-        
+
         static let id = SQL.Expression.column(Book.table["id"])
         static let author = SQL.Expression.column(Book.table["author"])
         static let title = SQL.Expression.column(Book.table["title"])
     }
-    
+
     static let table = SQL.Table("Book")
-    
+
     static let sqlSchema = SQL.Schema(table: table, columns: [
         SQL.Schema.Column(name: "id", type: .text, primaryKey: true),
         SQL.Schema.Column(name: "author", type: .integer),
@@ -97,7 +97,7 @@ extension Book {
 
 class TestDB {
     private let db: Database
-    
+
     init() {
         let fixtures: [SQL] = [
             Author.sqlSchema.sql,
@@ -111,20 +111,20 @@ class TestDB {
             Book.Data.xenocide.insert.sql,
             Book.Data.childrenOfTheMind.insert.sql,
         ]
-        
+
         db = Database()
-        
+
         fixtures.forEach { db.execute($0) }
     }
-    
+
     func delete(_ delete: SQL.Delete) {
         db.delete(delete)
     }
-    
+
     func query(_ query: SQL.Query) -> [Row] {
         return db.query(query)
     }
-    
+
     func update(_ update: SQL.Update) {
         db.update(update)
     }

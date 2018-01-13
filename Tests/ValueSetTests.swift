@@ -6,22 +6,22 @@ class ValueSetInitTests: XCTestCase {
         let valueSet = ValueSet<Book>()
         XCTAssertEqual(valueSet.values, [:])
     }
-    
+
     func testMultipleAssignmentsWithSameKeyPath() {
         let valueSet: ValueSet<Book> = [
             \.title == "foo",
             \.title == "bar",
         ]
-        
+
         XCTAssertEqual(valueSet.values, [\Book.title: .value(.text("bar"))])
     }
-    
+
     func testMultipleDistinctAssignments() {
         let valueSet: ValueSet<Author> = [
             \.born == 1900,
             \.died == 2000,
         ]
-        
+
         XCTAssertEqual(
             valueSet.values,
             [
@@ -38,13 +38,13 @@ class ValueSetUpdateTests: XCTestCase {
         let new: ValueSet = [ \Author.born == 2000 ]
         XCTAssertEqual(old.update(with: new), new)
     }
-    
+
     func testNewValue() {
         let old = ValueSet<Author>()
         let new: ValueSet = [ \Author.died == 2000 ]
         XCTAssertEqual(old.update(with: new), new)
     }
-    
+
     func testUnreplacedValue() {
         let old: ValueSet = [ \Author.died == 2000 ]
         let new = ValueSet<Author>()
@@ -63,7 +63,7 @@ class ValueSetSufficientForInsertTests: XCTestCase {
         ]
         XCTAssertTrue(ValueSet(assignments).sufficientForInsert)
     }
-    
+
     func testWithoutOptionalProperties() {
         let assignments: [Assignment<Author>] = [
             \.id == Author.ID(1),
@@ -73,7 +73,7 @@ class ValueSetSufficientForInsertTests: XCTestCase {
         ]
         XCTAssertTrue(ValueSet(assignments).sufficientForInsert)
     }
-    
+
     func testMissingProperties() {
         let valueSet: ValueSet<Author> = [
             \.id == Author.ID(1),

@@ -20,7 +20,7 @@ class TestStoreFetchIDTests: XCTestCase {
         )
         XCTAssertEqual(store.fetch(query), [.theHobbit, theHobbit])
     }
-    
+
     func testImplicitlyNilColumn() {
         let query = Author.all.filter(\Author.died == nil)
         let store = TestStore(
@@ -40,7 +40,7 @@ class TestStoreFetchProjectionTests: XCTestCase {
                 \Widget.uuid == widget.uuid,
             ] ]
         )
-        
+
         let fetched: [Widget] = store.fetch(Widget.all)
         XCTAssertEqual(fetched, [widget])
     }
@@ -56,9 +56,9 @@ class TestStoreInsertTests: XCTestCase {
             \.double == widget.double,
             \.uuid == widget.uuid,
         ]
-        
+
         let projected: Widget = store.insert(insert)
-        
+
         XCTAssertEqual(projected, widget)
     }
 }

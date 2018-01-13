@@ -11,7 +11,7 @@ class UpdateSQLTests: XCTestCase {
                 \.double == 4.7,
             ]
         )
-        
+
         let sql = SQL.Update(
             table: SQL.Table("Widget"),
             values: [
@@ -22,7 +22,7 @@ class UpdateSQLTests: XCTestCase {
         )
         XCTAssertEqual(update.makeSQL(), sql)
     }
-    
+
     func testSQLWithoutPredicate() {
         let update = Update(
             predicate: nil,
@@ -31,7 +31,7 @@ class UpdateSQLTests: XCTestCase {
                 \Widget.double == 4.7,
             ]
         )
-        
+
         let sql = SQL.Update(
             table: SQL.Table("Widget"),
             values: [

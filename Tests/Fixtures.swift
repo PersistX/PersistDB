@@ -6,12 +6,12 @@ import Schemata
 struct Book {
     struct ISBN {
         let string: String
-        
+
         init(_ string: String) {
             self.string = string
         }
     }
-    
+
     let id: ISBN
     let title: String
     let author: Author
@@ -21,7 +21,7 @@ extension Book.ISBN: Hashable {
     var hashValue: Int {
         return string.hashValue
     }
-    
+
     static func == (lhs: Book.ISBN, rhs: Book.ISBN) -> Bool {
         return lhs.string == rhs.string
     }
@@ -31,11 +31,11 @@ extension Book.ISBN: ExpressibleByStringLiteral {
     init(stringLiteral value: String) {
         self.init(value)
     }
-    
+
     init(unicodeScalarLiteral value: String) {
         self.init(value)
     }
-    
+
     init(extendedGraphemeClusterLiteral value: String) {
         self.init(value)
     }
@@ -45,7 +45,7 @@ extension Book: Hashable {
     var hashValue: Int {
         return id.hashValue ^ title.hashValue ^ author.hashValue
     }
-    
+
     static func == (lhs: Book, rhs: Book) -> Bool {
         return lhs.id == rhs.id && lhs.title == rhs.title && lhs.author == rhs.author
     }
@@ -65,7 +65,7 @@ extension Book: PersistDB.Model {
         \.title ~ "title",
         \.author ~ "author"
     )
-    
+
     static let defaultOrder = [
         Ordering(\Book.author.name),
         Ordering(\Book.title),
@@ -75,7 +75,7 @@ extension Book: PersistDB.Model {
 extension Book.ISBN {
     static let theHobbit = Book.ISBN("978-0547928227")
     static let theLordOfTheRings = Book.ISBN("978-0544003415")
-    
+
     static let endersGame = Book.ISBN("978-0312853235")
     static let speakerForTheDead = Book.ISBN("978-0312853259")
     static let xenocide = Book.ISBN("978-0812509250")
@@ -101,7 +101,7 @@ extension Book.Data {
         title: "The Lord of the Rings",
         author: .jrrTolkien
     )
-    
+
     static let endersGame = Book.Data(
         id: .endersGame,
         title: "Ender's Game",
@@ -130,12 +130,12 @@ extension Book.Data {
 struct Author {
     struct ID {
         let int: Int
-        
+
         init(_ int: Int) {
             self.int = int
         }
     }
-    
+
     let id: ID
     let name: String
     let givenName: String
@@ -148,7 +148,7 @@ extension Author.ID: Hashable {
     var hashValue: Int {
         return int.hashValue
     }
-    
+
     static func == (lhs: Author.ID, rhs: Author.ID) -> Bool {
         return lhs.int == rhs.int
     }
@@ -158,7 +158,7 @@ extension Author: Hashable {
     var hashValue: Int {
         return id.hashValue ^ name.hashValue ^ books.hashValue
     }
-    
+
     static func == (lhs: Author, rhs: Author) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
@@ -186,7 +186,7 @@ extension Author: PersistDB.Model {
         \.died ~ "died",
         \.books ~ \Book.author
     )
-    
+
     static let defaultOrder = [
         Ordering(\Author.name),
         Ordering(\Author.born),
@@ -271,7 +271,7 @@ extension AuthorInfo: Hashable {
     var hashValue: Int {
         return id.hashValue
     }
-    
+
     static func == (lhs: AuthorInfo, rhs: AuthorInfo) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
@@ -293,7 +293,7 @@ extension Widget: Hashable {
     var hashValue: Int {
         return id.hashValue
     }
-    
+
     static func == (lhs: Widget, rhs: Widget) -> Bool {
         return lhs.id == rhs.id
             && lhs.date == rhs.date
@@ -310,7 +310,7 @@ extension Widget: PersistDB.Model {
         \.double ~ "double",
         \.uuid ~ "uuid"
     )
-    
+
     static let defaultOrder = [
         Ordering(\Widget.date)
     ]

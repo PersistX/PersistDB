@@ -6,7 +6,7 @@ class DatabaseSchemaTests: XCTestCase {
         let schemas = Set([Author.sqlSchema, Book.sqlSchema])
         let db = Database()
         schemas.forEach(db.create)
-        
+
         XCTAssertEqual(db.schema(), schemas)
     }
 }

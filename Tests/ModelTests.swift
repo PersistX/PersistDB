@@ -7,42 +7,42 @@ class AnyPropertyTests: XCTestCase {
         let expected = SQL.Schema.Column(name: "id", type: .text, primaryKey: true)
         XCTAssertEqual(property.sql, expected)
     }
-    
+
     func testSQLForToMany() {
         let property = Author.anySchema.properties[\Author.books]!
         XCTAssertNil(property.sql)
     }
-    
+
     func testSQLForToOneWithIntID() {
         let property = Book.anySchema.properties[\Book.author]!
         let expected = SQL.Schema.Column(name: "author", type: .integer)
         XCTAssertEqual(property.sql, expected)
     }
-    
+
     func testSQLForDate() {
         let property = Widget.anySchema.properties[\Widget.date]!
         let expected = SQL.Schema.Column(name: "date", type: .real)
         XCTAssertEqual(property.sql, expected)
     }
-    
+
     func testSQLForDouble() {
         let property = Widget.anySchema.properties[\Widget.double]!
         let expected = SQL.Schema.Column(name: "double", type: .real)
         XCTAssertEqual(property.sql, expected)
     }
-    
+
     func testSQLForString() {
         let property = Book.anySchema.properties[\Book.title]!
         let expected = SQL.Schema.Column(name: "title", type: .text)
         XCTAssertEqual(property.sql, expected)
     }
-    
+
     func testSQLForInt() {
         let property = Author.anySchema.properties[\Author.born]!
         let expected = SQL.Schema.Column(name: "born", type: .integer)
         XCTAssertEqual(property.sql, expected)
     }
-    
+
     func testSQLForOptionalInt() {
         let property = Author.anySchema.properties[\Author.died]!
         let expected = SQL.Schema.Column(name: "died", type: .integer, nullable: true)
@@ -73,12 +73,12 @@ class ProjectionFromSQLResultTests: XCTestCase {
             \Author.born: .integer(author.born),
             \Author.died: .integer(author.died!),
         ]
-        
+
         let value = AuthorInfo.projection.makeValue(values)
-        
+
         XCTAssertEqual(value, AuthorInfo(author))
     }
-    
+
     func testWithNilValue() {
         let author = Author.Data.orsonScottCard
         let values: [PartialKeyPath<Author>: SQL.Value] = [
@@ -87,9 +87,9 @@ class ProjectionFromSQLResultTests: XCTestCase {
             \Author.born: .integer(author.born),
             \Author.died: .null,
         ]
-        
+
         let value = AuthorInfo.projection.makeValue(values)
-        
+
         XCTAssertEqual(value, AuthorInfo(author))
     }
 }

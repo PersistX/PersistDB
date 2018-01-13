@@ -3,17 +3,17 @@ import XCTest
 
 class SQLUpdateTests: XCTestCase {
     var db: TestDB!
-    
+
     override func setUp() {
         super.setUp()
         db = TestDB()
     }
-    
+
     override func tearDown() {
         super.tearDown()
         db = nil
     }
-    
+
     func testWithPredicate() {
         let table = Author.table
         let predicate = SQL.Expression.binary(
@@ -29,9 +29,9 @@ class SQLUpdateTests: XCTestCase {
             ],
             predicate: predicate
         )
-        
+
         db.update(update)
-        
+
         let query = SQL.Query.select(Author.Table.allColumns)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -47,7 +47,7 @@ class SQLUpdateTests: XCTestCase {
             ])
         )
     }
-    
+
     func testWithoutPredicate() {
         let table = Author.table
         let update = SQL.Update(
@@ -58,9 +58,9 @@ class SQLUpdateTests: XCTestCase {
             ],
             predicate: nil
         )
-        
+
         db.update(update)
-        
+
         let query = SQL.Query.select(Author.Table.allColumns)
         XCTAssertEqual(
             Set(db.query(query)),

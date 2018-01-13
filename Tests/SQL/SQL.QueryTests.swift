@@ -3,26 +3,26 @@ import XCTest
 
 class SQLQueryTests: XCTestCase {
     var db: TestDB!
-    
+
     override func setUp() {
         super.setUp()
         db = TestDB()
     }
-    
+
     override func tearDown() {
         super.tearDown()
         db = nil
     }
-    
+
     // MARK: - Equality
-    
+
     func testNotEqualWithDifferentResults() {
         XCTAssertNotEqual(
             SQL.Query.select([ SQL.Result(Book.Table.title) ]),
             SQL.Query.select([ SQL.Result(Book.Table.author) ])
         )
     }
-    
+
     func testNotEqualWithDifferentPredicates() {
         let query = SQL.Query.select(Book.Table.allColumns)
         XCTAssertNotEqual(
@@ -30,7 +30,7 @@ class SQLQueryTests: XCTestCase {
             query.where(.binary(.equal, Book.Table.author, .value(.integer(Author.ID.orsonScottCard.int))))
         )
     }
-    
+
     func testNotEqualWithDifferentOrder() {
         let query = SQL.Query.select(Book.Table.allColumns)
         XCTAssertNotEqual(
@@ -38,9 +38,9 @@ class SQLQueryTests: XCTestCase {
             query.sorted(by: Book.Table.author.descending)
         )
     }
-    
+
     // MARK: - Select
-    
+
     func testSelectingAWildcard() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -50,7 +50,7 @@ class SQLQueryTests: XCTestCase {
             Set(Book.Data.byJRRTolkien + Book.Data.byOrsonScottCard)
         )
     }
-    
+
     func testSelectingOneExpression() {
         let query = SQL.Query
             .select([ SQL.Result(Author.Table.id)  ])
@@ -63,7 +63,7 @@ class SQLQueryTests: XCTestCase {
             ])
         )
     }
-    
+
     func testSelectingMultipleExpressions() {
         let query = SQL.Query
             .select([
@@ -85,7 +85,7 @@ class SQLQueryTests: XCTestCase {
             ])
         )
     }
-    
+
     func testSelectingWithAlias() {
         let query = SQL.Query.select([ SQL.Result(Author.Table.name).as("foo") ])
         XCTAssertEqual(
@@ -96,7 +96,7 @@ class SQLQueryTests: XCTestCase {
             ])
         )
     }
-    
+
     func testSelectingAValue() {
         let query = SQL.Query.select([ SQL.Result(.value(.text("bar"))).as("foo") ])
         XCTAssertEqual(
@@ -106,9 +106,9 @@ class SQLQueryTests: XCTestCase {
             ])
         )
     }
-    
+
     // MARK: - Generic Operators
-    
+
     func testEqual() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -120,7 +120,7 @@ class SQLQueryTests: XCTestCase {
             Set(Book.Data.byJRRTolkien)
         )
     }
-    
+
     func testIsNil() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -131,7 +131,7 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.orsonScottCard.row])
         )
     }
-    
+
     func testNotEqual() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -143,7 +143,7 @@ class SQLQueryTests: XCTestCase {
             Set(Book.Data.byOrsonScottCard)
         )
     }
-    
+
     func testIsNotNull() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -154,7 +154,7 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.jrrTolkien.row])
         )
     }
-    
+
     func testLessThan() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -165,7 +165,7 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.jrrTolkien.row])
         )
     }
-    
+
     func testGreaterThan() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -176,7 +176,7 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.orsonScottCard.row])
         )
     }
-    
+
     func testLessThanOrEqual() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -187,7 +187,7 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.jrrTolkien.row])
         )
     }
-    
+
     func testGreaterThanOrEqual() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -198,9 +198,9 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.orsonScottCard.row])
         )
     }
-    
+
     // MARK: - Bool Operators
-    
+
     func testOr() {
         let title = Book.Table.title
         let query = SQL.Query
@@ -219,7 +219,7 @@ class SQLQueryTests: XCTestCase {
             ])
         )
     }
-    
+
     func testNot() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
@@ -230,15 +230,15 @@ class SQLQueryTests: XCTestCase {
             Set([Author.Data.orsonScottCard.row])
         )
     }
-    
+
     // MARK: - Aggregates
-    
+
     func testMax() {
         let maximum = SQL.Expression.function(.max, [ Author.Table.born, Author.Table.died ])
         let query = SQL.Query
             .select([ SQL.Result(maximum) ])
             .where(.binary(.equal, Author.Table.id, .value(.integer(Author.ID.jrrTolkien.int))))
-        
+
         let row: Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.died!)]
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -246,13 +246,13 @@ class SQLQueryTests: XCTestCase {
             Set([row])
         )
     }
-    
+
     func testMin() {
         let maximum = SQL.Expression.function(.min, [ Author.Table.born, Author.Table.died ])
         let query = SQL.Query
             .select([ SQL.Result(maximum) ])
             .where(.binary(.equal, Author.Table.id, .value(.integer(Author.ID.jrrTolkien.int))))
-        
+
         let row: Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.born)]
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -260,9 +260,9 @@ class SQLQueryTests: XCTestCase {
             Set([row])
         )
     }
-    
+
     // MARK: - Joins
-    
+
     func testJoin() {
         let join = SQL.Expression.join(
             SQL.Column(table: Book.table, name: "author"),
@@ -272,14 +272,14 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select(Book.Table.allColumns)
             .where(join)
-    
+
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
             Set(Book.Data.byJRRTolkien)
         )
     }
-    
+
     func testSortJoin() {
         let join = SQL.Expression.join(
             SQL.Column(table: Book.table, name: "author"),
@@ -292,7 +292,7 @@ class SQLQueryTests: XCTestCase {
                 join.ascending,
                 Book.Table.title.ascending
             )
-        
+
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             db.query(query),
@@ -306,7 +306,7 @@ class SQLQueryTests: XCTestCase {
             ]
         )
     }
-    
+
     func testResultJoin() {
         let join = SQL.Expression.join(
             SQL.Column(table: Book.table, name: "author"),
@@ -316,7 +316,7 @@ class SQLQueryTests: XCTestCase {
         let query = SQL.Query
             .select([ SQL.Result(join).as("authorName") ])
             .where(.binary(.equal, Book.Table.title, .value(.text(Book.Data.theHobbit.title))))
-        
+
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             db.query(query),
@@ -325,9 +325,9 @@ class SQLQueryTests: XCTestCase {
             ]
         )
     }
-    
+
     // MARK: - Collections
-    
+
     func testContains() {
         let books = [ Book.Data.theHobbit, Book.Data.xenocide ]
         let query = SQL.Query
@@ -339,9 +339,9 @@ class SQLQueryTests: XCTestCase {
             Set(books.map { $0.row })
         )
     }
-    
+
     // MARK: - where(_:)
-    
+
     func testMultipleWhereMethods() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -353,9 +353,9 @@ class SQLQueryTests: XCTestCase {
             Set()
         )
     }
-    
+
     // MARK: - sorted(by:)
-    
+
     func testSortedByAscending() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -373,7 +373,7 @@ class SQLQueryTests: XCTestCase {
             ]
         )
     }
-    
+
     func testSortedByDescending() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -391,7 +391,7 @@ class SQLQueryTests: XCTestCase {
             ]
         )
     }
-    
+
     func testSortedByWithMultipleDescriptors() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -413,7 +413,7 @@ class SQLQueryTests: XCTestCase {
             ]
         )
     }
-    
+
     func testSortedByWithMultipleCalls() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
@@ -440,7 +440,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         .select([ .init(Author.Table.name, alias: "foo") ])
         .where(.binary(.isNot, Author.Table.died, .value(.null)))
         .sorted(by: SQL.Ordering(Author.Table.born, .ascending))
-    
+
     let joined = SQL.Query
         .select([
             .init(.join(
@@ -458,7 +458,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
             .join(Book.table["author"], Author.table["id"], Author.Table.born),
             .ascending
         ))
-    
+
     func testNotInvalidatedByInsertInAnotherTable() {
         let insert = SQL.Insert(
             table: Book.table,
@@ -468,10 +468,10 @@ class SQLQueryInvalidatedByTests: XCTestCase {
                 "died": .value(.text("died")),
             ]
         )
-        
+
         XCTAssertFalse(query.invalidated(by: .inserted(insert, id: .null)))
     }
-    
+
     func testInvalidatedByInsert() {
         let insert = SQL.Insert(
             table: Author.table,
@@ -481,10 +481,10 @@ class SQLQueryInvalidatedByTests: XCTestCase {
                 "died": .value(.text("died")),
             ]
         )
-        
+
         XCTAssertTrue(query.invalidated(by: .inserted(insert, id: .null)))
     }
-    
+
     func testInvalidatedByInsertedInJoinedQuery() {
         let insert = SQL.Insert(
             table: Author.table,
@@ -494,25 +494,25 @@ class SQLQueryInvalidatedByTests: XCTestCase {
                 "died": .value(.text("died")),
             ]
         )
-        
+
         XCTAssertTrue(joined.invalidated(by: .inserted(insert, id: .null)))
     }
-    
+
     func testNotInvalidatedByDeleteInAnotherTable() {
         let delete = SQL.Delete(table: Book.table, predicate: nil)
         XCTAssertFalse(query.invalidated(by: .deleted(delete)))
     }
-    
+
     func testInvalidatedByDelete() {
         let delete = SQL.Delete(table: Author.table, predicate: nil)
         XCTAssertTrue(query.invalidated(by: .deleted(delete)))
     }
-    
+
     func testJoinedInvalidatedByDelete() {
         let delete = SQL.Delete(table: Author.table, predicate: nil)
         XCTAssertTrue(joined.invalidated(by: .deleted(delete)))
     }
-    
+
     func testNotInvalidatedByUpdateInAnotherTable() {
         let update = SQL.Update(
             table: Book.table,
@@ -523,7 +523,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertFalse(query.invalidated(by: .updated(update)))
     }
-    
+
     func testNotInvalidatedByUpdateToUnusedColumn() {
         let update = SQL.Update(
             table: Author.table,
@@ -534,7 +534,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertFalse(query.invalidated(by: .updated(update)))
     }
-    
+
     func testNotInvalidatedByUpdateToUnusedJoinedColumn() {
         let update = SQL.Update(
             table: Author.table,
@@ -545,7 +545,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertFalse(joined.invalidated(by: .updated(update)))
     }
-    
+
     func testInvalidatedByUpdateToSortColumn() {
         let update = SQL.Update(
             table: Author.table,
@@ -556,7 +556,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertTrue(query.invalidated(by: .updated(update)))
     }
-    
+
     func testInvalidatedByUpdateToJoinedSortColumn() {
         let update = SQL.Update(
             table: Author.table,
@@ -567,7 +567,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertTrue(joined.invalidated(by: .updated(update)))
     }
-    
+
     func testInvalidatedByUpdateToFilterColumn() {
         let update = SQL.Update(
             table: Author.table,
@@ -578,7 +578,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertTrue(query.invalidated(by: .updated(update)))
     }
-    
+
     func testInvalidatedByUpdateToJoinedFilterColumn() {
         let update = SQL.Update(
             table: Author.table,
@@ -589,7 +589,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertTrue(joined.invalidated(by: .updated(update)))
     }
-    
+
     func testInvalidatedByUpdateToJoinedAliasedColumnResult() {
         let update = SQL.Update(
             table: Author.table,
@@ -600,7 +600,7 @@ class SQLQueryInvalidatedByTests: XCTestCase {
         )
         XCTAssertTrue(joined.invalidated(by: .updated(update)))
     }
-    
+
     func testInvalidatedByUpdateToDoubleJoinedAliasedColumnResult() {
         let publisher = SQL.Table("Publisher")
         let query = SQL.Query
