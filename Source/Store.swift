@@ -61,7 +61,7 @@ public final class Store {
 
     /// Create an in-memory store for the given schemas.
     public convenience init(for schemas: [AnySchema]) {
-        try! self.init(Database(), for: schemas)
+        try! self.init(Database(), for: schemas) // swiftlint:disable:this force_try
     }
 
     /// Create an in-memory store for the given model types.
@@ -193,11 +193,11 @@ extension Store {
             .map { $0.1 }
             .take(first: 1)
             .map { effect -> Model.ID in
-                guard case let .inserted(_, id) = effect else { fatalError() }
+                guard case let .inserted(_, id) = effect else { fatalError("Mistaken effect") }
                 let anyValue = Model.ID.anyValue
                 let primitive = id.primitive(anyValue.encoded)
                 let decoded = anyValue.decode(primitive).value!
-                return decoded as! Model.ID
+                return decoded as! Model.ID // swiftlint:disable:this force_cast
             }
             .replayLazily(upTo: 1)
         // Start right away. Otherwise `self.effects` will send the value before subscription.

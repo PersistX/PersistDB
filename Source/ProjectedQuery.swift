@@ -1,6 +1,7 @@
 import Schemata
 
-internal struct ProjectedQuery<Projection: ModelProjection> where Projection.Model: PersistDB.Model {
+internal struct ProjectedQuery<Projection: ModelProjection>
+where Projection.Model: PersistDB.Model {
     let sql: SQL.Query
     let keyPaths: [String: PartialKeyPath<Projection.Model>]
 

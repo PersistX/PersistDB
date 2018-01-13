@@ -111,7 +111,7 @@ class StoreInsertTests: StoreTests {
             \Widget.id == 1,
             \Widget.date == .now,
             \Widget.double == 3.2,
-            \Widget.uuid == .uuid()
+            \Widget.uuid == .uuid(),
         ]
 
         let before = Date()
@@ -128,13 +128,13 @@ class StoreInsertTests: StoreTests {
             \Widget.id == 1,
             \Widget.date == .now,
             \Widget.double == 3.2,
-            \Widget.uuid == .uuid()
+            \Widget.uuid == .uuid(),
         ]
         let insert2: Insert<Widget> = [
             \Widget.id == 2,
             \Widget.date == .now,
             \Widget.double == 3.3,
-            \Widget.uuid == .uuid()
+            \Widget.uuid == .uuid(),
         ]
 
         insert(insert1, insert2)
@@ -148,7 +148,7 @@ class StoreInsertTests: StoreTests {
             \Widget.id == 2,
             \Widget.date == .now,
             \Widget.double == 3.3,
-            \Widget.uuid == .uuid()
+            \Widget.uuid == .uuid(),
         ]
 
         let id = store!
@@ -177,7 +177,7 @@ class StoreUpdateTests: StoreTests {
     func testUpdateValues() {
         insert(.jrrTolkien)
 
-        update(.jrrTolkien, [ \.born == 100, \.died == 200 ])
+        update(.jrrTolkien, [\.born == 100, \.died == 200 ])
 
         XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien, born: 100, died: 200) ])
     }
@@ -208,7 +208,7 @@ class StoreObserveTests: StoreTests {
         observed = nil
     }
 
-    private func observe(_ block: () -> ()) {
+    private func observe(_ block: () -> Void) {
         observation.startWithValues {
             self.observed = $0
         }
@@ -253,7 +253,7 @@ class StoreObserveTests: StoreTests {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
         observe {
-            update(.orsonScottCard, [ \.died == 3002 ])
+            update(.orsonScottCard, [\.died == 3002 ])
         }
 
         XCTAssertEqual(
@@ -270,7 +270,7 @@ class StoreObserveTests: StoreTests {
 
         let name = "An Orson Scott Card"
         observe {
-            update(.orsonScottCard, [ \.name == name ])
+            update(.orsonScottCard, [\.name == name ])
         }
 
         XCTAssertEqual(
@@ -286,7 +286,7 @@ class StoreObserveTests: StoreTests {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
         observe {
-            update(.jrrTolkien, [ \.born == 1900 ])
+            update(.jrrTolkien, [\.born == 1900 ])
         }
 
         XCTAssertEqual(
@@ -303,7 +303,7 @@ class StoreObserveTests: StoreTests {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
         observe {
-            update(.orsonScottCard, [ \.born == 2 ])
+            update(.orsonScottCard, [\.born == 2 ])
         }
 
         XCTAssertEqual(
@@ -318,7 +318,7 @@ class StoreObserveTests: StoreTests {
         insert(.isaacAsimov)
 
         observe {
-            update(.isaacAsimov, [ \.givenName == "Isaac Asimov" ])
+            update(.isaacAsimov, [\.givenName == "Isaac Asimov" ])
         }
 
         XCTAssertNil(observed)

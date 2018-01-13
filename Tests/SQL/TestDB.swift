@@ -68,7 +68,12 @@ extension Book.Data {
     }
 
     static let byJRRTolkien = [ theHobbit, theLordOfTheRings ].map { $0.row }
-    static let byOrsonScottCard = [ endersGame, speakerForTheDead, xenocide, childrenOfTheMind ].map { $0.row }
+    static let byOrsonScottCard = [
+        endersGame.row,
+        speakerForTheDead.row,
+        xenocide.row,
+        childrenOfTheMind.row,
+    ]
 }
 
 extension Book {

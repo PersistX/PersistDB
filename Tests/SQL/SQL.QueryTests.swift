@@ -26,8 +26,16 @@ class SQLQueryTests: XCTestCase {
     func testNotEqualWithDifferentPredicates() {
         let query = SQL.Query.select(Book.Table.allColumns)
         XCTAssertNotEqual(
-            query.where(.binary(.equal, Book.Table.author, .value(.integer(Author.ID.jrrTolkien.int)))),
-            query.where(.binary(.equal, Book.Table.author, .value(.integer(Author.ID.orsonScottCard.int))))
+            query.where(.binary(
+                .equal,
+                Book.Table.author,
+                .value(.integer(Author.ID.jrrTolkien.int))
+            )),
+            query.where(.binary(
+                .equal,
+                Book.Table.author,
+                .value(.integer(Author.ID.orsonScottCard.int))
+            ))
         )
     }
 
@@ -223,7 +231,11 @@ class SQLQueryTests: XCTestCase {
     func testNot() {
         let query = SQL.Query
             .select(Author.Table.allColumns)
-            .where(.unary(.not, .binary(.equal, Author.Table.name, .value(.text(Author.Data.jrrTolkien.name)))))
+            .where(.unary(.not, .binary(
+                .equal,
+                Author.Table.name,
+                .value(.text(Author.Data.jrrTolkien.name))
+            )))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -346,8 +358,16 @@ class SQLQueryTests: XCTestCase {
     func testMultipleWhereMethods() {
         let query = SQL.Query
             .select(Book.Table.allColumns)
-            .where(.binary(.notEqual, Book.Table.author, .value(.integer(Author.ID.jrrTolkien.int))))
-            .where(.binary(.notEqual, Book.Table.author, .value(.integer(Author.ID.orsonScottCard.int))))
+            .where(.binary(
+                .notEqual,
+                Book.Table.author,
+                .value(.integer(Author.ID.jrrTolkien.int))
+            ))
+            .where(.binary(
+                .notEqual,
+                Book.Table.author,
+                .value(.integer(Author.ID.orsonScottCard.int))
+            ))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),

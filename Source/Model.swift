@@ -64,7 +64,7 @@ extension Model {
             .properties
             .values
             .first { $0.path == "id" }!
-            .keyPath as! KeyPath<Self, ID>
+            .keyPath as! KeyPath<Self, ID> // swiftlint:disable:this force_cast
     }
 }
 
@@ -84,7 +84,7 @@ extension Projection {
         for (keyPath, value) in values {
             let property = schema.properties(for: keyPath).last!
             guard case let .value(type, isOptional) = property.type else {
-                fatalError()
+                fatalError("keypath should end with a scalar value")
             }
             let primitive = value.primitive(type.anyValue.encoded)
             let decoded = type.anyValue.decode(primitive).value

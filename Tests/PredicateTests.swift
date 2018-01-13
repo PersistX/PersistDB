@@ -55,7 +55,8 @@ class PredicateSQLTests: XCTestCase {
 
     func testNot() {
         let predicate = !(\Author.name == "J.K. Rowling")
-        let expression: AnyExpression = !(AnyExpression(\Author.name) == .value(.text("J.K. Rowling")))
+        let expression: AnyExpression
+            = !(AnyExpression(\Author.name) == .value(.text("J.K. Rowling")))
         XCTAssertEqual(predicate.expression, expression)
     }
 

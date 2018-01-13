@@ -124,7 +124,6 @@ extension Book.Data {
     )
 }
 
-
 // MARK: - Author
 
 struct Author {
@@ -312,7 +311,7 @@ extension Widget: PersistDB.Model {
     )
 
     static let defaultOrder = [
-        Ordering(\Widget.date)
+        Ordering(\Widget.date),
     ]
 }
 

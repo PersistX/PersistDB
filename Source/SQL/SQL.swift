@@ -18,6 +18,7 @@ extension SQL.DataType {
 }
 
 extension String {
+    // swiftlint:disable:next force_try
     static let PlaceholderRegex = try! NSRegularExpression(
         pattern: "(\\?) | '[^']*' | --[^\\n]* | /\\* (?:(?!\\*/).)* \\*/",
         options: [ .allowCommentsAndWhitespace, .dotMatchesLineSeparators ]

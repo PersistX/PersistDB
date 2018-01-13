@@ -287,7 +287,7 @@ extension SQL {
     }
 }
 
-fileprivate func sql(for properties: [AnyProperty]) -> SQL.Expression {
+private func sql(for properties: [AnyProperty]) -> SQL.Expression {
     func column(for property: AnyProperty) -> SQL.Column {
         return SQL.Table(String(describing: property.model))[property.path]
     }
@@ -296,7 +296,7 @@ fileprivate func sql(for properties: [AnyProperty]) -> SQL.Expression {
     for property in properties.reversed().dropFirst() {
         switch property.type {
         case .toMany:
-            fatalError()
+            fatalError("Can't traverse to-many properties")
         case let .toOne(model, _):
             let rhs = SQL.Column(
                 table: SQL.Table(String(describing: model)),
@@ -304,7 +304,7 @@ fileprivate func sql(for properties: [AnyProperty]) -> SQL.Expression {
             )
             value = .join(column(for: property), rhs, value)
         case .value:
-            fatalError()
+            fatalError("Invalid scalar property in the middle of a KeyPath")
         }
     }
     return value

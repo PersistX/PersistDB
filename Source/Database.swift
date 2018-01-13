@@ -88,7 +88,13 @@ internal class Database {
             case let .real(value):
                 sqlite3_bind_double(stmt, Int32(idx + 1), value)
             case let .text(value):
-                sqlite3_bind_text(stmt, Int32(idx + 1), value, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+                sqlite3_bind_text(
+                    stmt,
+                    Int32(idx + 1),
+                    value,
+                    -1,
+                    unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+                )
             }
         }
 
