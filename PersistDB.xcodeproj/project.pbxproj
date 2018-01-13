@@ -389,7 +389,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Source\"";
+			shellScript = "if [ -x \"${SRCROOT}/Carthage/Checkouts/Standards\" ]\nthen\n  \"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Source\"\nfi";
 		};
 		BEBC36BE20099903000E3AAB /* Run Standards */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -403,7 +403,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Tests\"";
+			shellScript = "if [ -x \"${SRCROOT}/Carthage/Checkouts/Standards\" ]\nthen\n  \"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Tests\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
