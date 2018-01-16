@@ -2,26 +2,26 @@
 import Schemata
 import XCTest
 
-class PrimitiveTests: XCTestCase {
-    func test_sql_date() {
+class PrimitiveSQLTests: XCTestCase {
+    func testDate() {
         let interval: Double = 100_000
         let date = Date(timeIntervalSinceReferenceDate: interval)
         XCTAssertEqual(Primitive.date(date).sql, .real(interval))
     }
 
-    func test_sql_double() {
+    func testDouble() {
         XCTAssertEqual(Primitive.double(123.456789).sql, .real(123.456789))
     }
 
-    func test_sql_int() {
+    func testInt() {
         XCTAssertEqual(Primitive.int(123_456_789).sql, .integer(123_456_789))
     }
 
-    func test_sql_null() {
+    func testNull() {
         XCTAssertEqual(Primitive.null.sql, .null)
     }
 
-    func test_sql_string() {
+    func testString() {
         XCTAssertEqual(Primitive.string("mdiep").sql, .text("mdiep"))
     }
 }

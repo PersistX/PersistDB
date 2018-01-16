@@ -58,7 +58,7 @@
 		BEBC36CB200E8FA6000E3AAB /* ReactiveSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36CA200E8FA6000E3AAB /* ReactiveSwift.swift */; };
 		BEBC36CD200E8FD8000E3AAB /* Schemata.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36CC200E8FD8000E3AAB /* Schemata.swift */; };
 		BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBEB06C1EBEADAA00522152 /* Store.swift */; };
-		BEC1C2411F1DA64400D29EFF /* PrimitiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC1C2401F1DA64400D29EFF /* PrimitiveTests.swift */; };
+		BEC1C2411F1DA64400D29EFF /* SchemataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC1C2401F1DA64400D29EFF /* SchemataTests.swift */; };
 		BECF33931EEBA6A600F9FC88 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF33921EEBA6A600F9FC88 /* Model.swift */; };
 		BECF33961EEBA6BF00F9FC88 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECF33941EEBA6BA00F9FC88 /* ModelTests.swift */; };
 		BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */; };
@@ -129,7 +129,7 @@
 		BEBC36CA200E8FA6000E3AAB /* ReactiveSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveSwift.swift; sourceTree = "<group>"; };
 		BEBC36CC200E8FD8000E3AAB /* Schemata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schemata.swift; sourceTree = "<group>"; };
 		BEBEB06C1EBEADAA00522152 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
-		BEC1C2401F1DA64400D29EFF /* PrimitiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimitiveTests.swift; sourceTree = "<group>"; };
+		BEC1C2401F1DA64400D29EFF /* SchemataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemataTests.swift; sourceTree = "<group>"; };
 		BECF33921EEBA6A600F9FC88 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BECF33941EEBA6BA00F9FC88 /* ModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
 		BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
@@ -242,13 +242,13 @@
 		BE89D6031EBE3A0100CEC4D1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				BEBC36CE200E9121000E3AAB /* Extensions */,
 				BE7740D41EFFDBBB00D1F5A5 /* SQL */,
 				BE1B3E721FF41986001620A9 /* DatabaseTests.swift */,
 				BEA083D61F3FE977002AB2C1 /* ExpressionTests.swift */,
 				BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */,
 				BECF33941EEBA6BA00F9FC88 /* ModelTests.swift */,
 				BE1DC6091EE3B37600A0671F /* PredicateTests.swift */,
-				BEC1C2401F1DA64400D29EFF /* PrimitiveTests.swift */,
 				BE1DC6051EE3ACC600A0671F /* QueryTests.swift */,
 				BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */,
 				BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */,
@@ -277,6 +277,14 @@
 			children = (
 				BEBC36CA200E8FA6000E3AAB /* ReactiveSwift.swift */,
 				BEBC36CC200E8FD8000E3AAB /* Schemata.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		BEBC36CE200E9121000E3AAB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				BEC1C2401F1DA64400D29EFF /* SchemataTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -473,7 +481,7 @@
 				BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */,
 				BE10ED751FE19A8E008FFE25 /* ValueSetTests.swift in Sources */,
 				BE7740E41EFFDC4E00D1F5A5 /* SQLTests.swift in Sources */,
-				BEC1C2411F1DA64400D29EFF /* PrimitiveTests.swift in Sources */,
+				BEC1C2411F1DA64400D29EFF /* SchemataTests.swift in Sources */,
 				BE7740E51EFFDC4E00D1F5A5 /* SQL.TableTests.swift in Sources */,
 				BECF33961EEBA6BF00F9FC88 /* ModelTests.swift in Sources */,
 				BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */,
