@@ -114,6 +114,19 @@ class SQLQuerySelectTests: SQLQueryTests {
             ])
         )
     }
+
+    func testInstanceMethod() {
+        let query = SQL.Query()
+            .select(SQL.Result(Author.Table.id))
+        XCTAssertEqual(query, query)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([
+                Row(["id": .integer(Author.ID.orsonScottCard.int)]),
+                Row(["id": .integer(Author.ID.jrrTolkien.int)]),
+            ])
+        )
+    }
 }
 
 class SQLQueryOperatorTests: SQLQueryTests {

@@ -34,7 +34,6 @@ extension Query: Hashable {
 extension Query {
     internal func makeSQL() -> SQL.Query {
         return SQL.Query(
-            results: [],
             predicates: predicates.map { $0.expression.makeSQL() },
             order: order.map { $0.makeSQL() }
         )

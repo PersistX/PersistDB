@@ -40,8 +40,18 @@ extension SQL {
     /// A SQL query.
     internal struct Query {
         internal var results: [Result]
-        internal var predicates: [Expression] = []
-        internal var order: [Ordering] = []
+        internal var predicates: [Expression]
+        internal var order: [Ordering]
+
+        internal init(
+            results: [Result] = [],
+            predicates: [Expression] = [],
+            order: [Ordering] = []
+        ) {
+            self.results = results
+            self.predicates = predicates
+            self.order = order
+        }
     }
 }
 
@@ -51,8 +61,11 @@ extension SQL.Query {
         return SQL.Query(results: results)
     }
 
-    private init(results: [SQL.Result]) {
-        self.results = results
+    /// Add another result to the query.
+    internal func select(_ result: SQL.Result) -> SQL.Query {
+        var query = self
+        query.results.append(result)
+        return query
     }
 
     /// Filter the query by adding a predicate that limits results.
