@@ -54,6 +54,7 @@
 		BEA083D81F40C3F9002AB2C1 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D8B281F3DF69500DB1C42 /* ReactiveSwift.framework */; };
 		BEA083DA1F40C9DA002AB2C1 /* SQL.Column.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA083D91F40C9DA002AB2C1 /* SQL.Column.swift */; };
 		BEAE8C3A1FD989C500EF63A9 /* ValueSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAE8C391FD989C500EF63A9 /* ValueSet.swift */; };
+		BEBC36C6200AE21B000E3AAB /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36C5200AE21B000E3AAB /* Group.swift */; };
 		BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBEB06C1EBEADAA00522152 /* Store.swift */; };
 		BEC1C23F1F1DA61800D29EFF /* Primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC1C23E1F1DA61800D29EFF /* Primitive.swift */; };
 		BEC1C2411F1DA64400D29EFF /* PrimitiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC1C2401F1DA64400D29EFF /* PrimitiveTests.swift */; };
@@ -123,6 +124,7 @@
 		BEA083D61F3FE977002AB2C1 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 		BEA083D91F40C9DA002AB2C1 /* SQL.Column.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Column.swift; sourceTree = "<group>"; };
 		BEAE8C391FD989C500EF63A9 /* ValueSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueSet.swift; sourceTree = "<group>"; };
+		BEBC36C5200AE21B000E3AAB /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		BEBEB06C1EBEADAA00522152 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		BEC1C23E1F1DA61800D29EFF /* Primitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Primitive.swift; sourceTree = "<group>"; };
 		BEC1C2401F1DA64400D29EFF /* PrimitiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimitiveTests.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				BE7361011FD5A01500B675B4 /* Database.swift */,
 				BE10ED831FE60763008FFE25 /* Delete.swift */,
 				BEA083D41F3FE92B002AB2C1 /* Expression.swift */,
+				BEBC36C5200AE21B000E3AAB /* Group.swift */,
 				BE10ED721FE198F9008FFE25 /* Insert.swift */,
 				BECF33921EEBA6A600F9FC88 /* Model.swift */,
 				BE5AD1CC1F30AADB0055BF9F /* Ordering.swift */,
@@ -419,6 +422,7 @@
 				BE7740E81EFFDC5500D1F5A5 /* SQL.Insert.swift in Sources */,
 				BEA083DA1F40C9DA002AB2C1 /* SQL.Column.swift in Sources */,
 				BE7740E91EFFDC5500D1F5A5 /* SQL.Query.swift in Sources */,
+				BEBC36C6200AE21B000E3AAB /* Group.swift in Sources */,
 				BE1DC6041EE3AC9400A0671F /* Query.swift in Sources */,
 				BE10ED841FE60763008FFE25 /* Delete.swift in Sources */,
 				BEA083D51F3FE92B002AB2C1 /* Expression.swift in Sources */,

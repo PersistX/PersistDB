@@ -1,7 +1,7 @@
 import Schemata
 
 internal struct ProjectedQuery<Projection: ModelProjection>
-where Projection.Model: PersistDB.Model {
+    where Projection.Model: PersistDB.Model {
     let sql: SQL.Query
     let keyPaths: [String: PartialKeyPath<Projection.Model>]
 
@@ -27,8 +27,8 @@ where Projection.Model: PersistDB.Model {
     }
 
     func values(for row: Row) -> [PartialKeyPath<Projection.Model>: SQL.Value] {
-        return Dictionary(uniqueKeysWithValues: row.dictionary.map { alias, value in
-            let keyPath = keyPaths[alias]! as PartialKeyPath<Projection.Model>
+        return Dictionary(uniqueKeysWithValues: row.dictionary.flatMap { alias, value in
+            guard let keyPath = keyPaths[alias] else { return nil }
             return (keyPath, value)
         })
     }

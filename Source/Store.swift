@@ -220,6 +220,22 @@ extension Store {
     }
 }
 
+extension SignalProducer {
+    internal func collect<Key: Equatable>(
+        groupingBy: @escaping (Value) -> Key
+    ) -> SignalProducer<(Key, [Value]), Error> {
+        return map { (groupingBy($0), $0) }
+            .collect { values, value in
+                guard let key = values.first?.0 else { return false }
+                return key != value.0
+            }
+            .filterMap { tuples in
+                guard let key = tuples.first?.0 else { return nil }
+                return (key, tuples.map { $0.1 })
+            }
+    }
+}
+
 extension Store {
     /// Fetch a projected query from the store.
     ///
@@ -257,6 +273,45 @@ extension Store {
     ) -> SignalProducer<Projection, NoError> {
         let projected = ProjectedQuery<Projection>(query)
         return fetch(projected)
+    }
+
+    /// Fetch projections from the store with a query and group them by some value.
+    ///
+    /// - parameters:
+    ///   - query: A query matching the model entities to be projected.
+    ///   - keyPath: The property that should be used to group consecutive projections.
+    ///
+    /// - returns: A `SignalProducer` that will fetch projections for entities that match the query.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// - important: This will not sort the query by the grouped property.
+    public func fetch<Projection: ModelProjection, Value: ModelValue>(
+        _ query: Query<Projection.Model>,
+        groupedBy keyPath: KeyPath<Projection.Model, Value>
+    ) -> SignalProducer<Group<Value, Projection>, NoError> {
+        let groupedBy = AnyExpression(keyPath).makeSQL()
+        let projected = ProjectedQuery<Projection>(query)
+        let sql = projected.sql
+            .select(SQL.Result(groupedBy, alias: "groupBy"))
+        return SignalProducer(value: sql)
+            .flatMap(.concat) { [db = self.db] sql in
+                SignalProducer(db.query(sql))
+            }
+            .filterMap { row -> (Value, Projection)? in
+                let groupBy = Value.decode(row.dictionary["groupBy"]!)!
+                    as! Value // swiftlint:disable:this force_cast
+                let values = projected.values(for: row)
+                return Projection
+                    .projection
+                    .makeValue(values)
+                    .map { (groupBy, $0) }
+            }
+            .collect { $0.0 }
+            .map { arg in
+                let (key, values) = arg
+                return Group(key: key, values: values.map { $0.1 })
+            }
     }
 
     /// Observe projections from the store with a query.

@@ -43,6 +43,13 @@ extension AnyProperty {
     }
 }
 
+extension AnyModelValue {
+    internal static func decode(_ value: SQL.Value) -> Any? {
+        let primitive = value.primitive(anyValue.encoded)
+        return anyValue.decode(primitive).value
+    }
+}
+
 public protocol Model: Schemata.Model {
     associatedtype ID: ModelValue
 
@@ -86,8 +93,7 @@ extension Projection {
             guard case let .value(type, isOptional) = property.type else {
                 fatalError("keypath should end with a scalar value")
             }
-            let primitive = value.primitive(type.anyValue.encoded)
-            let decoded = type.anyValue.decode(primitive).value
+            let decoded = type.decode(value)
             result[keyPath] = isOptional ? .some(decoded as Any) : decoded!
         }
         return makeValue(result)

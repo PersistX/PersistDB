@@ -61,7 +61,17 @@ class StoreTests: XCTestCase {
     }
 
     fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]! {
-        return store!.fetch(query).collect().firstValue
+        return store!
+            .fetch(query)
+            .collect()
+            .firstValue
+    }
+
+    fileprivate func fetchGroups(_ query: Query<Author> = Author.all) -> [Group<Int, AuthorInfo>] {
+        return store!
+            .fetch(query, groupedBy: \Author.born)
+            .collect()
+            .firstValue!
     }
 
     fileprivate func fetch(_ query: Query<Widget> = Widget.all) -> [Widget]! {
@@ -88,6 +98,71 @@ class StoreFetchTests: StoreTests {
         insert(.jrrTolkien)
 
         XCTAssertEqual(producer.firstValue, AuthorInfo(.jrrTolkien))
+    }
+}
+
+class StoreFetchGroupedByTests: StoreTests {
+    func testNoResults() {
+        XCTAssertEqual(fetchGroups(), [])
+    }
+
+    func testOneResult() {
+        insert(.isaacAsimov)
+
+        let expected: [Group<Int, AuthorInfo>] = [
+            Group(
+                key: 1920,
+                values: [ AuthorInfo(.isaacAsimov) ]
+            ),
+        ]
+        let actual = fetchGroups()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testMultipleResults() {
+        insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
+
+        let expected: [Group<Int, AuthorInfo>] = [
+            Group(
+                key: 1892,
+                values: [ AuthorInfo(.jrrTolkien) ]
+            ),
+            Group(
+                key: 1920,
+                values: [ AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury) ]
+            ),
+            Group(
+                key: 1951,
+                values: [ AuthorInfo(.orsonScottCard) ]
+            ),
+        ]
+        let actual = fetchGroups(Author.all.sort(by: \.name).sort(by: \.born))
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testDoesNotSort() {
+        insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
+
+        let expected: [Group<Int, AuthorInfo>] = [
+            Group(
+                key: 1920,
+                values: [ AuthorInfo(.isaacAsimov) ]
+            ),
+            Group(
+                key: 1892,
+                values: [ AuthorInfo(.jrrTolkien) ]
+            ),
+            Group(
+                key: 1951,
+                values: [ AuthorInfo(.orsonScottCard) ]
+            ),
+            Group(
+                key: 1920,
+                values: [ AuthorInfo(.rayBradbury) ]
+            ),
+        ]
+        let actual = fetchGroups(Author.all.sort(by: \.name))
+        XCTAssertEqual(actual, expected)
     }
 }
 
