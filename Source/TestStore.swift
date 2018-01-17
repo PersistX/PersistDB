@@ -12,6 +12,10 @@ private struct ID<A: PersistDB.Model>: ModelProjection {
         return Projection<Model, ID<Model>>(ID.init, Model.idKeyPath)
     }
 
+    var hashValue: Int {
+        return id.hashValue
+    }
+
     static func == (lhs: ID, rhs: ID) -> Bool {
         return lhs.id == rhs.id
     }
