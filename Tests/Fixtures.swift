@@ -250,7 +250,7 @@ struct AuthorInfo {
     let died: Int?
 }
 
-extension AuthorInfo: ModelProjection {
+extension AuthorInfo: PersistDB.ModelProjection {
     static let projection = Projection<Author, AuthorInfo>(
         AuthorInfo.init,
         \.id,
@@ -323,7 +323,8 @@ extension Widget: PersistDB.Model {
     ]
 }
 
-extension Widget: ModelProjection {
+extension Widget: PersistDB.ModelProjection {
+    typealias Model = Widget
     static let projection = Projection<Widget, Widget>(
         Widget.init,
         \Widget.id,

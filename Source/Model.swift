@@ -25,3 +25,7 @@ extension Model {
             .keyPath as! KeyPath<Self, ID> // swiftlint:disable:this force_cast
     }
 }
+
+public protocol ModelProjection: Schemata.ModelProjection where Model: PersistDB.Model {
+    var id: Model.ID { get }
+}
