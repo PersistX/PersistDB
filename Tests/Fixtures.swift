@@ -252,10 +252,10 @@ extension Author.Data {
 // MARK: - AuthorInfo
 
 struct AuthorInfo {
-    let id: Author.ID
-    let name: String
-    let born: Int
-    let died: Int?
+    var id: Author.ID
+    var name: String
+    var born: Int
+    var died: Int?
 }
 
 extension AuthorInfo: PersistDB.ModelProjection {
