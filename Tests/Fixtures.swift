@@ -198,6 +198,7 @@ extension Author.ID {
     static let jrrTolkien = Author.ID(2)
     static let isaacAsimov = Author.ID(3)
     static let rayBradbury = Author.ID(4)
+    static let liuCixin = Author.ID(5)
 }
 
 extension Author {
@@ -238,6 +239,13 @@ extension Author.Data {
         givenName: "Ray Bradbury",
         born: 1920,
         died: 2012
+    )
+    static let liuCixin = Author.Data(
+        id: .liuCixin,
+        name: "Liu Cixin",
+        givenName: "Lix Cixin",
+        born: 1963,
+        died: nil
     )
 }
 
