@@ -24,7 +24,11 @@ public struct ResultSet<Key: ModelValue, Projection: PersistDB.ModelProjection> 
 extension ResultSet where Key == None {
     /// Create a ungrouped result set with the given projections.
     public init(_ projections: [Projection]) {
-        self.init([ Group(key: .none, values: projections) ])
+        if projections.isEmpty {
+            self.init()
+        } else {
+            self.init([ Group(key: .none, values: projections) ])
+        }
     }
 
     /// Return the project at the given index.
