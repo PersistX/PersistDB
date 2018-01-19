@@ -5,7 +5,7 @@ extension AnyValue.Encoded {
         switch self {
         case .date, .double:
             return .real
-        case .int:
+        case .int, .unit:
             return .integer
         case .string:
             return .text
