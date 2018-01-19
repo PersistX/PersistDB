@@ -37,3 +37,47 @@ extension ResultSet: Hashable {
         return lhs.groups == rhs.groups
     }
 }
+
+extension ResultSet: Collection {
+    public struct Index {
+        fileprivate var group: Int
+        fileprivate var value: Int
+    }
+
+    public var startIndex: Index {
+        return Index(group: 0, value: 0)
+    }
+
+    public var endIndex: Index {
+        return Index(group: groups.count, value: 0)
+    }
+
+    public subscript(_ i: Index) -> Projection {
+        return groups[i.group].values[i.value]
+    }
+
+    public func index(after i: Index) -> Index {
+        let group = groups[i.group]
+        if i.value + 1 < group.values.count {
+            return Index(group: i.group, value: i.value + 1)
+        } else {
+            return Index(group: i.group + 1, value: 0)
+        }
+    }
+}
+
+extension ResultSet.Index: Hashable {
+    public var hashValue: Int {
+        return group ^ value
+    }
+
+    public static func == (lhs: ResultSet.Index, rhs: ResultSet.Index) -> Bool {
+        return lhs.group == rhs.group && lhs.value == rhs.value
+    }
+}
+
+extension ResultSet.Index: Comparable {
+    public static func < (lhs: ResultSet.Index, rhs: ResultSet.Index) -> Bool {
+        return lhs.group < rhs.group || (lhs.group == rhs.group && lhs.value < rhs.value)
+    }
+}
