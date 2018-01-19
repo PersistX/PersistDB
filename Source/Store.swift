@@ -233,13 +233,13 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     private func fetch<Projection>(
         _ projected: ProjectedQuery<Projection>
-    ) -> SignalProducer<Projection, NoError> {
+    ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
         return SignalProducer { [db = self.db] observer, _ in
             let values = db
                 .query(projected.sql)
                 .map(projected.values(for:))
                 .flatMap(Projection.projection.makeValue)
-            values.forEach(observer.send(value:))
+            observer.send(value: ResultSet(values))
             observer.sendCompleted()
         }
     }
@@ -254,7 +254,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
-    ) -> SignalProducer<Projection, NoError> {
+    ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
         let projected = ProjectedQuery<Projection>(query)
         return fetch(projected)
     }
@@ -264,20 +264,23 @@ extension Store {
     /// - parameters:
     ///   - query: A query matching the model entities to be projected.
     ///   - keyPath: The property that should be used to group consecutive projections.
+    ///   - ascending: Whether the query should be sorted by the `keyPath` ascending or descending.
     ///
     /// - returns: A `SignalProducer` that will fetch projections for entities that match the query.
     ///
     /// - important: Nothing will be done until the returned producer is started.
     ///
-    /// - important: This will not sort the query by the grouped property.
+    /// - important: This will sort the query by the grouped property.
     public func fetch<Projection: ModelProjection, Value: ModelValue>(
         _ query: Query<Projection.Model>,
-        groupedBy keyPath: KeyPath<Projection.Model, Value>
-    ) -> SignalProducer<Group<Value, Projection>, NoError> {
+        groupedBy keyPath: KeyPath<Projection.Model, Value>,
+        ascending: Bool = true
+    ) -> SignalProducer<ResultSet<Value, Projection>, NoError> {
         let groupedBy = AnyExpression(keyPath).makeSQL()
         let projected = ProjectedQuery<Projection>(query)
         let sql = projected.sql
             .select(SQL.Result(groupedBy, alias: "groupBy"))
+            .sorted(by: SQL.Ordering(groupedBy, ascending ? .ascending : .descending))
         return SignalProducer(value: sql)
             .flatMap(.concat) { [db = self.db] sql in
                 SignalProducer(db.query(sql))
@@ -296,6 +299,8 @@ extension Store {
                 let (key, values) = arg
                 return Group(key: key, values: values.map { $0.1 })
             }
+            .collect()
+            .map(ResultSet.init)
     }
 
     /// Observe projections from the store with a query.
@@ -312,10 +317,9 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func observe<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
-    ) -> SignalProducer<[Projection], NoError> {
+    ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
         let projected = ProjectedQuery<Projection>(query)
         return fetch(projected)
-            .collect()
             .concat(.never)
             .take(
                 until: effects

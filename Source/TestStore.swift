@@ -86,8 +86,7 @@ public final class TestStore {
     ) -> [Model.ID] {
         return store
             .fetch(query)
-            .map { (id: ID<Model>) in id.id }
-            .collect()
+            .map { $0.map { (id: ID<Model>) in id.id } }
             .first()!
             .value!
     }
@@ -98,7 +97,7 @@ public final class TestStore {
     ) -> [Projection] {
         return store
             .fetch(query)
-            .collect()
+            .map { $0.map { $0 } }
             .first()!
             .value!
     }

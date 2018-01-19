@@ -60,22 +60,22 @@ class StoreTests: XCTestCase {
         store?.update(Update(predicate: \Author.id == id, valueSet: valueSet))
     }
 
-    fileprivate func fetch(_ query: Query<Author> = Author.all) -> [AuthorInfo]! {
+    fileprivate func fetch(_ query: Query<Author> = Author.all) -> ResultSet<None, AuthorInfo>! {
         return store!
             .fetch(query)
-            .collect()
             .firstValue
     }
 
-    fileprivate func fetchGroups(_ query: Query<Author> = Author.all) -> [Group<Int, AuthorInfo>] {
+    fileprivate func fetchGrouped(
+        _ query: Query<Author> = Author.all
+    ) -> ResultSet<Int, AuthorInfo> {
         return store!
             .fetch(query, groupedBy: \Author.born)
-            .collect()
             .firstValue!
     }
 
-    fileprivate func fetch(_ query: Query<Widget> = Widget.all) -> [Widget]! {
-        return store!.fetch(query).collect().firstValue
+    fileprivate func fetchWidgets(_ query: Query<Widget> = Widget.all) -> ResultSet<None, Widget> {
+        return store!.fetch(query).firstValue!
     }
 }
 
@@ -83,46 +83,51 @@ class StoreFetchTests: StoreTests {
     func testSingleResult() {
         insert(.jrrTolkien)
 
-        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 
     func testNilValue() {
         insert(.orsonScottCard)
 
-        XCTAssertEqual(fetch(), [ AuthorInfo(.orsonScottCard) ])
+        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.orsonScottCard) ]))
     }
 
     func testPerformWorkOnSubscription() {
-        let producer: SignalProducer<AuthorInfo, NoError> = store!.fetch(Author.all)
+        let producer: SignalProducer<ResultSet<None, AuthorInfo>, NoError>
+            = store!.fetch(Author.all)
 
         insert(.jrrTolkien)
 
-        XCTAssertEqual(producer.firstValue, AuthorInfo(.jrrTolkien))
+        XCTAssertEqual(producer.firstValue, ResultSet([AuthorInfo(.jrrTolkien)]))
+    }
+
+    func testEmptyReturnsEmptyResultSet() {
+        XCTAssertEqual(fetch(), ResultSet())
     }
 }
 
 class StoreFetchGroupedByTests: StoreTests {
     func testNoResults() {
-        XCTAssertEqual(fetchGroups(), [])
+        XCTAssertEqual(fetchGrouped(), ResultSet())
     }
 
     func testOneResult() {
         insert(.isaacAsimov)
 
-        let expected: [Group<Int, AuthorInfo>] = [
+        let expected = ResultSet<Int, AuthorInfo>([
             Group(
                 key: 1920,
                 values: [ AuthorInfo(.isaacAsimov) ]
             ),
-        ]
-        let actual = fetchGroups()
+        ])
+        let actual = fetchGrouped()
         XCTAssertEqual(actual, expected)
     }
 
     func testMultipleResults() {
         insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
 
-        let expected: [Group<Int, AuthorInfo>] = [
+        let expected = ResultSet<Int, AuthorInfo>([
             Group(
                 key: 1892,
                 values: [ AuthorInfo(.jrrTolkien) ]
@@ -135,33 +140,29 @@ class StoreFetchGroupedByTests: StoreTests {
                 key: 1951,
                 values: [ AuthorInfo(.orsonScottCard) ]
             ),
-        ]
-        let actual = fetchGroups(Author.all.sort(by: \.name).sort(by: \.born))
+        ])
+        let actual = fetchGrouped(Author.all.sort(by: \.name).sort(by: \.born))
         XCTAssertEqual(actual, expected)
     }
 
-    func testDoesNotSort() {
+    func testSortsByGroupByFirst() {
         insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
 
-        let expected: [Group<Int, AuthorInfo>] = [
-            Group(
-                key: 1920,
-                values: [ AuthorInfo(.isaacAsimov) ]
-            ),
+        let expected = ResultSet<Int, AuthorInfo>([
             Group(
                 key: 1892,
                 values: [ AuthorInfo(.jrrTolkien) ]
             ),
             Group(
+                key: 1920,
+                values: [ AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury) ]
+            ),
+            Group(
                 key: 1951,
                 values: [ AuthorInfo(.orsonScottCard) ]
             ),
-            Group(
-                key: 1920,
-                values: [ AuthorInfo(.rayBradbury) ]
-            ),
-        ]
-        let actual = fetchGroups(Author.all.sort(by: \.name))
+        ])
+        let actual = fetchGrouped(Author.all.sort(by: \.name))
         XCTAssertEqual(actual, expected)
     }
 }
@@ -177,7 +178,7 @@ class StoreInsertTests: StoreTests {
             \Widget.uuid == widget.uuid,
         ])
 
-        let fetched: Widget = fetch()[0]
+        let fetched = fetchWidgets()[0]
         XCTAssertEqual(fetched, widget)
     }
 
@@ -193,7 +194,7 @@ class StoreInsertTests: StoreTests {
         self.insert(insert)
         let after = Date()
 
-        let widget: Widget = fetch()[0]
+        let widget = fetchWidgets()[0]
         XCTAssertGreaterThan(widget.date, before)
         XCTAssertLessThan(widget.date, after)
     }
@@ -214,7 +215,7 @@ class StoreInsertTests: StoreTests {
 
         insert(insert1, insert2)
 
-        let widgets: [Widget] = fetch()
+        let widgets = fetchWidgets()
         XCTAssertNotEqual(widgets[0].uuid, widgets[1].uuid)
     }
 
@@ -239,11 +240,11 @@ class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
         insert(.jrrTolkien)
 
-        XCTAssertEqual(fetch(), [AuthorInfo(.jrrTolkien)])
+        XCTAssertEqual(fetch(), ResultSet([AuthorInfo(.jrrTolkien)]))
 
         delete(.jrrTolkien)
 
-        let authors: [AuthorInfo] = fetch()
+        let authors: ResultSet<None, AuthorInfo> = fetch()
         XCTAssert(authors.isEmpty)
     }
 }
@@ -254,7 +255,7 @@ class StoreUpdateTests: StoreTests {
 
         update(.jrrTolkien, [\.born == 100, \.died == 200 ])
 
-        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien, born: 100, died: 200) ])
+        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien, born: 100, died: 200) ]))
     }
 }
 
@@ -263,8 +264,8 @@ class StoreObserveTests: StoreTests {
         .all
         .filter(\.born >= 1900)
         .sort(by: \.name)
-    private var observation: SignalProducer<[AuthorInfo], NoError>!
-    private var observed: [AuthorInfo]?
+    private var observation: SignalProducer<ResultSet<None, AuthorInfo>, NoError>!
+    private var observed: ResultSet<None, AuthorInfo>?
 
     override func setUp() {
         super.setUp()
@@ -311,7 +312,7 @@ class StoreObserveTests: StoreTests {
             insert(.isaacAsimov)
         }
 
-        XCTAssertEqual(observed!, [AuthorInfo(.isaacAsimov)])
+        XCTAssertEqual(observed!, ResultSet([AuthorInfo(.isaacAsimov)]))
     }
 
     func testSendsAfterMatchingDelete() {
@@ -321,7 +322,7 @@ class StoreObserveTests: StoreTests {
             delete(.isaacAsimov)
         }
 
-        XCTAssertEqual(observed!, [AuthorInfo(.orsonScottCard)])
+        XCTAssertEqual(observed!, ResultSet([AuthorInfo(.orsonScottCard)]))
     }
 
     func testSendsAfterUpdateThatChangesProjectedValue() {
@@ -333,10 +334,10 @@ class StoreObserveTests: StoreTests {
 
         XCTAssertEqual(
             observed!,
-            [
+            ResultSet([
                 AuthorInfo(.isaacAsimov),
                 AuthorInfo(.orsonScottCard, died: 3002),
-            ]
+            ])
         )
     }
 
@@ -350,10 +351,10 @@ class StoreObserveTests: StoreTests {
 
         XCTAssertEqual(
             observed!,
-            [
+            ResultSet([
                 AuthorInfo(.orsonScottCard, name: name),
                 AuthorInfo(.isaacAsimov),
-            ]
+            ])
         )
     }
 
@@ -366,11 +367,11 @@ class StoreObserveTests: StoreTests {
 
         XCTAssertEqual(
             observed!,
-            [
+            ResultSet([
                 AuthorInfo(.isaacAsimov),
                 AuthorInfo(.jrrTolkien, born: 1900),
                 AuthorInfo(.orsonScottCard),
-            ]
+            ])
         )
     }
 
@@ -383,9 +384,9 @@ class StoreObserveTests: StoreTests {
 
         XCTAssertEqual(
             observed!,
-            [
+            ResultSet([
                 AuthorInfo(.isaacAsimov),
-            ]
+            ])
         )
     }
 
@@ -436,7 +437,7 @@ class StoreOpenTests: StoreTests {
     func testCreatesSchemas() {
         insert(.jrrTolkien)
 
-        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 
     func testDoesWorkOnSubscription() {
@@ -456,7 +457,7 @@ class StoreOpenTests: StoreTests {
 
         store = open(at: url)
 
-        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 
     func testIncompatibleSchema() {
@@ -480,6 +481,6 @@ class StoreOpenTests: StoreTests {
         store = open(at: url, for: [ Widget.self ])
 
         XCTAssertNotNil(store)
-        XCTAssertEqual(fetch(), [ AuthorInfo(.jrrTolkien) ])
+        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 }
