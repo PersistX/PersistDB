@@ -26,6 +26,11 @@ extension ResultSet where Key == None {
     public init(_ projections: [Projection]) {
         self.init([ Group(key: .none, values: projections) ])
     }
+
+    /// Return the project at the given index.
+    public subscript(_ index: Int) -> Projection {
+        return groups[0].values[index]
+    }
 }
 
 extension ResultSet: Hashable {
