@@ -18,9 +18,14 @@ private let ungrouped = ResultSet<None, AuthorInfo>([
 ])
 
 class ResultSetInitProjections: XCTestCase {
-    func testEmptyDoesNotCreateGroup() {
+    func testNoProjectionsIsEmpty() {
         let empty = [AuthorInfo]()
-        XCTAssertTrue(ResultSet(empty).groups.isEmpty)
+        XCTAssertTrue(ResultSet(empty).isEmpty)
+    }
+
+    func testNoProjectionsHasGroup() {
+        let empty = [AuthorInfo]()
+        XCTAssertEqual(ResultSet(empty).groups, [Group(key: .none, values: [])])
     }
 }
 

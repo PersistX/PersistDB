@@ -102,7 +102,7 @@ class StoreFetchTests: StoreTests {
     }
 
     func testEmptyReturnsEmptyResultSet() {
-        XCTAssertEqual(fetch(), ResultSet())
+        XCTAssertTrue(fetch().isEmpty)
     }
 }
 
