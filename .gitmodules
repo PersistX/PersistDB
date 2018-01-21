@@ -10,3 +10,6 @@
 [submodule "Carthage/Checkouts/Standards"]
 	path = Carthage/Checkouts/Standards
 	url = https://github.com/PersistX/Standards.git
+[submodule "Carthage/Checkouts/Differ"]
+	path = Carthage/Checkouts/Differ
+	url = https://github.com/tonyarnold/Differ.git
