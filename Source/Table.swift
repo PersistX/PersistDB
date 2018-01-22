@@ -5,26 +5,41 @@ public struct Table<Key: ModelValue, Projection: PersistDB.ModelProjection> {
     /// The result set backing the table.
     public let resultSet: ResultSet<Key, Projection>
 
+    /// The IDs of the selected values.
+    public let selectedIDs: Set<Projection.Model.ID>
+
     /// Create an empty table.
     public init() {
-        resultSet = ResultSet()
+        self.init(ResultSet())
     }
 
-    /// Create a table with the given result set.
-    public init(_ resultSet: ResultSet<Key, Projection>) {
+    /// Create a table with the given result set and selection.
+    public init(
+        _ resultSet: ResultSet<Key, Projection>,
+        selectedIDs: Set<Projection.Model.ID> = []
+    ) {
         self.resultSet = resultSet
+        self.selectedIDs = selectedIDs
     }
 
     /// Create a table with the given groups.
     public init(_ groups: [Group<Key, Projection>]) {
-        resultSet = ResultSet(groups)
+        self.init(ResultSet(groups))
+    }
+}
+
+extension Table {
+    /// A predicate that matches the selected projections' models.
+    public var selected: Predicate<Projection.Model>? {
+        if selectedIDs.isEmpty { return nil }
+        return selectedIDs.contains(Projection.Model.idKeyPath)
     }
 }
 
 extension Table where Key == None {
     /// Create a ungrouped table with the given projections.
     public init(_ projections: [Projection]) {
-        resultSet = ResultSet(projections)
+        self.init(ResultSet(projections))
     }
 }
 
@@ -102,6 +117,15 @@ extension Table {
             return .group(group.key)
         }
     }
+
+    /// The rows for the selected values.
+    public var selectedRows: IndexSet {
+        return IndexSet(integersIn: 0..<rowCount)
+            .filteredIndexSet { row in
+                guard case let .value(projection) = self[row] else { return false }
+                return selectedIDs.contains(projection.id)
+            }
+    }
 }
 
 extension Table.Row: Hashable {
@@ -146,6 +170,11 @@ extension Table {
     public subscript(_ indexPath: IndexPath) -> Projection {
         precondition(indexPath.count == 2)
         return resultSet.groups[indexPath[0]].values[indexPath[1]]
+    }
+
+    /// The index paths of the selected values.
+    public var selectedIndexPaths: Set<IndexPath> {
+        return Set(selectedRows.map(indexPath(forRow:)))
     }
 }
 

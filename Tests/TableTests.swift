@@ -15,6 +15,21 @@ private let ungrouped: Table<None, AuthorInfo> = Table([
     AuthorInfo(.rayBradbury),
 ])
 
+class TableSelectedTests: XCTestCase {
+    func testEmpty() {
+        XCTAssertNil(grouped.selected)
+    }
+
+    func testNonEmpty() {
+        let table = Table(grouped.resultSet, selectedIDs: [.jrrTolkien, .rayBradbury])
+        let expected: Predicate<Author> = [
+            Author.ID.jrrTolkien,
+            Author.ID.rayBradbury,
+        ].contains(\.id)
+        XCTAssertEqual(table.selected, expected)
+    }
+}
+
 class TableRowCountTests: XCTestCase {
     func testEmptyGrouped() {
         XCTAssertEqual(Table<Int, AuthorInfo>().rowCount, 0)
@@ -111,6 +126,27 @@ class TableSubscriptRowTests: XCTestCase {
     }
 }
 
+class TableSelectedRowsTests: XCTestCase {
+    func testEmpty() {
+        XCTAssertTrue(grouped.selectedRows.isEmpty)
+    }
+
+    func testGrouped() {
+        let table = Table(grouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
+        var expected = IndexSet()
+        expected.update(with: 1)
+        expected.update(with: 4)
+        XCTAssertEqual(table.selectedRows, expected)
+    }
+
+    func testUngrouped() {
+        let table = Table(ungrouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
+        XCTAssertEqual(table.selectedRows.count, 2)
+        XCTAssertTrue(table.selectedRows.contains(1))
+        XCTAssertTrue(table.selectedRows.contains(3))
+    }
+}
+
 class TableSectionCountTests: XCTestCase {
     func testEmptyGrouped() {
         XCTAssertEqual(Table<Int, AuthorInfo>().sectionCount, 0)
@@ -164,6 +200,21 @@ class TableSubscriptIndexPathTests: XCTestCase {
 
     func testSecondGroupSecondValue() {
         XCTAssertEqual(grouped[[1, 1]], AuthorInfo(.rayBradbury))
+    }
+}
+
+class TableSelectedIndexPathsTests: XCTestCase {
+    func testEmpty() {
+        XCTAssertEqual(grouped.selectedIndexPaths, [])
+    }
+
+    func testNonEmpty() {
+        let table = Table(grouped.resultSet, selectedIDs: [.jrrTolkien, .rayBradbury])
+        let expected: Set<IndexPath> = [
+            [0, 0],
+            [1, 1],
+        ]
+        XCTAssertEqual(table.selectedIndexPaths, expected)
     }
 }
 
