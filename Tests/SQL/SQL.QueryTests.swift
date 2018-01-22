@@ -356,7 +356,7 @@ class SQLQueryCollectionTests: SQLQueryTests {
         let books = [ Book.Data.theHobbit, Book.Data.xenocide ]
         let query = SQL.Query
             .select(Book.Table.allColumns)
-            .where(.inList(Book.Table.title, books.map { SQL.Value.text($0.title) }))
+            .where(.inList(Book.Table.title, books.map { SQL.Expression.value(.text($0.title)) }))
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),

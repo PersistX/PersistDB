@@ -39,7 +39,7 @@ internal indirect enum AnyExpression {
     case binary(BinaryOperator, AnyExpression, AnyExpression)
     case function(Function, [AnyExpression])
     case generator(Generator)
-    case inList(AnyExpression, [SQL.Value])
+    case inList(AnyExpression, [AnyExpression])
     case keyPath([AnyProperty])
     case now
     case unary(UnaryOperator, AnyExpression)
@@ -218,8 +218,8 @@ extension AnyExpression: Hashable {
             return function.hashValue ^ expression.map { $0.hashValue }.reduce(0, ^)
         case let .generator(generator):
             return generator.hashValue
-        case let .inList(expr, values):
-            return expr.hashValue ^ values.map { $0.hashValue }.reduce(0, ^)
+        case let .inList(expr, list):
+            return expr.hashValue ^ list.map { $0.hashValue }.reduce(0, ^)
         case let .keyPath(properties):
             return properties.map { $0.hashValue }.reduce(0, ^)
         case .now:
@@ -239,8 +239,8 @@ extension AnyExpression: Hashable {
             return lhsFunc == rhsFunc && lhsArgs == rhsArgs
         case let (.generator(lhs), .generator(rhs)):
             return lhs == rhs
-        case let (.inList(lhsExpr, lhsValues), .inList(rhsExpr, rhsValues)):
-            return lhsExpr == rhsExpr && lhsValues == rhsValues
+        case let (.inList(lhsExpr, lhsList), .inList(rhsExpr, rhsList)):
+            return lhsExpr == rhsExpr && lhsList == rhsList
         case let (.keyPath(lhs), .keyPath(rhs)):
             return lhs == rhs
         case (.now, .now):
@@ -327,8 +327,8 @@ extension AnyExpression {
             return .function(function.sql, args.map { $0.makeSQL() })
         case let .generator(generator):
             return .value(generator.makeSQL())
-        case let .inList(expr, values):
-            return .inList(expr.makeSQL(), values)
+        case let .inList(expr, list):
+            return .inList(expr.makeSQL(), list.map { $0.makeSQL() })
         case let .keyPath(properties):
             return sql(for: properties)
         case .now:
@@ -444,11 +444,11 @@ internal func min(_ expressions: AnyExpression...) -> AnyExpression {
 
 // MARK: - Collections
 
-extension Collection where Iterator.Element == String {
+extension Collection where Iterator.Element: ModelValue {
     /// An expression that tests whether the list contains the value of an
     /// expression.
     internal func contains(_ expression: AnyExpression) -> AnyExpression {
-        return .inList(expression, map(SQL.Value.text))
+        return .inList(expression, map(AnyExpression.init))
     }
 }
 

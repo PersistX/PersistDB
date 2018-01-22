@@ -36,7 +36,7 @@ extension SQL {
         case column(Column)
         case exists(Query)
         case function(Function, [Expression])
-        case inList(Expression, [Value])
+        case inList(Expression, [Expression])
         case join(Column, Column, Expression)
         case unary(UnaryOperator, Expression)
         case value(Value)
@@ -57,8 +57,8 @@ extension SQL.Expression {
         case let .function(function, arguments):
             let args = arguments.map { $0.sql }.joined(separator: ",")
             return SQL(function.rawValue) + args.parenthesized
-        case let .inList(expr, values):
-            let vs = values.map { $0.sql }.joined(separator: ",")
+        case let .inList(expr, list):
+            let vs = list.map { $0.sql }.joined(separator: ",")
             return "(" + expr.sql + " IN (" + vs + "))"
         case let .join(_, _, expr):
             return expr.sql
@@ -81,8 +81,9 @@ extension SQL.Expression {
             return [self]
         case let .function(_, exprs):
             return exprs.reduce([self]) { $0.union($1.expressions) }
-        case let .inList(expr, _),
-             let .unary(_, expr),
+        case let .inList(expr, list):
+            return list.reduce([self, expr]) { $0.union($1.expressions) }
+        case let .unary(_, expr),
              let .join(_, _, expr),
              let .cast(expr, _):
             return expr.expressions.union([self])
@@ -135,8 +136,8 @@ extension SQL.Expression: Hashable {
             return query.hashValue
         case let .function(function, arguments):
             return function.hashValue + arguments.reduce(0) { $0 ^ $1.hashValue }
-        case let .inList(expr, values):
-            return expr.hashValue ^ values.reduce(0) { $0 ^ $1.hashValue }
+        case let .inList(expr, list):
+            return expr.hashValue ^ list.reduce(0) { $0 ^ $1.hashValue }
         case let .join(left, right, expr):
             return left.hashValue ^ right.hashValue ^ expr.hashValue
         case let .unary(op, expr):
@@ -158,8 +159,8 @@ extension SQL.Expression: Hashable {
             return query1 == query2
         case let (.function(function1, args1), .function(function2, args2)):
             return function1 == function2 && args1 == args2
-        case let (.inList(expr1, values1), .inList(expr2, values2)):
-            return expr1 == expr2 && values1 == values2
+        case let (.inList(expr1, list1), .inList(expr2, list2)):
+            return expr1 == expr2 && list1 == list2
         case let (.join(left1, right1, expr1), .join(left2, right2, expr2)):
             return left1 == left2 && right1 == right2 && expr1 == expr2
         case let (.unary(op1, expr1), .unary(op2, expr2)):
