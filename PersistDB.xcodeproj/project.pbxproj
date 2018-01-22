@@ -638,7 +638,7 @@
 				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDB;
+				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDB;
 				PRODUCT_NAME = PersistDB;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -660,7 +660,7 @@
 				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDB;
+				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDB;
 				PRODUCT_NAME = PersistDB;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -675,7 +675,7 @@
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = "-lsqlite3";
-				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDBTests;
+				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
 				SWIFT_VERSION = 4.0;
 			};
@@ -689,7 +689,7 @@
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = "-lsqlite3";
-				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDBTests;
+				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
 				SWIFT_VERSION = 4.0;
 			};
