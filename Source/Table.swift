@@ -3,7 +3,7 @@ import Schemata
 /// A view model for a table of results.
 public struct Table<Key: ModelValue, Projection: PersistDB.ModelProjection> {
     /// The result set backing the table.
-    public var resultSet: ResultSet<Key, Projection>
+    public let resultSet: ResultSet<Key, Projection>
 
     /// Create an empty table.
     public init() {
