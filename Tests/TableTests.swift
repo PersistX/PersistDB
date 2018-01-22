@@ -174,7 +174,7 @@ class TableSubscriptRowTests: XCTestCase {
     }
 }
 
-class TableSelectedRowsTests: XCTestCase {
+class TableSelectedRowsGetTests: XCTestCase {
     func testEmpty() {
         XCTAssertTrue(grouped.selectedRows.isEmpty)
     }
@@ -192,6 +192,38 @@ class TableSelectedRowsTests: XCTestCase {
         XCTAssertEqual(table.selectedRows.count, 2)
         XCTAssertTrue(table.selectedRows.contains(1))
         XCTAssertTrue(table.selectedRows.contains(3))
+    }
+}
+
+class TableSelectedRowsSetTests: XCTestCase {
+    func testEmpty() {
+        var table = Table(grouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
+
+        table.selectedRows = IndexSet()
+
+        XCTAssertEqual(table.selectedIDs, [])
+    }
+
+    func testGrouped() {
+        var table = Table(grouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
+        var expected = IndexSet()
+        expected.update(with: 3)
+        expected.update(with: 6)
+
+        table.selectedRows = expected
+
+        XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .orsonScottCard ])
+    }
+
+    func testUngrouped() {
+        var table = Table(ungrouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
+        var expected = IndexSet()
+        expected.update(with: 0)
+        expected.update(with: 2)
+
+        table.selectedRows = expected
+
+        XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .orsonScottCard ])
     }
 }
 

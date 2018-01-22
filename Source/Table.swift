@@ -125,11 +125,25 @@ extension Table {
 
     /// The rows for the selected values.
     public var selectedRows: IndexSet {
-        return IndexSet(integersIn: 0..<rowCount)
-            .filteredIndexSet { row in
-                guard case let .value(projection) = self[row] else { return false }
-                return selectedIDs.contains(projection.id)
-            }
+        get {
+            return IndexSet(integersIn: 0..<rowCount)
+                .filteredIndexSet { row in
+                    guard case let .value(projection) = self[row] else { return false }
+                    return selectedIDs.contains(projection.id)
+                }
+        }
+        set {
+            let ids = newValue
+                .map { idx -> Projection.Model.ID in
+                    switch self[idx] {
+                    case .group:
+                        fatalError("Cannot select a group")
+                    case let .value(value):
+                        return value.id
+                    }
+                }
+            selectedIDs = Set(ids)
+        }
     }
 }
 
