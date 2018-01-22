@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BE89D5F51EBE3A0100CEC4D1"
                BuildableName = "PersistDB.framework"
-               BlueprintName = "PersistDB"
+               BlueprintName = "PersistDB (macOS)"
                ReferencedContainer = "container:PersistDB.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -35,7 +35,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BE89D5FE1EBE3A0100CEC4D1"
                BuildableName = "PersistDBTests.xctest"
-               BlueprintName = "PersistDBTests"
+               BlueprintName = "PersistDBTests (macOS)"
                ReferencedContainer = "container:PersistDB.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -45,7 +45,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BE89D5F51EBE3A0100CEC4D1"
             BuildableName = "PersistDB.framework"
-            BlueprintName = "PersistDB"
+            BlueprintName = "PersistDB (macOS)"
             ReferencedContainer = "container:PersistDB.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -68,7 +68,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BE89D5F51EBE3A0100CEC4D1"
             BuildableName = "PersistDB.framework"
-            BlueprintName = "PersistDB"
+            BlueprintName = "PersistDB (macOS)"
             ReferencedContainer = "container:PersistDB.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -86,7 +86,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BE89D5F51EBE3A0100CEC4D1"
             BuildableName = "PersistDB.framework"
-            BlueprintName = "PersistDB"
+            BlueprintName = "PersistDB (macOS)"
             ReferencedContainer = "container:PersistDB.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

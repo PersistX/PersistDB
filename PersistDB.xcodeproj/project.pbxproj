@@ -313,9 +313,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		BE89D5F51EBE3A0100CEC4D1 /* PersistDB */ = {
+		BE89D5F51EBE3A0100CEC4D1 /* PersistDB (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB" */;
+			buildConfigurationList = BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB (macOS)" */;
 			buildPhases = (
 				BEBC36BD2009935E000E3AAB /* Run Standards */,
 				BE89D5F11EBE3A0100CEC4D1 /* Sources */,
@@ -327,14 +327,14 @@
 			);
 			dependencies = (
 			);
-			name = PersistDB;
+			name = "PersistDB (macOS)";
 			productName = PersistDB;
 			productReference = BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		BE89D5FE1EBE3A0100CEC4D1 /* PersistDBTests */ = {
+		BE89D5FE1EBE3A0100CEC4D1 /* PersistDBTests (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BE89D60D1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDBTests" */;
+			buildConfigurationList = BE89D60D1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDBTests (macOS)" */;
 			buildPhases = (
 				BEBC36BE20099903000E3AAB /* Run Standards */,
 				BE89D5FB1EBE3A0100CEC4D1 /* Sources */,
@@ -346,7 +346,7 @@
 			dependencies = (
 				BE89D6021EBE3A0100CEC4D1 /* PBXTargetDependency */,
 			);
-			name = PersistDBTests;
+			name = "PersistDBTests (macOS)";
 			productName = PersistDBTests;
 			productReference = BE89D5FF1EBE3A0100CEC4D1 /* PersistDBTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -385,8 +385,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BE89D5F51EBE3A0100CEC4D1 /* PersistDB */,
-				BE89D5FE1EBE3A0100CEC4D1 /* PersistDBTests */,
+				BE89D5F51EBE3A0100CEC4D1 /* PersistDB (macOS) */,
+				BE89D5FE1EBE3A0100CEC4D1 /* PersistDBTests (macOS) */,
 			);
 		};
 /* End PBXProject section */
@@ -508,7 +508,7 @@
 /* Begin PBXTargetDependency section */
 		BE89D6021EBE3A0100CEC4D1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BE89D5F51EBE3A0100CEC4D1 /* PersistDB */;
+			target = BE89D5F51EBE3A0100CEC4D1 /* PersistDB (macOS) */;
 			targetProxy = BE89D6011EBE3A0100CEC4D1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -639,7 +639,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDB;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = PersistDB;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -661,7 +661,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDB;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = PersistDB;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 			};
@@ -676,7 +676,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDBTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = PersistDBTests;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -690,7 +690,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.diephouse.matt.PersistDBTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = PersistDBTests;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -707,7 +707,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB" */ = {
+		BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE89D60B1EBE3A0100CEC4D1 /* Debug */,
@@ -716,7 +716,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BE89D60D1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDBTests" */ = {
+		BE89D60D1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDBTests (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE89D60E1EBE3A0100CEC4D1 /* Debug */,
