@@ -3,10 +3,15 @@ import Schemata
 /// A view model for a table of results.
 public struct Table<Key: ModelValue, Projection: PersistDB.ModelProjection> {
     /// The result set backing the table.
-    public let resultSet: ResultSet<Key, Projection>
+    public var resultSet: ResultSet<Key, Projection> {
+        didSet {
+            let ids = Set(resultSet.map { $0.id })
+            selectedIDs = selectedIDs.filter(ids.contains)
+        }
+    }
 
     /// The IDs of the selected values.
-    public let selectedIDs: Set<Projection.Model.ID>
+    public var selectedIDs: Set<Projection.Model.ID>
 
     /// Create an empty table.
     public init() {

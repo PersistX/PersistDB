@@ -15,6 +15,54 @@ private let ungrouped: Table<None, AuthorInfo> = Table([
     AuthorInfo(.rayBradbury),
 ])
 
+class TableResultDidSetSelectedIDsTests: XCTestCase {
+    func testInsertDoesNotAffectSelection() {
+        var table = Table([
+            Group(key: 1920, values: [AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury)]),
+            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        table.selectedIDs = [ .isaacAsimov, .rayBradbury ]
+        table.resultSet = grouped.resultSet
+        XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .rayBradbury ])
+    }
+
+    func testMoveDoesNotAffectSelection() {
+        var table = Table([
+            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: 1920, values: [AuthorInfo(.rayBradbury), AuthorInfo(.isaacAsimov)]),
+            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        table.selectedIDs = [ .isaacAsimov, .rayBradbury ]
+        table.resultSet = grouped.resultSet
+        XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .rayBradbury ])
+    }
+
+    func testPartialDeleteRemovesSelection() {
+        var table = Table([
+            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: 1920, values: [
+                AuthorInfo(.rayBradbury),
+                AuthorInfo(.liuCixin),
+                AuthorInfo(.isaacAsimov),
+            ]),
+            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        table.selectedIDs = [ .isaacAsimov, .liuCixin, .rayBradbury ]
+        table.resultSet = grouped.resultSet
+        XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .rayBradbury ])
+    }
+
+    func testTotalDeleteRemovesSelection() {
+        var table = grouped
+        table.selectedIDs = [ .isaacAsimov, .rayBradbury ]
+        table.resultSet = ResultSet([
+            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        XCTAssertEqual(table.selectedIDs, [])
+    }
+}
+
 class TableSelectedTests: XCTestCase {
     func testEmpty() {
         XCTAssertNil(grouped.selected)
