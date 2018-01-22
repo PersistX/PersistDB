@@ -39,7 +39,7 @@ internal indirect enum AnyExpression {
     case binary(BinaryOperator, AnyExpression, AnyExpression)
     case function(Function, [AnyExpression])
     case generator(Generator)
-    case inList(AnyExpression, [AnyExpression])
+    case inList(AnyExpression, Set<AnyExpression>)
     case keyPath([AnyProperty])
     case now
     case unary(UnaryOperator, AnyExpression)
@@ -328,7 +328,7 @@ extension AnyExpression {
         case let .generator(generator):
             return .value(generator.makeSQL())
         case let .inList(expr, list):
-            return .inList(expr.makeSQL(), list.map { $0.makeSQL() })
+            return .inList(expr.makeSQL(), Set(list.map { $0.makeSQL() }))
         case let .keyPath(properties):
             return sql(for: properties)
         case .now:
@@ -448,7 +448,7 @@ extension Collection where Iterator.Element: ModelValue {
     /// An expression that tests whether the list contains the value of an
     /// expression.
     internal func contains(_ expression: AnyExpression) -> AnyExpression {
-        return .inList(expression, map(AnyExpression.init))
+        return .inList(expression, Set(map(AnyExpression.init)))
     }
 }
 

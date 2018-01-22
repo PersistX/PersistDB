@@ -36,7 +36,7 @@ extension SQL {
         case column(Column)
         case exists(Query)
         case function(Function, [Expression])
-        case inList(Expression, [Expression])
+        case inList(Expression, Set<Expression>)
         case join(Column, Column, Expression)
         case unary(UnaryOperator, Expression)
         case value(Value)
