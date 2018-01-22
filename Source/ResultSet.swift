@@ -75,10 +75,8 @@ private func diff<K, P>(
 
     func indicesByID(in resultSet: ResultSet<K, P>) -> [P.Model.ID: (Int, Int)] {
         var result: [P.Model.ID: (Int, Int)] = [:]
-        for g in resultSet.groups.indices {
-            let group = resultSet.groups[g]
-            for v in group.values.indices {
-                let value = group.values[v]
+        for (g, group) in resultSet.groups.enumerated() {
+            for (v, value) in group.values.enumerated() {
                 result[value.id] = (g, v)
             }
         }

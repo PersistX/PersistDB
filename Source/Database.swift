@@ -78,8 +78,7 @@ internal class Database {
             fatalError("Couldn't prepare statement")
         }
 
-        for idx in sql.parameters.indices {
-            let p = sql.parameters[idx]
+        for (idx, p) in sql.parameters.enumerated() {
             switch p {
             case let .integer(value):
                 sqlite3_bind_int(stmt, Int32(idx + 1), Int32(value))
