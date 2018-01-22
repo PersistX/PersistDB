@@ -283,7 +283,7 @@ class TableSubscriptIndexPathTests: XCTestCase {
     }
 }
 
-class TableSelectedIndexPathsTests: XCTestCase {
+class TableSelectedIndexPathsGetTests: XCTestCase {
     func testEmpty() {
         XCTAssertEqual(grouped.selectedIndexPaths, [])
     }
@@ -295,6 +295,27 @@ class TableSelectedIndexPathsTests: XCTestCase {
             [1, 1],
         ]
         XCTAssertEqual(table.selectedIndexPaths, expected)
+    }
+}
+
+class TableSelectedIndexPathsSetTests: XCTestCase {
+    func testEmpty() {
+        var table = Table(grouped.resultSet, selectedIDs: [.jrrTolkien, .rayBradbury])
+
+        table.selectedIndexPaths = []
+
+        XCTAssertEqual(grouped.selectedIDs, [])
+    }
+
+    func testNonEmpty() {
+        var table = Table(grouped.resultSet, selectedIDs: [.jrrTolkien, .rayBradbury])
+
+        table.selectedIndexPaths = [
+            [1, 0],
+            [2, 0],
+        ]
+
+        XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .orsonScottCard ])
     }
 }
 

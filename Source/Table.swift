@@ -193,7 +193,12 @@ extension Table {
 
     /// The index paths of the selected values.
     public var selectedIndexPaths: Set<IndexPath> {
-        return Set(selectedRows.map(indexPath(forRow:)))
+        get {
+            return Set(selectedRows.map(indexPath(forRow:)))
+        }
+        set {
+            selectedIDs = Set(newValue.map { self[$0].id })
+        }
     }
 }
 
