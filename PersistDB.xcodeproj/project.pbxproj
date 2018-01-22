@@ -122,6 +122,10 @@
 		BEDE90C420160655004656FC /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C720160656004656FC /* Result.framework */; };
 		BEDE90C520160655004656FC /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C820160656004656FC /* Schemata.framework */; };
 		BEDE90C920160691004656FC /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E11EFFDC4500D1F5A5 /* TestDB.swift */; };
+		BEDE90CA2016259F004656FC /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36D7201246C1000E3AAB /* Table.swift */; };
+		BEDE90CB201625A0004656FC /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36D7201246C1000E3AAB /* Table.swift */; };
+		BEDE90CC201625A1004656FC /* TableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36D5201246B4000E3AAB /* TableTests.swift */; };
+		BEDE90CD201625A2004656FC /* TableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36D5201246B4000E3AAB /* TableTests.swift */; };
 		BEFD30BB1EDEF6B8004FF8FB /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -198,6 +202,8 @@
 		BEBC36CC200E8FD8000E3AAB /* Schemata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schemata.swift; sourceTree = "<group>"; };
 		BEBC36CF200EDCB0000E3AAB /* ResultSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultSet.swift; sourceTree = "<group>"; };
 		BEBC36D3200F98FC000E3AAB /* ResultSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultSetTests.swift; sourceTree = "<group>"; };
+		BEBC36D5201246B4000E3AAB /* TableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableTests.swift; sourceTree = "<group>"; };
+		BEBC36D7201246C1000E3AAB /* Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
 		BEBC36DB2013C0D9000E3AAB /* Differ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Differ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEBEB06C1EBEADAA00522152 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		BEC1C2401F1DA64400D29EFF /* SchemataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemataTests.swift; sourceTree = "<group>"; };
@@ -336,6 +342,7 @@
 				BE1DC6031EE3AC9400A0671F /* Query.swift */,
 				BEBC36CF200EDCB0000E3AAB /* ResultSet.swift */,
 				BEBEB06C1EBEADAA00522152 /* Store.swift */,
+				BEBC36D7201246C1000E3AAB /* Table.swift */,
 				BE7360FF1FD5872500B675B4 /* TestStore.swift */,
 				BE10ED811FE60494008FFE25 /* Update.swift */,
 				BEAE8C391FD989C500EF63A9 /* ValueSet.swift */,
@@ -358,6 +365,7 @@
 				BE1DC6051EE3ACC600A0671F /* QueryTests.swift */,
 				BEBC36D3200F98FC000E3AAB /* ResultSetTests.swift */,
 				BEFD30BA1EDEF6B8004FF8FB /* StoreTests.swift */,
+				BEBC36D5201246B4000E3AAB /* TableTests.swift */,
 				BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */,
 				BEA031271FFE583D003C2E90 /* UpdateTests.swift */,
 				BE10ED741FE19A8E008FFE25 /* ValueSetTests.swift */,
@@ -665,6 +673,7 @@
 				BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */,
 				BE1B3E6D1FF03551001620A9 /* SQL.Action.swift in Sources */,
 				BE7740EB1EFFDC5500D1F5A5 /* SQL.Ordering.swift in Sources */,
+				BEDE90CA2016259F004656FC /* Table.swift in Sources */,
 				BE7740EC1EFFDC5500D1F5A5 /* SQL.swift in Sources */,
 				BE10ED7E1FE60267008FFE25 /* SQL.Delete.swift in Sources */,
 				BEBEB06D1EBEADAA00522152 /* Store.swift in Sources */,
@@ -702,6 +711,7 @@
 				BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */,
 				BE7740E21EFFDC4E00D1F5A5 /* SQL.ExpressionTests.swift in Sources */,
 				BE7740E61EFFDC4E00D1F5A5 /* TestDB.swift in Sources */,
+				BEDE90CC201625A1004656FC /* TableTests.swift in Sources */,
 				BE10ED7C1FE2FB2E008FFE25 /* SQL.UpdateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -728,6 +738,7 @@
 				BEDE909C201605AE004656FC /* SQL.Action.swift in Sources */,
 				BEDE90B5201605AE004656FC /* TestStore.swift in Sources */,
 				BEDE90A8201605AE004656FC /* SQL.swift in Sources */,
+				BEDE90CB201625A0004656FC /* Table.swift in Sources */,
 				BEDE90B6201605AE004656FC /* Update.swift in Sources */,
 				BEDE90B1201605AE004656FC /* ProjectedQuery.swift in Sources */,
 				BEDE909A201605AE004656FC /* ReactiveSwift.swift in Sources */,
@@ -765,6 +776,7 @@
 				BEDE908A2016059F004656FC /* SQL.QueryTests.swift in Sources */,
 				BEDE90C920160691004656FC /* TestDB.swift in Sources */,
 				BEDE90892016059F004656FC /* SQL.ExpressionTests.swift in Sources */,
+				BEDE90CD201625A2004656FC /* TableTests.swift in Sources */,
 				BEDE90972016059F004656FC /* TestStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,7 +9,7 @@ public struct ResultSet<Key: ModelValue, Projection: PersistDB.ModelProjection> 
     public private(set) var groups: [Group<Key, Projection>]
 
     /// All the values from all the groups in the set.
-    fileprivate var values: [Projection]
+    public private(set) var values: [Projection]
 
     /// Create an empty result set.
     public init() {
