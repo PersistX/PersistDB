@@ -228,3 +228,19 @@ extension Predicate {
         return Predicate(!predicate.expression)
     }
 }
+
+extension Collection where Iterator.Element: ModelValue {
+    /// A predicate that tests whether the list contains the value of the given expression.
+    public func contains<Model>(
+        _ expression: Expression<Model, Iterator.Element>
+    ) -> Predicate<Model> {
+        return Predicate(.inList(expression.expression, map(AnyExpression.init)))
+    }
+
+    /// A predicate that tests whether the list contains the value of the given keypath.
+    public func contains<Model: PersistDB.Model>(
+        _ keyPath: KeyPath<Model, Iterator.Element>
+    ) -> Predicate<Model> {
+        return Predicate(.inList(AnyExpression(keyPath), map(AnyExpression.init)))
+    }
+}
