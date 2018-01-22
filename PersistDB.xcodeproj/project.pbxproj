@@ -359,7 +359,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0900;
-				ORGANIZATIONNAME = "Matt Diephouse";
+				ORGANIZATIONNAME = PersistX;
 				TargetAttributes = {
 					BE89D5F51EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
