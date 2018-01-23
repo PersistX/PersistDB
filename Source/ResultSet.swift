@@ -103,7 +103,6 @@ private func diff<K, P>(
             }
         }
     diff.deltas.formUnion(groupDeltas)
-    dump(groupDeltas)
 
     // 2. Diff the values by themselves.
     var oldGroups = old.groups
@@ -122,7 +121,6 @@ private func diff<K, P>(
         return .updateValue(old.0, old.1, new.0, new.1)
     }
     diff.deltas.formUnion(moveDeltas)
-    dump(moveDeltas)
 
     // 3. Find all inserted, deleted, and changed values by ID
     let addedIDs = Set(valueElements.flatMap { element -> P.Model.ID? in
