@@ -1,4 +1,4 @@
-import PersistDB
+@testable import PersistDB
 import ReactiveSwift
 import Result
 import Schemata
@@ -19,12 +19,6 @@ extension Insert where Model == Author {
     }
 }
 
-extension SignalProducer {
-    var firstValue: Value? {
-        return first()?.value
-    }
-}
-
 class StoreTests: XCTestCase {
     var store: Store?
 
@@ -39,31 +33,35 @@ class StoreTests: XCTestCase {
     }
 
     fileprivate func insert(_ data: Author.Data...) {
-        for d in data {
-            store?.insert(Insert(d))
-        }
+        _ = SignalProducer(data)
+            .map(Insert.init)
+            .flatMap(.merge, store!.insert)
+            .await()
     }
 
     fileprivate func insert(_ widgets: Insert<Widget>...) {
-        for w in widgets {
-            store?.insert(w)
-        }
+        _ = SignalProducer(widgets)
+            .flatMap(.merge, store!.insert)
+            .await()
     }
 
     fileprivate func delete(_ ids: Author.ID...) {
-        for id in ids {
-            store?.delete(Delete(\Author.id == id))
-        }
+        _ = SignalProducer(ids)
+            .map { Delete(\Author.id == $0) }
+            .flatMap(.merge, store!.delete)
+            .await()
     }
 
     fileprivate func update(_ id: Author.ID, _ valueSet: ValueSet<Author>) {
-        store?.update(Update(predicate: \Author.id == id, valueSet: valueSet))
+        let update = Update(predicate: \Author.id == id, valueSet: valueSet)
+        _ = store!.update(update).await()
     }
 
     fileprivate func fetch(_ query: Query<Author> = Author.all) -> ResultSet<None, AuthorInfo>! {
         return store!
             .fetch(query)
-            .firstValue
+            .awaitFirst()?
+            .value
     }
 
     fileprivate func fetchGrouped(
@@ -71,11 +69,12 @@ class StoreTests: XCTestCase {
     ) -> ResultSet<Int, AuthorInfo> {
         return store!
             .fetch(query, groupedBy: \Author.born)
-            .firstValue!
+            .awaitFirst()!
+            .value!
     }
 
     fileprivate func fetchWidgets(_ query: Query<Widget> = Widget.all) -> ResultSet<None, Widget> {
-        return store!.fetch(query).firstValue!
+        return store!.fetch(query).awaitFirst()!.value!
     }
 }
 
@@ -98,7 +97,7 @@ class StoreFetchTests: StoreTests {
 
         insert(.jrrTolkien)
 
-        XCTAssertEqual(producer.firstValue, ResultSet([AuthorInfo(.jrrTolkien)]))
+        XCTAssertEqual(producer.awaitFirst()?.value, ResultSet([AuthorInfo(.jrrTolkien)]))
     }
 
     func testEmptyReturnsEmptyResultSet() {
@@ -229,7 +228,7 @@ class StoreInsertTests: StoreTests {
 
         let id = store!
             .insert(widget)
-            .first()!
+            .awaitFirst()!
             .value!
 
         XCTAssertEqual(id, 2)
@@ -291,20 +290,18 @@ class StoreObserveTests: StoreTests {
 
         block()
 
-        _ = observation
-            .timeout(after: 0.01, raising: NSError(), on: QueueScheduler())
-            .wait()
+        _ = observation.await()
     }
 
     func testSendsInitialResultsWhenEmpty() {
         insert(.jrrTolkien)
-        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query))
+        XCTAssertEqual(store!.observe(query).awaitFirst()!.value!, fetch(query))
     }
 
     func testSendsInitialResultsWhenNotEmpty() {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
-        XCTAssertEqual(store!.observe(query).firstValue!, fetch(query))
+        XCTAssertEqual(store!.observe(query).awaitFirst()!.value!, fetch(query))
     }
 
     func testSendsAfterMatchingInsert() {
@@ -423,11 +420,11 @@ class StoreOpenTests: StoreTests {
             .appendingPathComponent("store.sqlite3")
     }
 
-    private func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store? {
+    private func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store {
         return Store
             .open(at: url, for: types)
-            .first()?
-            .value
+            .awaitFirst()!
+            .value!
     }
 
     func testCreatedAtCorrectURL() {
@@ -447,7 +444,7 @@ class StoreOpenTests: StoreTests {
 
         XCTAssertFalse(fileManager.fileExists(atPath: url.path))
 
-        _ = producer.wait()
+        _ = producer.await()
 
         XCTAssertTrue(fileManager.fileExists(atPath: url.path))
     }
@@ -466,7 +463,7 @@ class StoreOpenTests: StoreTests {
 
         let result = Store
             .open(at: url, for: [author])
-            .first()
+            .awaitFirst()
 
         if case .incompatibleSchema? = result?.error {
 

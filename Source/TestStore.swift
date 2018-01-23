@@ -75,9 +75,10 @@ public final class TestStore {
         _ a: [A.ID: ValueSet<A>]
     ) {
         self.init(for: [A.self])
-        for (id, valueSet) in a {
-            store.insert(Insert(id, valueSet))
-        }
+        _ = SignalProducer(a)
+            .map(Insert.init)
+            .flatMap(.merge, store.insert)
+            .await()
     }
 
     /// Synchronously fetch the results of the query.
@@ -87,7 +88,7 @@ public final class TestStore {
         return store
             .fetch(query)
             .map { $0.map { (id: ID<Model>) in id.id } }
-            .first()!
+            .awaitFirst()!
             .value!
     }
 
@@ -98,7 +99,7 @@ public final class TestStore {
         return store
             .fetch(query)
             .map { $0.map { $0 } }
-            .first()!
+            .awaitFirst()!
             .value!
     }
 
@@ -106,13 +107,14 @@ public final class TestStore {
     public func insert<Projection: ModelProjection>(
         _ insert: Insert<Projection.Model>
     ) -> Projection {
-        return store.insert(insert)
+        return store
+            .insert(insert)
+            .awaitFirst()!
             .map { id -> Projection in
                 let query = Projection.Model.all
                     .filter(Projection.Model.idKeyPath == id)
                 return self.fetch(query)[0]
             }
-            .first()!
             .value!
     }
 }

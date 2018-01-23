@@ -14,8 +14,16 @@ public enum OpenError: Error {
 /// A store of model objects, either in memory or on disk, that can be modified, queried, and
 /// observed.
 public final class Store {
+    /// Create a new scheduler to use for database access.
+    fileprivate static func makeScheduler() -> QueueScheduler {
+        return QueueScheduler(qos: .userInitiated, name: "org.persistx.PersistDB")
+    }
+
     /// The underlying SQL database.
     fileprivate let db: Database
+
+    /// The scheduler used when accessing the database.
+    fileprivate let scheduler: QueueScheduler
 
     /// A pipe of the actions and effects that are mutating the store.
     ///
@@ -28,13 +36,19 @@ public final class Store {
     /// - parameters:
     ///   - db: An opened SQL database that backs the store.
     ///   - schemas: The schemas of the models in the store.
+    ///   - scheduler: The scheduler to use when accessing the database.
     ///
     /// - throws: An `OpenError` if the store cannot be created from the given database.
     ///
     /// As part of initialization, the store will verify the schema of and create tables in the
     /// database.
-    private init(_ db: Database, for schemas: [AnySchema]) throws {
+    private init(
+        _ db: Database,
+        for schemas: [AnySchema],
+        scheduler: QueueScheduler = Store.makeScheduler()
+    ) throws {
         self.db = db
+        self.scheduler = scheduler
 
         let existing = Dictionary(
             uniqueKeysWithValues: db
@@ -54,9 +68,12 @@ public final class Store {
 
         let pipe = Signal<(UUID, SQL.Action), NoError>.pipe()
         actions = pipe.input
-        effects = pipe.output.map { uuid, action in
-            return (uuid, db.perform(action))
-        }
+        effects = pipe.output
+            .observe(on: scheduler)
+            .map { uuid, action in
+                return (uuid, db.perform(action))
+            }
+            .observe(on: UIScheduler())
     }
 
     /// Create an in-memory store for the given schemas.
@@ -85,18 +102,21 @@ public final class Store {
         at url: URL,
         for schemas: [AnySchema]
     ) -> SignalProducer<Store, OpenError> {
-        return SignalProducer<Store, OpenError> { observer, _ in
-            do {
-                let db = try Database(at: url)
-                let store = try Store(db, for: schemas)
-                observer.send(value: store)
-                observer.sendCompleted()
-            } catch let error as OpenError {
-                observer.send(error: error)
-            } catch let error {
-                observer.send(error: OpenError.unknown(AnyError(error)))
+        let scheduler = Store.makeScheduler()
+        return SignalProducer(value: url)
+            .observe(on: scheduler)
+            .attemptMap { url in
+                do {
+                    let db = try Database(at: url)
+                    let store = try Store(db, for: schemas, scheduler: scheduler)
+                    return .success(store)
+                } catch let error as OpenError {
+                    return .failure(error)
+                } catch let error {
+                    return .failure(.unknown(AnyError(error)))
+                }
             }
-        }
+            .observe(on: UIScheduler())
     }
 
     /// Open an on-disk store.
@@ -175,23 +195,34 @@ public final class Store {
 }
 
 extension Store {
+    /// Perform an action.
+    ///
+    /// - parameter:
+    ///   - action: The SQL action to perform.
+    /// - returns: A signal producer that sends the effect of the action and then completes.
+    private func perform(_ action: SQL.Action) -> SignalProducer<SQL.Effect, NoError> {
+        let uuid = UUID()
+        defer { actions.send(value: (uuid, action)) }
+
+        let effect = SignalProducer<(UUID, SQL.Effect), NoError>(effects)
+            .filter { $0.0 == uuid }
+            .map { $0.1 }
+            .take(first: 1)
+            .replayLazily(upTo: 1)
+        effect.start()
+        return effect
+    }
+
     /// Insert a model entity into the store.
     ///
     /// - important: This is done asynchronously.
     ///
     /// - parameters:
     ///   - insert: The entity to insert
-    /// - returns: A signal that sends the ID of the inserted row.
+    /// - returns: A signal producer that sends the ID after the model has been inserted.
     @discardableResult
     public func insert<Model>(_ insert: Insert<Model>) -> SignalProducer<Model.ID, NoError> {
-        let uuid = UUID()
-        let sql = insert.makeSQL()
-        defer { actions.send(value: (uuid, .insert(sql))) }
-
-        let effects = SignalProducer<(UUID, SQL.Effect), NoError>(self.effects)
-            .filter { $0.0 == uuid }
-            .map { $0.1 }
-            .take(first: 1)
+        return perform(.insert(insert.makeSQL()))
             .map { effect -> Model.ID in
                 guard case let .inserted(_, id) = effect else { fatalError("Mistaken effect") }
                 let anyValue = Model.ID.anyValue
@@ -199,24 +230,22 @@ extension Store {
                 let decoded = anyValue.decode(primitive).value!
                 return decoded as! Model.ID // swiftlint:disable:this force_cast
             }
-            .replayLazily(upTo: 1)
-        // Start right away. Otherwise `self.effects` will send the value before subscription.
-        effects.start()
-        return effects
     }
 
     /// Delete a model entity from the store.
     ///
     /// - important: This is done asynchronously.
-    public func delete<Model>(_ delete: Delete<Model>) {
-        actions.send(value: (UUID(), .delete(delete.makeSQL())))
+    @discardableResult
+    public func delete<Model>(_ delete: Delete<Model>) -> SignalProducer<Never, NoError> {
+        return perform(.delete(delete.makeSQL())).then(.empty)
     }
 
     /// Update properties for a model entity in the store.
     ///
     /// - important: This is done asynchronously.
-    public func update<Model>(_ update: Update<Model>) {
-        actions.send(value: (UUID(), .update(update.makeSQL())))
+    @discardableResult
+    public func update<Model>(_ update: Update<Model>) -> SignalProducer<Never, NoError> {
+        return perform(.update(update.makeSQL())).then(.empty)
     }
 }
 
@@ -234,14 +263,16 @@ extension Store {
     private func fetch<Projection>(
         _ projected: ProjectedQuery<Projection>
     ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
-        return SignalProducer { [db = self.db] observer, _ in
-            let values = db
-                .query(projected.sql)
-                .map(projected.values(for:))
-                .flatMap(Projection.projection.makeValue)
-            observer.send(value: ResultSet(values))
-            observer.sendCompleted()
-        }
+        return SignalProducer(value: db)
+            .observe(on: scheduler)
+            .map { db in
+                let values = db
+                    .query(projected.sql)
+                    .map(projected.values(for:))
+                    .flatMap(Projection.projection.makeValue)
+                return ResultSet(values)
+            }
+            .observe(on: UIScheduler())
     }
 
     /// Fetch projections from the store with a query.
@@ -281,10 +312,13 @@ extension Store {
         let sql = projected.sql
             .select(SQL.Result(groupedBy, alias: "groupBy"))
             .sorted(by: SQL.Ordering(groupedBy, ascending ? .ascending : .descending))
-        return SignalProducer(value: sql)
-            .flatMap(.concat) { [db = self.db] sql in
-                SignalProducer(db.query(sql))
+        return SignalProducer(value: db)
+            .observe(on: scheduler)
+            .map { db in
+                db.query(sql)
             }
+            .observe(on: UIScheduler())
+            .flatten()
             .filterMap { row -> (Value, Projection)? in
                 let groupBy = Value.decode(row.dictionary["groupBy"]!)!
                     as! Value // swiftlint:disable:this force_cast
