@@ -71,7 +71,11 @@ extension Table {
         fatalError("Row \(row) out of bounds")
     }
 
-    internal func row(for indexPath: IndexPath) -> Int {
+    internal func row(for indexPath: IndexPath) -> Int? {
+        if Key.self == None.self && indexPath == IndexPath(index: 0) {
+            return nil
+        }
+
         let group = indexPath[0]
 
         var row = 0
@@ -206,13 +210,13 @@ extension Table {
     /// An index into a result set, which includes both a flat row and a nested index path.
     public struct Index {
         /// The row of the index if treated as a flat result set.
-        public let row: Int
+        public let row: Int?
 
         /// The index path of the index if treated as a nested result set.
         public let indexPath: IndexPath
 
         /// Create a new index.
-        public init(row: Int, indexPath: IndexPath) {
+        public init(row: Int?, indexPath: IndexPath) {
             self.row = row
             self.indexPath = indexPath
         }
@@ -255,16 +259,11 @@ extension Table {
 
     /// Calculate the difference from `Table` to `self`.
     public func diff(from table: Table) -> Diff {
-
         let deltas = resultSet
             .diff(from: table.resultSet)
             .deltas
             .flatMap { delta -> Diff.Delta? in
                 switch delta {
-                case .deleteGroup where Key.self == None.self,
-                     .insertGroup where Key.self == None.self,
-                     .moveGroup where Key.self == None.self:
-                    return nil
                 case let .deleteGroup(group):
                     return .delete(table.index(group: group))
                 case let .insertGroup(group):
@@ -288,7 +287,7 @@ extension Table {
 
 extension Table.Index: Hashable {
     public var hashValue: Int {
-        return row
+        return row ?? 0
     }
 
     public static func == (lhs: Table.Index, rhs: Table.Index) -> Bool {

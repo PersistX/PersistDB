@@ -558,6 +558,7 @@ class TableDiffUngroupedTests: XCTestCase {
     func testToEmpty() {
         let actual = Table().diff(from: ungrouped)
         let expected = Table<None, AuthorInfo>.Diff([
+            .delete(.init(row: nil, indexPath: IndexPath(index: 0))),
             .delete(.init(row: 0, indexPath: [0, 0])),
             .delete(.init(row: 1, indexPath: [0, 1])),
             .delete(.init(row: 2, indexPath: [0, 2])),
@@ -569,6 +570,7 @@ class TableDiffUngroupedTests: XCTestCase {
     func testFromEmpty() {
         let actual = ungrouped.diff(from: Table())
         let expected = Table<None, AuthorInfo>.Diff([
+            .insert(.init(row: nil, indexPath: IndexPath(index: 0))),
             .insert(.init(row: 0, indexPath: [0, 0])),
             .insert(.init(row: 1, indexPath: [0, 1])),
             .insert(.init(row: 2, indexPath: [0, 2])),
