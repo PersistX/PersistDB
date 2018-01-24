@@ -67,7 +67,6 @@ extension Book: PersistDB.Model {
     )
 
     static let defaultOrder = [
-        Ordering(\Book.author.name),
         Ordering(\Book.title),
     ]
 }

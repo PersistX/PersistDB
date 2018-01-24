@@ -103,6 +103,15 @@ class StoreFetchTests: StoreTests {
     func testEmptyReturnsEmptyResultSet() {
         XCTAssertTrue(fetch().isEmpty)
     }
+
+    func testDefaultSortOrder() {
+        insert(.isaacAsimov, .jrrTolkien, .liuCixin, .orsonScottCard, .rayBradbury)
+
+        XCTAssertEqual(
+            fetch().map { $0.id },
+            [ .isaacAsimov, .jrrTolkien, .liuCixin, .orsonScottCard, .rayBradbury ]
+        )
+    }
 }
 
 class StoreFetchGroupedByTests: StoreTests {
