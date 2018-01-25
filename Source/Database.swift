@@ -2,9 +2,9 @@ import SQLite3
 
 /// A row from a SQL database.
 internal struct Row {
-    internal var dictionary: [String: Value]
+    internal var dictionary: [String: SQL.Value]
 
-    init(_ dictionary: [String: Value]) {
+    init(_ dictionary: [String: SQL.Value]) {
         self.dictionary = dictionary
     }
 }
