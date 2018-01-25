@@ -672,3 +672,89 @@ class TableDiffUngroupedTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 }
+
+class TableDiffInsertedSectionsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .insert(.init(row: 0, indexPath: IndexPath(index: 0))),
+            .insert(.init(row: 2, indexPath: [1, 0])),
+        ])
+        XCTAssertEqual(diff.insertedSections.map { $0 }, [0])
+    }
+}
+
+class TableDiffDeletedSectionsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .delete(.init(row: 0, indexPath: IndexPath(index: 0))),
+            .delete(.init(row: 2, indexPath: [1, 0])),
+        ])
+        XCTAssertEqual(diff.deletedSections.map { $0 }, [0])
+    }
+}
+
+class TableDiffMovedSectionsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .move(
+                .init(row: 2, indexPath: IndexPath(index: 1)),
+                .init(row: 4, indexPath: IndexPath(index: 2))
+            ),
+            .move(
+                .init(row: 4, indexPath: [1, 1]),
+                .init(row: 5, indexPath: [2, 0])
+            ),
+        ])
+        let moved = diff.movedSections
+        XCTAssertEqual(moved.count, 1)
+        XCTAssertTrue(moved[0] == (1, 2))
+    }
+}
+
+class TableDiffInsertedRowsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .insert(.init(row: 0, indexPath: IndexPath(index: 0))),
+            .insert(.init(row: 2, indexPath: [1, 0])),
+        ])
+        XCTAssertEqual(diff.insertedRows, [[1, 0]])
+    }
+}
+
+class TableDiffDeletedRowsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .delete(.init(row: 0, indexPath: IndexPath(index: 0))),
+            .delete(.init(row: 2, indexPath: [1, 0])),
+        ])
+        XCTAssertEqual(diff.deletedRows, [[1, 0]])
+    }
+}
+
+class TableDiffUpdatedRowsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .update(.init(row: 0, indexPath: IndexPath(index: 0))),
+            .update(.init(row: 2, indexPath: [1, 0])),
+        ])
+        XCTAssertEqual(diff.updatedRows, [[1, 0]])
+    }
+}
+
+class TableDiffMovedRowsTests: XCTestCase {
+    func test() {
+        let diff = Table<Int, AuthorInfo>.Diff([
+            .move(
+                .init(row: 2, indexPath: IndexPath(index: 1)),
+                .init(row: 4, indexPath: IndexPath(index: 2))
+            ),
+            .move(
+                .init(row: 4, indexPath: [1, 1]),
+                .init(row: 5, indexPath: [2, 0])
+            ),
+        ])
+        let moved = diff.movedRows
+        XCTAssertEqual(moved.count, 1)
+        XCTAssertTrue(moved[0] == ([1, 1], [2, 0]))
+    }
+}
