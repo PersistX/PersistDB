@@ -1,6 +1,8 @@
 # PersistDB ✊️🗄
 Projection-based Database Persistence in Swift
 
+_PersistDB is alpha-quality software. It currently has a number of limitations._
+
 1. [Core Values](#core-values)
 2. [Overview](#overview)
     1. [Define `Model`s](#1-define-models)
@@ -29,6 +31,13 @@ PersistDB _defines_ schemas like a traditional ORM. But data is fetched as a _pr
 
 Every operation—inserting, deleting, or changing data—can be represented by a _value_. This makes it possible to write code without side effects, making
 testing easy.
+
+Please see the [Examples][] directory to see what this looks like in practice. In particular, look at [models][], [tests][], and [view controllers][].
+
+[Examples]: https://github.com/PersistX/PersistDB/tree/master/Examples/
+[models]: https://github.com/PersistX/PersistDB/blob/master/Examples/Todo/Source/Task.swift
+[tests]: https://github.com/PersistX/PersistDB/blob/master/Examples/Todo/Tests/TaskTests.swift
+[view controllers]: https://github.com/PersistX/PersistDB/blob/master/Examples/Todo/Source/TaskListViewController.swift
 
 ### 1. Define `Model`s
 Schemas are defined using Swift types. These types are typically never instantiated, but are used to filter, sort, and query the database. They are often defined as `final class`s so that Swift can construct memory layouts for one-to-one relationships.
