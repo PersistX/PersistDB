@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+my ($WORKSPACE, $SCHEME, $ACTION) = @ARGV;
+
+my $buildSettings = qx{xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -showBuildSettings};
+
+my @args = ("-workspace", $WORKSPACE, "-scheme", $SCHEME, "-configuration", "Release", split(/\s+/, $ACTION), "CODE_SIGNING_REQUIRED=NO", "CODE_SIGN_IDENTITY=", "ENABLE_TESTABILITY=YES");
+
+if ($buildSettings =~ /\bPLATFORM_NAME = iphoneos/i) {
+  unshift @args, "-destination", "name=iPhone 6s";
+  unshift @args, "-sdk", "iphonesimulator";
+}
+
+print "xcodebuild @args\n";
+exec("xcodebuild", @args);
