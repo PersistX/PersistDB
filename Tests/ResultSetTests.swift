@@ -153,7 +153,7 @@ class ResultSetDiffTests: XCTestCase {
         let actual = after.diff(from: grouped)
         let expected = ResultSet<Int, AuthorInfo>.Diff([
             .moveGroup(1, 2),
-            .updateValue(1, 1, 2, 0),
+            .moveValue(1, 1, 2, 0),
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -168,8 +168,8 @@ class ResultSetDiffTests: XCTestCase {
         let expected = ResultSet<Int, AuthorInfo>.Diff([
             .deleteGroup(1),
             .insertGroup(1),
-            .updateValue(1, 0, 1, 0),
-            .updateValue(1, 1, 1, 1),
+            .moveValue(1, 0, 1, 0),
+            .moveValue(1, 1, 1, 1),
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -210,7 +210,40 @@ class ResultSetDiffTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = ResultSet<Int, AuthorInfo>.Diff([
-            .updateValue(1, 0, 1, 0),
+            .updateValue(1, 0),
+        ])
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testUpdateAndMoveBeforeValue() {
+        let bradbury = AuthorInfo(.rayBradbury, name: "Ray")
+
+        let after = ResultSet<Int, AuthorInfo>([
+            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: 1920, values: [bradbury, AuthorInfo(.isaacAsimov)]),
+            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        let actual = after.diff(from: grouped)
+        // Ideally the updated value would be the one that moved. But that's not supported yet.
+        let expected = ResultSet<Int, AuthorInfo>.Diff([
+            .moveValue(1, 0, 1, 1),
+            .updateValue(1, 0),
+        ])
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testUpdateAndMoveAfterValue() {
+        let asimov = AuthorInfo(.isaacAsimov, name: Author.Data.isaacAsimov.givenName)
+
+        let after = ResultSet<Int, AuthorInfo>([
+            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: 1920, values: [AuthorInfo(.rayBradbury), asimov]),
+            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        let actual = after.diff(from: grouped)
+        let expected = ResultSet<Int, AuthorInfo>.Diff([
+            .moveValue(1, 0, 1, 1),
+            .updateValue(1, 1),
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -237,7 +270,7 @@ class ResultSetDiffTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = ResultSet<Int, AuthorInfo>.Diff([
-            .updateValue(1, 0, 1, 1),
+            .moveValue(1, 0, 1, 1),
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -250,7 +283,7 @@ class ResultSetDiffTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = ResultSet<Int, AuthorInfo>.Diff([
-            .updateValue(1, 1, 2, 0),
+            .moveValue(1, 1, 2, 0),
         ])
         XCTAssertEqual(actual, expected)
     }

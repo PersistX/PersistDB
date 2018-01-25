@@ -385,7 +385,7 @@ class TableDiffGroupedTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = Table<Int, AuthorInfo>.Diff([
-            .update(
+            .move(
                 .init(row: 2, indexPath: IndexPath(index: 1)),
                 .init(row: 4, indexPath: IndexPath(index: 2))
             ),
@@ -401,11 +401,11 @@ class TableDiffGroupedTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = Table<Int, AuthorInfo>.Diff([
-            .update(
+            .move(
                 .init(row: 2, indexPath: IndexPath(index: 1)),
                 .init(row: 4, indexPath: IndexPath(index: 2))
             ),
-            .update(
+            .move(
                 .init(row: 4, indexPath: [1, 1]),
                 .init(row: 5, indexPath: [2, 0])
             ),
@@ -423,11 +423,11 @@ class TableDiffGroupedTests: XCTestCase {
         let expected = Table<Int, AuthorInfo>.Diff([
             .delete(.init(row: 2, indexPath: IndexPath(index: 1))),
             .insert(.init(row: 2, indexPath: IndexPath(index: 1))),
-            .update(
+            .move(
                 .init(row: 3, indexPath: [1, 0]),
                 .init(row: 3, indexPath: [1, 0])
             ),
-            .update(
+            .move(
                 .init(row: 4, indexPath: [1, 1]),
                 .init(row: 4, indexPath: [1, 1])
             ),
@@ -471,10 +471,7 @@ class TableDiffGroupedTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = Table<Int, AuthorInfo>.Diff([
-            .update(
-                .init(row: 3, indexPath: [1, 0]),
-                .init(row: 3, indexPath: [1, 0])
-            ),
+            .update(.init(row: 3, indexPath: [1, 0])),
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -501,7 +498,7 @@ class TableDiffGroupedTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = Table<Int, AuthorInfo>.Diff([
-            .update(
+            .move(
                 .init(row: 3, indexPath: [1, 0]),
                 .init(row: 4, indexPath: [1, 1])
             ),
@@ -517,7 +514,7 @@ class TableDiffGroupedTests: XCTestCase {
         ])
         let actual = after.diff(from: grouped)
         let expected = Table<Int, AuthorInfo>.Diff([
-            .update(
+            .move(
                 .init(row: 4, indexPath: [1, 1]),
                 .init(row: 5, indexPath: [2, 0])
             ),
@@ -617,7 +614,7 @@ class TableDiffUngroupedTests: XCTestCase {
 
         let actual = new.diff(from: ungrouped)
         let expected = Table<None, AuthorInfo>.Diff([
-            .update(
+            .move(
                 .init(row: 2, indexPath: [0, 2]),
                 .init(row: 0, indexPath: [0, 0])
             ),
@@ -638,10 +635,7 @@ class TableDiffUngroupedTests: XCTestCase {
 
         let actual = new.diff(from: ungrouped)
         let expected = Table<None, AuthorInfo>.Diff([
-            .update(
-                .init(row: 0, indexPath: [0, 0]),
-                .init(row: 0, indexPath: [0, 0])
-            ),
+            .update(.init(row: 0, indexPath: [0, 0])),
         ])
         XCTAssertEqual(actual, expected)
     }

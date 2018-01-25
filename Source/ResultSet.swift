@@ -104,64 +104,49 @@ private func diff<K, P>(
         }
     diff.deltas.formUnion(groupDeltas)
 
-    // 2. Diff the values by themselves.
+    // 2. Diff the IDs to find inserts, deletes, and moves
     var oldGroups = old.groups
     for case let .move(from, to) in groupsDiff.patch(from: old.keys, to: new.keys) {
         let group = oldGroups.remove(at: from)
         oldGroups.insert(group, at: to)
     }
-    let oldValues = oldGroups.flatMap { $0.values }
-    let newValues = new.values
-    let valueElements = oldValues.extendedDiff(newValues).elements
-    let moveDeltas = valueElements.flatMap { element -> ResultSet<K, P>.Diff.Delta? in
-        guard case let .move(from, _) = element else { return nil }
-        let id = old[from].id
-        let old = oldIndicesByID[id]!
-        let new = newIndicesByID[id]!
-        return .updateValue(old.0, old.1, new.0, new.1)
-    }
-    diff.deltas.formUnion(moveDeltas)
-
-    // 3. Find all inserted, deleted, and changed values by ID
-    let addedIDs = Set(valueElements.flatMap { element -> P.Model.ID? in
-        guard case let .insert(index) = element else { return nil }
-        return new[index].id
-    })
-    let removedIDs = Set(valueElements.flatMap { element -> P.Model.ID? in
-        guard case let .delete(index) = element else { return nil }
-        return old[index].id
-    })
-    let updatedIDs = addedIDs.intersection(removedIDs)
-    let insertedIDs = addedIDs.subtracting(updatedIDs)
-    let deletedIDs = removedIDs.subtracting(updatedIDs)
-    let inserted = insertedIDs
-        .map { newIndicesByID[$0]! }
-        .map(ResultSet<K, P>.Diff.Delta.insertValue)
-    let deleted = deletedIDs
-        .map { oldIndicesByID[$0]! }
-        .map(ResultSet<K, P>.Diff.Delta.deleteValue)
-    let updated = updatedIDs.map { id -> ResultSet<K, P>.Diff.Delta in
-        let old = oldIndicesByID[id]!
-        let new = newIndicesByID[id]!
-        return ResultSet<K, P>.Diff.Delta.updateValue(old.0, old.1, new.0, new.1)
-    }
-    diff.deltas.formUnion(inserted)
-    diff.deltas.formUnion(deleted)
-    diff.deltas.formUnion(updated)
-
-    // 4. Check the group boundaries to find additional moves
-    let shifted = Set(new.map { $0.id })
-        .subtracting(insertedIDs)
-        .subtracting(updatedIDs)
-        .flatMap { id -> ResultSet<K, P>.Diff.Delta? in
-            let oldIndex = oldIndicesByID[id]!
-            let newIndex = newIndicesByID[id]!
-            let oldKey = old.groups[oldIndex.0].key
-            let newKey = new.groups[newIndex.0].key
-            if oldKey == newKey { return nil }
-            return .updateValue(oldIndex.0, oldIndex.1, newIndex.0, newIndex.1)
+    let oldIDs = oldGroups.flatMap { $0.values }.map { $0.id }
+    let newIDs = new.values.map { $0.id }
+    let valueElements = oldIDs.extendedDiff(newIDs).elements
+    let valueDeltas = valueElements.flatMap { element -> ResultSet<K, P>.Diff.Delta? in
+        switch element {
+        case let .insert(index):
+            let id = new[index].id
+            let new = newIndicesByID[id]!
+            return .insertValue(new.0, new.1)
+        case let .delete(index):
+            let id = old[index].id
+            let old = oldIndicesByID[id]!
+            return .deleteValue(old.0, old.1)
+        case let .move(from, _):
+            let id = old[from].id
+            let old = oldIndicesByID[id]!
+            let new = newIndicesByID[id]!
+            return .moveValue(old.0, old.1, new.0, new.1)
         }
-    diff.deltas.formUnion(shifted)
+    }
+    diff.deltas.formUnion(valueDeltas)
+
+    // 3. Find updated values and values that shifted group boundaries
+    let updated = new
+        .flatMap { newValue -> ResultSet<K, P>.Diff.Delta? in
+            guard let oldIndex = oldIndicesByID[newValue.id] else { return nil }
+            let newIndex = newIndicesByID[newValue.id]!
+            let oldValue = old.groups[oldIndex.0].values[oldIndex.1]
+            if oldValue != newValue {
+                return .updateValue(newIndex.0, newIndex.1)
+            }
+            if old.groups[oldIndex.0].key != new.groups[newIndex.0].key {
+                return .moveValue(oldIndex.0, oldIndex.1, newIndex.0, newIndex.1)
+            }
+            return nil
+        }
+    diff.deltas.formUnion(updated)
 
     return diff
 }
@@ -184,9 +169,12 @@ extension ResultSet {
             case deleteValue(Int, Int)
             /// The value at the given group and value indices in the new set was inserted.
             case insertValue(Int, Int)
-            /// The values was moved from the given group and value indices in the old set to the
+            /// The value was moved from the given group and value indices in the old set to the
             /// given group and value indices in the new set.
-            case updateValue(Int, Int, Int, Int)
+            case moveValue(Int, Int, Int, Int)
+            /// The values at the given group and value indices in the new set was updated, but
+            /// not moved.
+            case updateValue(Int, Int)
         }
 
         /// The changes that make up the diff.
@@ -218,9 +206,10 @@ extension ResultSet.Diff.Delta: Hashable {
         case let .moveGroup(g1, g2):
             return g1 ^ g2
         case let .deleteValue(g, v),
-             let .insertValue(g, v):
+             let .insertValue(g, v),
+             let .updateValue(g, v):
             return g ^ v
-        case let .updateValue(g1, v1, g2, v2):
+        case let .moveValue(g1, v1, g2, v2):
             return g1 ^ v1 ^ g2 ^ v2
         }
     }
@@ -233,9 +222,10 @@ extension ResultSet.Diff.Delta: Hashable {
         case let (.moveGroup(lhs), .moveGroup(rhs)):
             return lhs == rhs
         case let (.deleteValue(lhs), .deleteValue(rhs)),
-             let (.insertValue(lhs), .insertValue(rhs)):
+             let (.insertValue(lhs), .insertValue(rhs)),
+             let (.updateValue(lhs), .updateValue(rhs)):
             return lhs == rhs
-        case let (.updateValue(lhs), .updateValue(rhs)):
+        case let (.moveValue(lhs), .moveValue(rhs)):
             return lhs == rhs
         default:
             return false

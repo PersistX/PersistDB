@@ -235,7 +235,10 @@ extension Table {
             case insert(Table.Index)
 
             /// The item was moved and/or altered. The before and after indexes are both given.
-            case update(Table.Index, Table.Index)
+            case move(Table.Index, Table.Index)
+
+            /// The item at the given index was changed, but not moved.
+            case update(Table.Index)
         }
 
         /// The deltas that make up the diff.
@@ -269,13 +272,15 @@ extension Table {
                 case let .insertGroup(group):
                     return .insert(index(group: group))
                 case let .moveGroup(old, new):
-                    return .update(table.index(group: old), index(group: new))
+                    return .move(table.index(group: old), index(group: new))
                 case let .deleteValue(group, value):
                     return .delete(table.index(group: group, value: value))
                 case let .insertValue(group, value):
                     return .insert(index(group: group, value: value))
-                case let .updateValue(oldGroup, oldValue, newGroup, newValue):
-                    return .update(
+                case let .updateValue(group, value):
+                    return .update(index(group: group, value: value))
+                case let .moveValue(oldGroup, oldValue, newGroup, newValue):
+                    return .move(
                         table.index(group: oldGroup, value: oldValue),
                         index(group: newGroup, value: newValue)
                     )
@@ -298,9 +303,9 @@ extension Table.Index: Hashable {
 extension Table.Diff.Delta: Hashable {
     public var hashValue: Int {
         switch self {
-        case let .delete(index), let .insert(index):
+        case let .delete(index), let .insert(index), let .update(index):
             return index.hashValue
-        case let .update(a, b):
+        case let .move(a, b):
             return a.hashValue ^ b.hashValue
         }
     }
@@ -308,9 +313,10 @@ extension Table.Diff.Delta: Hashable {
     public static func == (lhs: Table.Diff.Delta, rhs: Table.Diff.Delta) -> Bool {
         switch (lhs, rhs) {
         case let (.delete(lhs), .delete(rhs)),
-             let (.insert(lhs), .insert(rhs)):
+             let (.insert(lhs), .insert(rhs)),
+             let (.update(lhs), .update(rhs)):
             return lhs == rhs
-        case let (.update(lhs), .update(rhs)):
+        case let (.move(lhs), .move(rhs)):
             return lhs == rhs
         default:
             return false
