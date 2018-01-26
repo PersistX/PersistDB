@@ -57,7 +57,14 @@ class StoreTests: XCTestCase {
         _ = store!.update(update).await()
     }
 
-    fileprivate func fetch(_ query: Query<Author> = Author.all) -> ResultSet<None, AuthorInfo>! {
+    fileprivate func fetchOne(_ id: Author.ID) -> AuthorInfo? {
+        return store!
+            .fetch(id)
+            .awaitFirst()?
+            .value!
+    }
+
+    fileprivate func fetchAll(_ query: Query<Author> = Author.all) -> ResultSet<None, AuthorInfo>! {
         return store!
             .fetch(query)
             .awaitFirst()?
@@ -82,13 +89,13 @@ class StoreFetchTests: StoreTests {
     func testSingleResult() {
         insert(.jrrTolkien)
 
-        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
+        XCTAssertEqual(fetchAll(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 
     func testNilValue() {
         insert(.orsonScottCard)
 
-        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.orsonScottCard) ]))
+        XCTAssertEqual(fetchAll(), ResultSet([ AuthorInfo(.orsonScottCard) ]))
     }
 
     func testPerformWorkOnSubscription() {
@@ -101,16 +108,28 @@ class StoreFetchTests: StoreTests {
     }
 
     func testEmptyReturnsEmptyResultSet() {
-        XCTAssertTrue(fetch().isEmpty)
+        XCTAssertTrue(fetchAll().isEmpty)
     }
 
     func testDefaultSortOrder() {
         insert(.isaacAsimov, .jrrTolkien, .liuCixin, .orsonScottCard, .rayBradbury)
 
         XCTAssertEqual(
-            fetch().map { $0.id },
+            fetchAll().map { $0.id },
             [ .isaacAsimov, .jrrTolkien, .liuCixin, .orsonScottCard, .rayBradbury ]
         )
+    }
+}
+
+class StoreFetchByIDTests: StoreTests {
+    func testDoesNotExist() {
+        XCTAssertNil(fetchOne(.jrrTolkien))
+    }
+
+    func testExists() {
+        insert(.jrrTolkien)
+
+        XCTAssertEqual(fetchOne(.jrrTolkien), AuthorInfo(.jrrTolkien))
     }
 }
 
@@ -248,11 +267,11 @@ class StoreDeleteTests: StoreTests {
     func testWithPredicate() {
         insert(.jrrTolkien)
 
-        XCTAssertEqual(fetch(), ResultSet([AuthorInfo(.jrrTolkien)]))
+        XCTAssertEqual(fetchAll(), ResultSet([AuthorInfo(.jrrTolkien)]))
 
         delete(.jrrTolkien)
 
-        let authors: ResultSet<None, AuthorInfo> = fetch()
+        let authors: ResultSet<None, AuthorInfo> = fetchAll()
         XCTAssert(authors.isEmpty)
     }
 }
@@ -263,7 +282,81 @@ class StoreUpdateTests: StoreTests {
 
         update(.jrrTolkien, [\.born == 100, \.died == 200 ])
 
-        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien, born: 100, died: 200) ]))
+        XCTAssertEqual(fetchAll(), ResultSet([ AuthorInfo(.jrrTolkien, born: 100, died: 200) ]))
+    }
+}
+
+class StoreObserveByIDTests: StoreTests {
+    private var observation: SignalProducer<AuthorInfo?, NoError>!
+    private var observed: AuthorInfo??
+
+    override func setUp() {
+        super.setUp()
+
+        observation = store!
+            .observe(Author.ID.jrrTolkien)
+            .skip(first: 1)
+            .take(first: 1)
+            .replayLazily(upTo: 1)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        observation = nil
+        observed = nil
+    }
+
+    private func observe(_ block: () -> Void) {
+        observation.startWithValues {
+            self.observed = $0
+        }
+
+        block()
+
+        _ = observation.await()
+    }
+
+    func testInitialResultsWhenEmpty() {
+        let result: AuthorInfo? = store!.observe(.jrrTolkien).awaitFirst()!.value!
+        XCTAssertNil(result)
+    }
+
+    func testInitialResultsWhenNotEmpty() {
+        insert(.jrrTolkien)
+
+        XCTAssertEqual(
+            store!.observe(.jrrTolkien).awaitFirst()!.value!,
+            AuthorInfo(.jrrTolkien)
+        )
+    }
+
+    func testSendsAfterMatchingInsert() {
+        observe {
+            insert(.jrrTolkien)
+        }
+
+        XCTAssertEqual(observed!, AuthorInfo(.jrrTolkien))
+    }
+
+    func testSendsAfterMatchingDelete() {
+        insert(.jrrTolkien)
+
+        observe {
+            delete(.jrrTolkien)
+        }
+
+        XCTAssertEqual(observed!, nil)
+    }
+
+    func testSendsAfterMatchingUpdate() {
+        insert(.jrrTolkien)
+
+        observe {
+            update(.jrrTolkien, [\.name == "J.R.R."])
+        }
+
+        XCTAssertEqual(observed!, AuthorInfo(.jrrTolkien, name: "J.R.R."))
     }
 }
 
@@ -304,13 +397,13 @@ class StoreObserveTests: StoreTests {
 
     func testSendsInitialResultsWhenEmpty() {
         insert(.jrrTolkien)
-        XCTAssertEqual(store!.observe(query).awaitFirst()!.value!, fetch(query))
+        XCTAssertEqual(store!.observe(query).awaitFirst()!.value!, fetchAll(query))
     }
 
     func testSendsInitialResultsWhenNotEmpty() {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
-        XCTAssertEqual(store!.observe(query).awaitFirst()!.value!, fetch(query))
+        XCTAssertEqual(store!.observe(query).awaitFirst()!.value!, fetchAll(query))
     }
 
     func testSendsAfterMatchingInsert() {
@@ -443,7 +536,7 @@ class StoreOpenTests: StoreTests {
     func testCreatesSchemas() {
         insert(.jrrTolkien)
 
-        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
+        XCTAssertEqual(fetchAll(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 
     func testDoesWorkOnSubscription() {
@@ -463,7 +556,7 @@ class StoreOpenTests: StoreTests {
 
         store = open(at: url)
 
-        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
+        XCTAssertEqual(fetchAll(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 
     func testIncompatibleSchema() {
@@ -487,6 +580,6 @@ class StoreOpenTests: StoreTests {
         store = open(at: url, for: [ Widget.self ])
 
         XCTAssertNotNil(store)
-        XCTAssertEqual(fetch(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
+        XCTAssertEqual(fetchAll(), ResultSet([ AuthorInfo(.jrrTolkien) ]))
     }
 }
