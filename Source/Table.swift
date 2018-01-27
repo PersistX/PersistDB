@@ -1,3 +1,4 @@
+import Foundation
 import Schemata
 
 /// A view model for a table of results.

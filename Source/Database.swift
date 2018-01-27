@@ -1,3 +1,4 @@
+import Foundation
 import SQLite3
 
 /// A row from a SQL database.

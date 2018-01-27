@@ -1,3 +1,5 @@
+import Foundation
+
 internal struct ProjectedQuery<Projection: ModelProjection> {
     let sql: SQL.Query
     let keyPaths: [String: PartialKeyPath<Projection.Model>]
