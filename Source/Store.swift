@@ -316,7 +316,7 @@ extension Store {
         let query = Projection.Model.all
             .filter(Projection.Model.idKeyPath == id)
         return fetch(query)
-            .map { resultSet in resultSet.first }
+            .map { resultSet in resultSet.values.first }
     }
 
     /// Observe a projection from the store by the model entity's id.
@@ -337,7 +337,7 @@ extension Store {
         let query = Projection.Model.all
             .filter(Projection.Model.idKeyPath == id)
         return observe(query)
-            .map { resultSet in resultSet.first }
+            .map { resultSet in resultSet.values.first }
     }
 
     /// Fetch projections from the store with a query.
