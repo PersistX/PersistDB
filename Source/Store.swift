@@ -275,6 +275,71 @@ extension Store {
             .observe(on: UIScheduler())
     }
 
+    /// Observe a projected query from the store.
+    ///
+    /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
+    /// projections will be re-fetched and re-sent.
+    ///
+    /// - parameters:
+    ///   - query: The projected query to be observed.
+    ///
+    /// - returns: A `SignalProducer` that will send sets of projections for entities that match the
+    ////           query, sending a new set whenever it's changed.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    private func observe<Projection>(
+        _ projected: ProjectedQuery<Projection>
+    ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
+        return fetch(projected)
+            .concat(.never)
+            .take(
+                until: effects
+                    .map { $0.1 }
+                    .filter(projected.sql.invalidated(by:))
+                    .map { _ in () }
+            )
+            .repeat(.max)
+    }
+
+    /// Fetch a projection from the store by the model entity's id.
+    ///
+    /// - parameters:
+    ///   - id: The ID of the entity to be projected.
+    ///
+    /// - returns: A `SignalProducer` that will fetch the projection for the entity that matches the
+    ///            query or send `nil` if no entity exists with that ID.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public func fetch<Projection: ModelProjection>(
+        _ id: Projection.Model.ID
+    ) -> SignalProducer<Projection?, NoError> {
+        let query = Projection.Model.all
+            .filter(Projection.Model.idKeyPath == id)
+        return fetch(query)
+            .map { resultSet in resultSet.values.first }
+    }
+
+    /// Observe a projection from the store by the model entity's id.
+    ///
+    /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
+    /// projections will be re-fetched and re-sent.
+    ///
+    /// - parameters:
+    ///   - query: A query matching the model entities to be projected.
+    ///
+    /// - returns: A `SignalProducer` that will send sets of projections for entities that match the
+    ////           query, sending a new set whenever it's changed.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public func observe<Projection: ModelProjection>(
+        _ id: Projection.Model.ID
+    ) -> SignalProducer<Projection?, NoError> {
+        let query = Projection.Model.all
+            .filter(Projection.Model.idKeyPath == id)
+        return observe(query)
+            .map { resultSet in resultSet.values.first }
+    }
+
     /// Fetch projections from the store with a query.
     ///
     /// - parameters:
@@ -353,14 +418,6 @@ extension Store {
         _ query: Query<Projection.Model>
     ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
         let projected = ProjectedQuery<Projection>(query)
-        return fetch(projected)
-            .concat(.never)
-            .take(
-                until: effects
-                    .map { $0.1 }
-                    .filter(projected.sql.invalidated(by:))
-                    .map { _ in () }
-            )
-            .repeat(.max)
+        return observe(projected)
     }
 }
