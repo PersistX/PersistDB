@@ -4,7 +4,7 @@ public struct Group<Key: Hashable, Value: Hashable> {
     public let key: Key
 
     /// The values in this group.
-    public let values: [Value]
+    public var values: [Value]
 
     public init(key: Key, values: [Value]) {
         self.key = key

@@ -260,18 +260,13 @@ extension Store {
     /// - returns: A `SignalProducer` that will fetch projections for entities that match the query.
     ///
     /// - important: Nothing will be done until the returned producer is started.
-    private func fetch<Projection>(
-        _ projected: ProjectedQuery<Projection>
-    ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
-        return SignalProducer(value: db)
+    private func fetch<Group, Projection>(
+        _ projected: ProjectedQuery<Group, Projection>
+    ) -> SignalProducer<ResultSet<Group, Projection>, NoError> {
+        return SignalProducer(value: projected.sql)
             .observe(on: scheduler)
-            .map { db in
-                let values = db
-                    .query(projected.sql)
-                    .map(projected.values(for:))
-                    .flatMap(Projection.projection.makeValue)
-                return ResultSet(values)
-            }
+            .map(db.query)
+            .map(projected.resultSet(for:))
             .observe(on: UIScheduler())
     }
 
@@ -287,9 +282,9 @@ extension Store {
     ////           query, sending a new set whenever it's changed.
     ///
     /// - important: Nothing will be done until the returned producer is started.
-    private func observe<Projection>(
-        _ projected: ProjectedQuery<Projection>
-    ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
+    private func observe<Group, Projection>(
+        _ projected: ProjectedQuery<Group, Projection>
+    ) -> SignalProducer<ResultSet<Group, Projection>, NoError> {
         return fetch(projected)
             .concat(.never)
             .take(
@@ -351,7 +346,7 @@ extension Store {
     public func fetch<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
-        let projected = ProjectedQuery<Projection>(query)
+        let projected = ProjectedQuery<None, Projection>(query)
         return fetch(projected)
     }
 
@@ -372,34 +367,12 @@ extension Store {
         groupedBy keyPath: KeyPath<Projection.Model, Value>,
         ascending: Bool = true
     ) -> SignalProducer<ResultSet<Value, Projection>, NoError> {
-        let groupedBy = AnyExpression(keyPath).makeSQL()
-        let projected = ProjectedQuery<Projection>(query)
-        let sql = projected.sql
-            .select(SQL.Result(groupedBy, alias: "groupBy"))
-            .sorted(by: SQL.Ordering(groupedBy, ascending ? .ascending : .descending))
-        return SignalProducer(value: db)
-            .observe(on: scheduler)
-            .map { db in
-                db.query(sql)
-            }
-            .observe(on: UIScheduler())
-            .flatten()
-            .filterMap { row -> (Value, Projection)? in
-                let groupBy = Value.decode(row.dictionary["groupBy"]!)!
-                    as! Value // swiftlint:disable:this force_cast
-                let values = projected.values(for: row)
-                return Projection
-                    .projection
-                    .makeValue(values)
-                    .map { (groupBy, $0) }
-            }
-            .collect { $0.0 }
-            .map { arg in
-                let (key, values) = arg
-                return Group(key: key, values: values.map { $0.1 })
-            }
-            .collect()
-            .map(ResultSet.init)
+        let groupedBy = SQL.Ordering(
+            AnyExpression(keyPath).makeSQL(),
+            ascending ? .ascending : .descending
+        )
+        let projected = ProjectedQuery<Value, Projection>(query, groupedBy: groupedBy)
+        return fetch(projected)
     }
 
     /// Observe projections from the store with a query.
@@ -417,7 +390,7 @@ extension Store {
     public func observe<Projection: ModelProjection>(
         _ query: Query<Projection.Model>
     ) -> SignalProducer<ResultSet<None, Projection>, NoError> {
-        let projected = ProjectedQuery<Projection>(query)
+        let projected = ProjectedQuery<None, Projection>(query)
         return observe(projected)
     }
 }
