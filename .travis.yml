@@ -11,5 +11,6 @@ matrix:
       env: XCODE_ACTION="build-for-testing test-without-building"
     - xcode_scheme: PersistDB (iOS)
       env: XCODE_ACTION="build-for-testing test-without-building"
+    - script: swift test
 notifications:
   email: false

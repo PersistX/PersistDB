@@ -1,0 +1,61 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Differ",
+        "repositoryURL": "https://github.com/tonyarnold/Differ.git",
+        "state": {
+          "branch": null,
+          "revision": "a0055483ae53e7ee8d3e670a62de6971f5c2ec72",
+          "version": "1.0.3"
+        }
+      },
+      {
+        "package": "Nimble",
+        "repositoryURL": "https://github.com/Quick/Nimble.git",
+        "state": {
+          "branch": null,
+          "revision": "22800b0954c89344bb8c87f8ab93378076716fb7",
+          "version": "7.0.3"
+        }
+      },
+      {
+        "package": "Quick",
+        "repositoryURL": "https://github.com/Quick/Quick.git",
+        "state": {
+          "branch": null,
+          "revision": "0ff81f2c665b4381f526bd656f8708dd52a9ea2f",
+          "version": "1.2.0"
+        }
+      },
+      {
+        "package": "ReactiveSwift",
+        "repositoryURL": "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "46fb4d4a8285286e54929add1d12f384675895c6",
+          "version": "3.1.0"
+        }
+      },
+      {
+        "package": "Result",
+        "repositoryURL": "https://github.com/antitypical/Result.git",
+        "state": {
+          "branch": null,
+          "revision": "7477584259bfce2560a19e06ad9f71db441fff11",
+          "version": "3.2.4"
+        }
+      },
+      {
+        "package": "Schemata",
+        "repositoryURL": "https://github.com/PersistX/Schemata.git",
+        "state": {
+          "branch": null,
+          "revision": "e3db742326d1edf61d70d43489408dd16c32cd9f",
+          "version": "0.0.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
