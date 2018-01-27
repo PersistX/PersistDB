@@ -1,10 +1,17 @@
 import Foundation
 import Schemata
 
+/// A `Query` that will select the columns required for `Projection` and also handle grouping.
 internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelProjection> {
+    /// The projected SQL query, adjusted from what's passed into `init`.
     let sql: SQL.Query
+    
+    /// A mapping of UUIDs to key paths.
+    ///
+    /// UUIDs serve as names for the key paths since the paths aren't convertible to strings.
     let keyPaths: [UUID: PartialKeyPath<Projection.Model>]
 
+    /// Create a new projected query from a SQL query.
     fileprivate init(_ sql: SQL.Query) {
         let projection = Projection.projection
 
@@ -25,6 +32,7 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
         )
     }
 
+    /// Create a result set from the `Row`s returned from the query.
     func resultSet(for rows: [Row]) -> ResultSet<Group, Projection> {
         let projection = Projection.projection
         let groups = rows
@@ -46,6 +54,7 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
         return ResultSet(groups)
     }
 
+    /// Extract the values for each key path in the projection.
     func values(for row: Row) -> [PartialKeyPath<Projection.Model>: SQL.Value] {
         return Dictionary(uniqueKeysWithValues: row.dictionary.flatMap { alias, value in
             guard let uuid = UUID(uuidString: alias), let keyPath = keyPaths[uuid] else {
