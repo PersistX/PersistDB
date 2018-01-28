@@ -5,7 +5,7 @@ import Schemata
 internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelProjection> {
     /// The projected SQL query, adjusted from what's passed into `init`.
     let sql: SQL.Query
-    
+
     /// A mapping of UUIDs to key paths.
     ///
     /// UUIDs serve as names for the key paths since the paths aren't convertible to strings.

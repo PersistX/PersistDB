@@ -73,7 +73,7 @@ class StoreTests: XCTestCase {
 
     fileprivate func fetchGrouped(
         _ query: Query<Author> = Author.all
-    ) -> ResultSet<Int, AuthorInfo> {
+    ) -> ResultSet<Int, AuthorName> {
         return store!
             .fetch(query, groupedBy: \Author.born)
             .awaitFirst()!
@@ -141,10 +141,10 @@ class StoreFetchGroupedByTests: StoreTests {
     func testOneResult() {
         insert(.isaacAsimov)
 
-        let expected = ResultSet<Int, AuthorInfo>([
+        let expected = ResultSet<Int, AuthorName>([
             Group(
                 key: 1920,
-                values: [ AuthorInfo(.isaacAsimov) ]
+                values: [ AuthorName(.isaacAsimov) ]
             ),
         ])
         let actual = fetchGrouped()
@@ -154,18 +154,18 @@ class StoreFetchGroupedByTests: StoreTests {
     func testMultipleResults() {
         insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
 
-        let expected = ResultSet<Int, AuthorInfo>([
+        let expected = ResultSet<Int, AuthorName>([
             Group(
                 key: 1892,
-                values: [ AuthorInfo(.jrrTolkien) ]
+                values: [ AuthorName(.jrrTolkien) ]
             ),
             Group(
                 key: 1920,
-                values: [ AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury) ]
+                values: [ AuthorName(.isaacAsimov), AuthorName(.rayBradbury) ]
             ),
             Group(
                 key: 1951,
-                values: [ AuthorInfo(.orsonScottCard) ]
+                values: [ AuthorName(.orsonScottCard) ]
             ),
         ])
         let actual = fetchGrouped(Author.all.sort(by: \.name).sort(by: \.born))
@@ -175,18 +175,18 @@ class StoreFetchGroupedByTests: StoreTests {
     func testSortsByGroupByFirst() {
         insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
 
-        let expected = ResultSet<Int, AuthorInfo>([
+        let expected = ResultSet<Int, AuthorName>([
             Group(
                 key: 1892,
-                values: [ AuthorInfo(.jrrTolkien) ]
+                values: [ AuthorName(.jrrTolkien) ]
             ),
             Group(
                 key: 1920,
-                values: [ AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury) ]
+                values: [ AuthorName(.isaacAsimov), AuthorName(.rayBradbury) ]
             ),
             Group(
                 key: 1951,
-                values: [ AuthorInfo(.orsonScottCard) ]
+                values: [ AuthorName(.orsonScottCard) ]
             ),
         ])
         let actual = fetchGrouped(Author.all.sort(by: \.name))
@@ -487,6 +487,173 @@ class StoreObserveTests: StoreTests {
                 AuthorInfo(.isaacAsimov),
             ])
         )
+    }
+
+    func testDoesNotSendAfterUpdateToMatchingEntityThatDoesNotAffectResult() {
+        insert(.isaacAsimov)
+
+        observe {
+            update(.isaacAsimov, [\.givenName == "Isaac Asimov" ])
+        }
+
+        XCTAssertNil(observed)
+    }
+}
+
+class StoreObserveGroupedByTests: StoreTests {
+    private let query = Author
+        .all
+        .filter(\.name != Author.Data.jrrTolkien.name)
+        .sort(by: \.name)
+    private var observation: SignalProducer<ResultSet<Int, AuthorName>, NoError>!
+    private var observed: ResultSet<Int, AuthorName>?
+
+    override func setUp() {
+        super.setUp()
+
+        observation = store!
+            .observe(query, groupedBy: \.born)
+            .skip(first: 1)
+            .take(first: 1)
+            .replayLazily(upTo: 1)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        observation = nil
+        observed = nil
+    }
+
+    private func observe(_ block: () -> Void) {
+        observation.startWithValues {
+            self.observed = $0
+        }
+
+        block()
+
+        _ = observation.await()
+    }
+
+    func testSendsInitialResultsWhenEmpty() {
+        insert(.jrrTolkien)
+        XCTAssertEqual(
+            store!.observe(query, groupedBy: \.born).awaitFirst()!.value!,
+            fetchGrouped(query)
+        )
+    }
+
+    func testSendsInitialResultsWhenNotEmpty() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+
+        XCTAssertEqual(
+            store!.observe(query, groupedBy: \.born).awaitFirst()!.value!,
+            fetchGrouped(query)
+        )
+    }
+
+    func testSendsAfterMatchingInsert() {
+        observe {
+            insert(.isaacAsimov)
+        }
+
+        let expected = ResultSet([
+            Group(key: 1920, values: [ AuthorName(.isaacAsimov) ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
+    }
+
+    func testSendsAfterMatchingDelete() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+
+        observe {
+            delete(.isaacAsimov)
+        }
+
+        let expected = ResultSet([
+            Group(key: 1951, values: [ AuthorName(.orsonScottCard) ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
+    }
+
+    func testSendsAfterUpdateThatChangesProjectedValue() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+
+        observe {
+            update(.orsonScottCard, [\.name == "O.S. Card" ])
+        }
+
+        let expected = ResultSet([
+            Group(key: 1920, values: [ AuthorName(.isaacAsimov) ]),
+            Group(key: 1951, values: [ AuthorName(.orsonScottCard, name: "O.S. Card") ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
+    }
+
+    func testSendsAfterUpdateThatChangesSorting() {
+        insert(.jrrTolkien, .isaacAsimov, .rayBradbury)
+
+        let name = "A Ray Bradbury"
+        observe {
+            update(.rayBradbury, [\.name == name ])
+        }
+
+        let expected = ResultSet([
+            Group(key: 1920, values: [
+                AuthorName(.rayBradbury, name: name),
+                AuthorName(.isaacAsimov),
+            ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
+    }
+
+    func testSendsAfterUpdateThatAffectsGroupedBy() {
+        insert(.jrrTolkien, .isaacAsimov, .rayBradbury, .orsonScottCard)
+
+        observe {
+            update(.rayBradbury, [\.born == 1951 ])
+        }
+
+        let expected = ResultSet([
+            Group(key: 1920, values: [ AuthorName(.isaacAsimov) ]),
+            Group(key: 1951, values: [ AuthorName(.orsonScottCard), AuthorName(.rayBradbury) ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
+    }
+
+    func testSendsAfterUpdateThatAffectsFilter() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+
+        observe {
+            update(.jrrTolkien, [\.name == "J.R.R." ])
+        }
+
+        let expected = ResultSet([
+            Group(key: 1892, values: [ AuthorName(.jrrTolkien, name: "J.R.R.") ]),
+            Group(key: 1920, values: [ AuthorName(.isaacAsimov) ]),
+            Group(key: 1951, values: [ AuthorName(.orsonScottCard) ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
+    }
+
+    func testSendsAfterUpdateThatRemovesObject() {
+        insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
+
+        observe {
+            update(.orsonScottCard, [\.name == Author.Data.jrrTolkien.name ])
+        }
+
+        let expected = ResultSet([
+            Group(key: 1920, values: [ AuthorName(.isaacAsimov) ]),
+        ])
+
+        XCTAssertEqual(observed!, expected)
     }
 
     func testDoesNotSendAfterUpdateToMatchingEntityThatDoesNotAffectResult() {

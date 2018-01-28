@@ -295,6 +295,38 @@ extension AuthorInfo: Hashable {
     }
 }
 
+// MARK: - AuthorName
+
+struct AuthorName {
+    var id: Author.ID
+    var name: String
+}
+
+extension AuthorName: PersistDB.ModelProjection {
+    static let projection = Projection<Author, AuthorName>(
+        AuthorName.init,
+        \.id,
+        \.name
+    )
+}
+
+extension AuthorName {
+    init(_ data: Author.Data, name: String? = nil) {
+        id = data.id
+        self.name = name ?? data.name
+    }
+}
+
+extension AuthorName: Hashable {
+    var hashValue: Int {
+        return id.hashValue
+    }
+
+    static func == (lhs: AuthorName, rhs: AuthorName) -> Bool {
+        return lhs.id == rhs.id && lhs.name == rhs.name
+    }
+}
+
 // MARK: - Widget
 
 struct Widget {
