@@ -73,7 +73,7 @@ class StoreTests: XCTestCase {
 
     fileprivate func fetchGrouped(
         _ query: Query<Author> = Author.all
-    ) -> ResultSet<Int, AuthorInfo> {
+    ) -> ResultSet<Int, AuthorName> {
         return store!
             .fetch(query, groupedBy: \Author.born)
             .awaitFirst()!
@@ -141,10 +141,10 @@ class StoreFetchGroupedByTests: StoreTests {
     func testOneResult() {
         insert(.isaacAsimov)
 
-        let expected = ResultSet<Int, AuthorInfo>([
+        let expected = ResultSet<Int, AuthorName>([
             Group(
                 key: 1920,
-                values: [ AuthorInfo(.isaacAsimov) ]
+                values: [ AuthorName(.isaacAsimov) ]
             ),
         ])
         let actual = fetchGrouped()
@@ -154,18 +154,18 @@ class StoreFetchGroupedByTests: StoreTests {
     func testMultipleResults() {
         insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
 
-        let expected = ResultSet<Int, AuthorInfo>([
+        let expected = ResultSet<Int, AuthorName>([
             Group(
                 key: 1892,
-                values: [ AuthorInfo(.jrrTolkien) ]
+                values: [ AuthorName(.jrrTolkien) ]
             ),
             Group(
                 key: 1920,
-                values: [ AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury) ]
+                values: [ AuthorName(.isaacAsimov), AuthorName(.rayBradbury) ]
             ),
             Group(
                 key: 1951,
-                values: [ AuthorInfo(.orsonScottCard) ]
+                values: [ AuthorName(.orsonScottCard) ]
             ),
         ])
         let actual = fetchGrouped(Author.all.sort(by: \.name).sort(by: \.born))
@@ -175,18 +175,18 @@ class StoreFetchGroupedByTests: StoreTests {
     func testSortsByGroupByFirst() {
         insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
 
-        let expected = ResultSet<Int, AuthorInfo>([
+        let expected = ResultSet<Int, AuthorName>([
             Group(
                 key: 1892,
-                values: [ AuthorInfo(.jrrTolkien) ]
+                values: [ AuthorName(.jrrTolkien) ]
             ),
             Group(
                 key: 1920,
-                values: [ AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury) ]
+                values: [ AuthorName(.isaacAsimov), AuthorName(.rayBradbury) ]
             ),
             Group(
                 key: 1951,
-                values: [ AuthorInfo(.orsonScottCard) ]
+                values: [ AuthorName(.orsonScottCard) ]
             ),
         ])
         let actual = fetchGrouped(Author.all.sort(by: \.name))
