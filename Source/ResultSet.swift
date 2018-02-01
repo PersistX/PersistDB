@@ -62,7 +62,7 @@ extension ResultSet: Collection {
         return values[i]
     }
 
-    public func index(after i: Index) -> Index {
+    public func index(after i: Int) -> Int {
         return values.index(after: i)
     }
 }
