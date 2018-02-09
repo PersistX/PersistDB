@@ -336,6 +336,44 @@ extension Table.Diff: Hashable {
 }
 
 extension Table.Diff {
+    /// The indexes of the inserted rows in the diff.
+    public var insertedRows: IndexSet {
+        return deltas.reduce(into: IndexSet()) { set, delta in
+            guard case let .insert(index) = delta, let row = index.row else { return }
+            set.insert(row)
+        }
+    }
+
+    /// The indexes of the deleted rows in the diff.
+    public var deletedRows: IndexSet {
+        return deltas.reduce(into: IndexSet()) { set, delta in
+            guard case let .delete(index) = delta, let row = index.row else { return }
+            set.insert(row)
+        }
+    }
+
+    /// The before and after indexs of the moved rows in the diff.
+    public var movedRows: [(Int, Int)] {
+        return deltas.flatMap { delta -> (Int, Int)? in
+            guard
+                case let .move(old, new) = delta,
+                let oldRow = old.row,
+                let newRow = new.row
+            else { return nil }
+            return (oldRow, newRow)
+        }
+    }
+
+    /// The indexes of the updated rows in the diff.
+    public var updatedRows: IndexSet {
+        return deltas.reduce(into: IndexSet()) { set, delta in
+            guard case let .update(index) = delta, let row = index.row else { return }
+            set.insert(row)
+        }
+    }
+}
+
+extension Table.Diff {
     /// The indexes of the inserted groups in the diff.
     public var insertedGroups: IndexSet {
         return deltas.reduce(into: IndexSet()) { set, delta in
