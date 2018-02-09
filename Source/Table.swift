@@ -336,89 +336,74 @@ extension Table.Diff: Hashable {
 }
 
 extension Table.Diff {
-    /// The indexes of the inserted sections in the diff.
-    public var insertedSections: IndexSet {
-        let sections = deltas
-            .flatMap { delta -> Int? in
-                guard
-                    case let .insert(index) = delta,
-                    index.indexPath.count == 1
-                else { return nil }
-                return index.indexPath[0]
-            }
-        return sections.reduce(into: IndexSet()) { $0.update(with: $1) }
+    /// The indexes of the inserted groups in the diff.
+    public var insertedGroups: IndexSet {
+        return deltas.reduce(into: IndexSet()) { set, delta in
+            guard case let .insert(index) = delta, index.indexPath.count == 1 else { return }
+            set.insert(index.indexPath[0])
+        }
     }
 
-    /// The indexes of the deleted sections in the diff.
-    public var deletedSections: IndexSet {
-        let sections = deltas
-            .flatMap { delta -> Int? in
-                guard
-                    case let .delete(index) = delta,
-                    index.indexPath.count == 1
-                else { return nil }
-                return index.indexPath[0]
-            }
-        return sections.reduce(into: IndexSet()) { $0.update(with: $1) }
+    /// The indexes of the deleted groups in the diff.
+    public var deletedGroups: IndexSet {
+        return deltas.reduce(into: IndexSet()) { set, delta in
+            guard case let .delete(index) = delta, index.indexPath.count == 1 else { return }
+            set.insert(index.indexPath[0])
+        }
     }
 
-    /// The (before, after) indexes of the moved sections in the diff.
-    public var movedSections: [(Int, Int)] {
-        return deltas
-            .flatMap { delta -> (Int, Int)? in
-                guard
-                    case let .move(before, after) = delta,
-                    before.indexPath.count == 1
-                else { return nil }
-                return (before.indexPath[0], after.indexPath[0])
-            }
+    /// The (before, after) indexes of the moved groups in the diff.
+    public var movedGroups: [(Int, Int)] {
+        return deltas.flatMap { delta -> (Int, Int)? in
+            guard
+                case let .move(before, after) = delta,
+                before.indexPath.count == 1
+            else { return nil }
+            return (before.indexPath[0], after.indexPath[0])
+        }
     }
 
-    /// The index paths of the inserted rows in the diff.
-    public var insertedRows: [IndexPath] {
-        return deltas
-            .flatMap { delta -> IndexPath? in
-                guard
-                    case let .insert(index) = delta,
-                    index.indexPath.count != 1
-                else { return nil }
-                return index.indexPath
-            }
+    /// The index paths of the inserted valuess in the diff.
+    public var insertedValues: [IndexPath] {
+        return deltas.flatMap { delta -> IndexPath? in
+            guard
+                case let .insert(index) = delta,
+                index.indexPath.count != 1
+            else { return nil }
+            return index.indexPath
+        }
     }
 
-    /// The index paths of the deleted rows in the diff.
-    public var deletedRows: [IndexPath] {
-        return deltas
-            .flatMap { delta -> IndexPath? in
-                guard
-                    case let .delete(index) = delta,
-                    index.indexPath.count != 1
-                else { return nil }
-                return index.indexPath
-            }
+    /// The index paths of the deleted values in the diff.
+    public var deletedValues: [IndexPath] {
+        return deltas.flatMap { delta -> IndexPath? in
+            guard
+                case let .delete(index) = delta,
+                index.indexPath.count != 1
+            else { return nil }
+            return index.indexPath
+        }
     }
 
-    /// The index paths of the updated rows in the diff.
-    public var updatedRows: [IndexPath] {
-        return deltas
-            .flatMap { delta -> IndexPath? in
-                guard
-                    case let .update(index) = delta,
-                    index.indexPath.count != 1
-                else { return nil }
-                return index.indexPath
-            }
+    /// The index paths of the updated values in the diff.
+    public var updatedValues: [IndexPath] {
+        return deltas.flatMap { delta -> IndexPath? in
+            guard
+                case let .update(index) = delta,
+                index.indexPath.count != 1
+            else { return nil }
+            return index.indexPath
+        }
     }
 
-    /// The index paths of the moved rows in the diff.
-    public var movedRows: [(IndexPath, IndexPath)] {
-        return deltas
-            .flatMap { delta -> (IndexPath, IndexPath)? in
-                guard
-                    case let .move(before, after) = delta,
-                    before.indexPath.count != 1
-                else { return nil }
-                return (before.indexPath, after.indexPath)
-            }
+    /// The index paths of the moved values in the diff.
+    public var movedValues: [(IndexPath, IndexPath)] {
+        return deltas.flatMap { delta -> (IndexPath, IndexPath)? in
+            guard
+                case let .move(before, after) = delta,
+                before.indexPath.count != 1
+            else { return nil }
+            return (before.indexPath, after.indexPath)
+        }
     }
 }

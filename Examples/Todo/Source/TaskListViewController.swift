@@ -54,16 +54,16 @@ final class TaskListViewController: UIViewController {
             let diff = table.diff(from: oldValue)
 
             tableView.performBatchUpdates({
-                tableView.insertSections(diff.insertedSections, with: .fade)
-                tableView.deleteSections(diff.deletedSections, with: .fade)
-                diff.movedSections.forEach(tableView.moveSection)
+                tableView.insertSections(diff.insertedGroups, with: .fade)
+                tableView.deleteSections(diff.deletedGroups, with: .fade)
+                diff.movedGroups.forEach(tableView.moveSection)
 
-                tableView.insertRows(at: diff.insertedRows, with: .fade)
-                tableView.deleteRows(at: diff.deletedRows, with: .fade)
-                diff.movedRows.forEach(tableView.moveRow)
+                tableView.insertRows(at: diff.insertedValues, with: .fade)
+                tableView.deleteRows(at: diff.deletedValues, with: .fade)
+                diff.movedValues.forEach(tableView.moveRow)
             })
 
-            for indexPath in diff.updatedRows {
+            for indexPath in diff.updatedValues {
                 let cell = tableView.cellForRow(at: indexPath) as? TaskCell
                 if let cell = cell {
                     cell.task = table[indexPath]
