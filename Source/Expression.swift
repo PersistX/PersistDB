@@ -32,13 +32,8 @@ internal indirect enum AnyExpression {
         case min
     }
 
-    internal enum Generator {
-        case uuid
-    }
-
     case binary(BinaryOperator, AnyExpression, AnyExpression)
     case function(Function, [AnyExpression])
-    case generator(Generator)
     case inList(AnyExpression, Set<AnyExpression>)
     case keyPath([AnyProperty])
     case now
@@ -184,31 +179,6 @@ extension AnyExpression.Function {
     }
 }
 
-extension AnyExpression.Generator: Hashable {
-    var hashValue: Int {
-        switch self {
-        case .uuid:
-            return 1
-        }
-    }
-
-    static func == (lhs: AnyExpression.Generator, rhs: AnyExpression.Generator) -> Bool {
-        switch (lhs, rhs) {
-        case (.uuid, .uuid):
-            return true
-        }
-    }
-}
-
-extension AnyExpression.Generator {
-    fileprivate func makeSQL() -> SQL.Value {
-        switch self {
-        case .uuid:
-            return .text(UUID().uuidString)
-        }
-    }
-}
-
 extension AnyExpression: Hashable {
     var hashValue: Int {
         switch self {
@@ -216,8 +186,6 @@ extension AnyExpression: Hashable {
             return op.hashValue ^ lhs.hashValue ^ rhs.hashValue
         case let .function(function, expression):
             return function.hashValue ^ expression.map { $0.hashValue }.reduce(0, ^)
-        case let .generator(generator):
-            return generator.hashValue
         case let .inList(expr, list):
             return expr.hashValue ^ list.map { $0.hashValue }.reduce(0, ^)
         case let .keyPath(properties):
@@ -237,8 +205,6 @@ extension AnyExpression: Hashable {
             return lhs == rhs
         case let (.function(lhsFunc, lhsArgs), .function(rhsFunc, rhsArgs)):
             return lhsFunc == rhsFunc && lhsArgs == rhsArgs
-        case let (.generator(lhs), .generator(rhs)):
-            return lhs == rhs
         case let (.inList(lhsExpr, lhsList), .inList(rhsExpr, rhsList)):
             return lhsExpr == rhsExpr && lhsList == rhsList
         case let (.keyPath(lhs), .keyPath(rhs)):
@@ -325,8 +291,6 @@ extension AnyExpression {
             return .binary(op.sql, lhs.makeSQL(), rhs.makeSQL())
         case let .function(function, args):
             return .function(function.sql, args.map { $0.makeSQL() })
-        case let .generator(generator):
-            return .value(generator.makeSQL())
         case let .inList(expr, list):
             return .inList(expr.makeSQL(), Set(list.map { $0.makeSQL() }))
         case let .keyPath(properties):
@@ -345,7 +309,7 @@ extension AnyExpression {
 public struct Expression<Model: PersistDB.Model, Value> {
     internal let expression: AnyExpression
 
-    fileprivate init(_ expression: AnyExpression) {
+    internal init(_ expression: AnyExpression) {
         self.expression = expression
     }
 }
@@ -364,13 +328,6 @@ extension Expression where Value == Date {
     /// An expression that evaluates to the current datetime.
     public static var now: Expression {
         return Expression(.now)
-    }
-}
-
-extension Expression where Value == UUID {
-    /// An expression that evaluates to a new UUID.
-    public static func uuid() -> Expression {
-        return Expression(.generator(.uuid))
     }
 }
 

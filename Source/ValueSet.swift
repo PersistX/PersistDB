@@ -1,12 +1,51 @@
 import ReactiveSwift
 import Schemata
 
+/// A value that can be used in an assigment in a value set.
+private enum AnyValue {
+    case expression(AnyExpression)
+    case generator(AnyGenerator)
+}
+
+extension AnyValue: Hashable {
+    fileprivate var hashValue: Int {
+        switch self {
+        case let .expression(expression):
+            return expression.hashValue
+        case let .generator(generator):
+            return generator.hashValue
+        }
+    }
+
+    fileprivate static func == (lhs: AnyValue, rhs: AnyValue) -> Bool {
+        switch (lhs, rhs) {
+        case let (.expression(lhs), .expression(rhs)):
+            return lhs == rhs
+        case let (.generator(lhs), .generator(rhs)):
+            return lhs == rhs
+        default:
+            return false
+        }
+    }
+}
+
+extension AnyValue {
+    fileprivate func makeSQL() -> SQL.Expression {
+        switch self {
+        case let .expression(expression):
+            return expression.makeSQL()
+        case let .generator(generator):
+            return .value(generator.makeSQL())
+        }
+    }
+}
+
 /// An assignment of a value or expression to a model entity's property.
 ///
 /// This is meant to be used in conjunction with `ValueSet`.
 public struct Assignment<Model: PersistDB.Model> {
     internal let keyPath: PartialKeyPath<Model>
-    internal let expression: AnyExpression
+    fileprivate let value: AnyValue
 }
 
 extension Assignment: Hashable {
@@ -15,7 +54,7 @@ extension Assignment: Hashable {
     }
 
     public static func == (lhs: Assignment, rhs: Assignment) -> Bool {
-        return lhs.keyPath == rhs.keyPath && lhs.expression == rhs.expression
+        return lhs.keyPath == rhs.keyPath && lhs.value == rhs.value
     }
 }
 
@@ -23,50 +62,64 @@ public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, expression: AnyExpression(rhs))
+    return Assignment<Model>(keyPath: lhs, value: .expression(AnyExpression(rhs)))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, expression: AnyExpression(rhs))
+    return Assignment<Model>(keyPath: lhs, value: .expression(AnyExpression(rhs)))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, expression: AnyExpression(rhs))
+    return Assignment<Model>(keyPath: lhs, value: .expression(AnyExpression(rhs)))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Expression<Model, Value>
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, expression: rhs.expression)
+    return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Expression<Model, Value?>
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, expression: rhs.expression)
+    return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
 }
 
 public func == <Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Expression<Model, Value>
 ) -> Assignment<Model> {
-    return Assignment<Model>(keyPath: lhs, expression: rhs.expression)
+    return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
+}
+
+public func == <Model, Value>(
+    lhs: KeyPath<Model, Value>,
+    rhs: Generator<Value>
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, value: .generator(rhs.generator))
+}
+
+public func == <Model, Value>(
+    lhs: KeyPath<Model, Value?>,
+    rhs: Generator<Value>
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, value: .generator(rhs.generator))
 }
 
 /// A set of values that can be used to insert or update a model entity.
 public struct ValueSet<Model: PersistDB.Model> {
     /// The assignments/values that make up the value set.
-    internal var values: [PartialKeyPath<Model>: AnyExpression]
+    fileprivate var values: [PartialKeyPath<Model>: AnyValue]
 
-    init(_ values: [PartialKeyPath<Model>: AnyExpression]) {
+    fileprivate init(_ values: [PartialKeyPath<Model>: AnyValue]) {
         self.values = values
     }
 }
@@ -81,7 +134,7 @@ extension ValueSet {
     public init(_ assignments: [Assignment<Model>]) {
         self.init([:])
         for assignment in assignments {
-            values[assignment.keyPath] = assignment.expression
+            values[assignment.keyPath] = assignment.value
         }
     }
 }
@@ -112,6 +165,15 @@ extension ValueSet: ExpressibleByArrayLiteral {
 }
 
 extension ValueSet {
+    /// Create a dictionary of column names to SQL expressions from the value set.
+    internal func makeSQL() -> [String: SQL.Expression] {
+        let values = self.values.map { (keyPath, value) -> (String, SQL.Expression) in
+            let path = Model.schema.properties[keyPath]!.path
+            return (path, value.makeSQL())
+        }
+        return Dictionary(uniqueKeysWithValues: values)
+    }
+
     /// Test whether the value set can be used for insertion.
     ///
     /// In order to be sufficient, every required property must have a value.

@@ -1,7 +1,7 @@
 @testable import PersistDB
 import XCTest
 
-class AnyExpressionMakeSQLTest: XCTestCase {
+class AnyExpressionMakeSQLTests: XCTestCase {
     func testNullEquals() {
         let text = SQL.Value.text("foo")
         let expr = AnyExpression.binary(.equal, .value(.null), .value(text))
@@ -57,26 +57,6 @@ class AnyExpressionMakeSQLTest: XCTestCase {
             XCTFail("Wrong primitive: " + String(describing: primitive))
         }
     }
-
-    func testUUID() {
-        let expr = AnyExpression.generator(.uuid)
-
-        let sql1 = expr.makeSQL()
-        let sql2 = expr.makeSQL()
-        XCTAssertNotEqual(sql1, sql2)
-
-        if case let .value(.text(string)) = sql1 {
-            XCTAssertNotNil(UUID(uuidString: string))
-        } else {
-            XCTFail()
-        }
-
-        if case let .value(.text(string)) = sql2 {
-            XCTAssertNotNil(UUID(uuidString: string))
-        } else {
-            XCTFail()
-        }
-    }
 }
 
 class ExpressionInitTests: XCTestCase {
@@ -98,10 +78,5 @@ class ExpressionInitTests: XCTestCase {
     func testDateNow() {
         let expr = Expression<Book, Date>.now
         XCTAssertEqual(expr.expression, .now)
-    }
-
-    func testUUID() {
-        let expr = Expression<Book, UUID>.uuid()
-        XCTAssertEqual(expr.expression, .generator(.uuid))
     }
 }
