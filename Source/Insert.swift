@@ -29,16 +29,9 @@ extension Insert: ExpressibleByArrayLiteral {
 
 extension Insert {
     internal func makeSQL() -> SQL.Insert {
-        let table = SQL.Table(Model.schema.name)
-        let values = valueSet
-            .values
-            .map { (keyPath, expr) -> (String, SQL.Expression) in
-                let path = Model.schema.properties[keyPath]!.path
-                return (path, expr.makeSQL())
-            }
         return SQL.Insert(
-            table: table,
-            values: Dictionary(uniqueKeysWithValues: values)
+            table: SQL.Table(Model.schema.name),
+            values: valueSet.makeSQL()
         )
     }
 }

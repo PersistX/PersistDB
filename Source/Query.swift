@@ -32,11 +32,11 @@ extension Query: Hashable {
 }
 
 extension Query {
-    internal func makeSQL() -> SQL.Query {
+    internal var sql: SQL.Query {
         let order = self.order.isEmpty ? Model.defaultOrder : self.order
         return SQL.Query(
-            predicates: predicates.map { $0.expression.makeSQL() },
-            order: order.map { $0.makeSQL() }
+            predicates: predicates.map { $0.expression.sql },
+            order: order.map { $0.sql }
         )
     }
 }

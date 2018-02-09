@@ -22,17 +22,10 @@ extension Update: Hashable {
 
 extension Update {
     internal func makeSQL() -> SQL.Update {
-        let table = SQL.Table(Model.schema.name)
-        let values = valueSet
-            .values
-            .map { (keyPath, expr) -> (String, SQL.Expression) in
-                let path = Model.schema.properties[keyPath]!.path
-                return (path, expr.makeSQL())
-            }
         return SQL.Update(
-            table: table,
-            values: Dictionary(uniqueKeysWithValues: values),
-            predicate: predicate?.expression.makeSQL()
+            table: SQL.Table(Model.schema.name),
+            values: valueSet.makeSQL(),
+            predicate: predicate?.expression.sql
         )
     }
 }

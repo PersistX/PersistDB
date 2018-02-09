@@ -15,10 +15,10 @@ class UpdateSQLTests: XCTestCase {
         let sql = SQL.Update(
             table: SQL.Table("Widget"),
             values: [
-                "date": AnyExpression.now.makeSQL(),
+                "date": AnyExpression.now.sql,
                 "double": .value(.real(4.7)),
             ],
-            predicate: predicate.expression.makeSQL()
+            predicate: predicate.expression.sql
         )
         XCTAssertEqual(update.makeSQL(), sql)
     }
@@ -35,7 +35,7 @@ class UpdateSQLTests: XCTestCase {
         let sql = SQL.Update(
             table: SQL.Table("Widget"),
             values: [
-                "date": AnyExpression.now.makeSQL(),
+                "date": AnyExpression.now.sql,
                 "double": .value(.real(4.7)),
             ],
             predicate: nil
