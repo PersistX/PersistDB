@@ -1,3 +1,4 @@
+import Foundation
 import Schemata
 
 /// A type-erased generator.
