@@ -1,33 +1,33 @@
 @testable import PersistDB
 import XCTest
 
-class AnyExpressionMakeSQLTests: XCTestCase {
+class AnyExpressionSQLTests: XCTestCase {
     func testNullEquals() {
         let text = SQL.Value.text("foo")
         let expr = AnyExpression.binary(.equal, .value(.null), .value(text))
         let sql = SQL.Expression.binary(.is, .value(text), .value(.null))
-        XCTAssertEqual(expr.makeSQL(), sql)
+        XCTAssertEqual(expr.sql, sql)
     }
 
     func testEqualsNull() {
         let text = SQL.Value.text("foo")
         let expr = AnyExpression.binary(.equal, .value(text), .value(.null))
         let sql = SQL.Expression.binary(.is, .value(text), .value(.null))
-        XCTAssertEqual(expr.makeSQL(), sql)
+        XCTAssertEqual(expr.sql, sql)
     }
 
     func testNullDoesNotEqual() {
         let text = SQL.Value.text("foo")
         let expr = AnyExpression.binary(.notEqual, .value(.null), .value(text))
         let sql = SQL.Expression.binary(.isNot, .value(text), .value(.null))
-        XCTAssertEqual(expr.makeSQL(), sql)
+        XCTAssertEqual(expr.sql, sql)
     }
 
     func testDoesNotEqualNull() {
         let text = SQL.Value.text("foo")
         let expr = AnyExpression.binary(.notEqual, .value(text), .value(.null))
         let sql = SQL.Expression.binary(.isNot, .value(text), .value(.null))
-        XCTAssertEqual(expr.makeSQL(), sql)
+        XCTAssertEqual(expr.sql, sql)
     }
 
     func testKeyPathThatJoins() {
@@ -37,13 +37,13 @@ class AnyExpressionMakeSQLTests: XCTestCase {
             Author.table["id"],
             Author.Table.name
         )
-        XCTAssertEqual(expr.makeSQL(), sql)
+        XCTAssertEqual(expr.sql, sql)
     }
 
     func testNow() {
         let db = TestDB()
         let query = SQL.Query
-            .select([.init(AnyExpression.now.makeSQL(), alias: "now")])
+            .select([.init(AnyExpression.now.sql, alias: "now")])
 
         let before = Date()
         let result = db.query(query)[0]

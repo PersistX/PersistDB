@@ -20,7 +20,7 @@ extension Delete {
     internal func makeSQL() -> SQL.Delete {
         return SQL.Delete(
             table: SQL.Table(Model.schema.name),
-            predicate: predicate?.expression.makeSQL()
+            predicate: predicate?.expression.sql
         )
     }
 }

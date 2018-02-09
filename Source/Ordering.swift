@@ -25,7 +25,7 @@ extension Ordering: Hashable {
 }
 
 extension Ordering {
-    internal func makeSQL() -> SQL.Ordering {
-        return SQL.Ordering(expression.makeSQL(), ascending ? .ascending : .descending)
+    internal var sql: SQL.Ordering {
+        return SQL.Ordering(expression.sql, ascending ? .ascending : .descending)
     }
 }

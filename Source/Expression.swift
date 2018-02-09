@@ -253,7 +253,7 @@ extension SQL {
     }
 }
 
-private func sql(for properties: [AnyProperty]) -> SQL.Expression {
+private func makeSQL(for properties: [AnyProperty]) -> SQL.Expression {
     func column(for property: AnyProperty) -> SQL.Column {
         return SQL.Table(String(describing: property.model))[property.path]
     }
@@ -277,28 +277,28 @@ private func sql(for properties: [AnyProperty]) -> SQL.Expression {
 }
 
 extension AnyExpression {
-    func makeSQL() -> SQL.Expression {
+    var sql: SQL.Expression {
         switch self {
         case let .binary(.equal, .value(.null), rhs):
-            return .binary(.is, rhs.makeSQL(), .value(.null))
+            return .binary(.is, rhs.sql, .value(.null))
         case let .binary(.equal, lhs, .value(.null)):
-            return .binary(.is, lhs.makeSQL(), .value(.null))
+            return .binary(.is, lhs.sql, .value(.null))
         case let .binary(.notEqual, .value(.null), rhs):
-            return .binary(.isNot, rhs.makeSQL(), .value(.null))
+            return .binary(.isNot, rhs.sql, .value(.null))
         case let .binary(.notEqual, lhs, .value(.null)):
-            return .binary(.isNot, lhs.makeSQL(), .value(.null))
+            return .binary(.isNot, lhs.sql, .value(.null))
         case let .binary(op, lhs, rhs):
-            return .binary(op.sql, lhs.makeSQL(), rhs.makeSQL())
+            return .binary(op.sql, lhs.sql, rhs.sql)
         case let .function(function, args):
-            return .function(function.sql, args.map { $0.makeSQL() })
+            return .function(function.sql, args.map { $0.sql })
         case let .inList(expr, list):
-            return .inList(expr.makeSQL(), Set(list.map { $0.makeSQL() }))
+            return .inList(expr.sql, Set(list.map { $0.sql }))
         case let .keyPath(properties):
-            return sql(for: properties)
+            return makeSQL(for: properties)
         case .now:
             return SQL.now
         case let .unary(op, expr):
-            return .unary(op.sql, expr.makeSQL())
+            return .unary(op.sql, expr.sql)
         case let .value(value):
             return .value(value)
         }

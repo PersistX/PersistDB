@@ -25,7 +25,7 @@ extension Update {
         return SQL.Update(
             table: SQL.Table(Model.schema.name),
             values: valueSet.makeSQL(),
-            predicate: predicate?.expression.makeSQL()
+            predicate: predicate?.expression.sql
         )
     }
 }

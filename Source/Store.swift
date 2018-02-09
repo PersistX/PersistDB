@@ -387,7 +387,7 @@ extension Store {
         ascending: Bool = true
     ) -> SignalProducer<ResultSet<Value, Projection>, NoError> {
         let groupedBy = SQL.Ordering(
-            AnyExpression(keyPath).makeSQL(),
+            AnyExpression(keyPath).sql,
             ascending ? .ascending : .descending
         )
         let projected = ProjectedQuery<Value, Projection>(query, groupedBy: groupedBy)
@@ -414,7 +414,7 @@ extension Store {
         ascending: Bool = true
     ) -> SignalProducer<ResultSet<Value, Projection>, NoError> {
         let groupedBy = SQL.Ordering(
-            AnyExpression(keyPath).makeSQL(),
+            AnyExpression(keyPath).sql,
             ascending ? .ascending : .descending
         )
         let projected = ProjectedQuery<Value, Projection>(query, groupedBy: groupedBy)

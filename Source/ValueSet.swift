@@ -33,7 +33,7 @@ extension AnyValue {
     fileprivate func makeSQL() -> SQL.Expression {
         switch self {
         case let .expression(expression):
-            return expression.makeSQL()
+            return expression.sql
         case let .generator(generator):
             return .value(generator.makeSQL())
         }

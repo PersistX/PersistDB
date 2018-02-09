@@ -21,7 +21,7 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
 
         let aliases = Dictionary(uniqueKeysWithValues: keyPaths.map { ($1, $0) })
         let results = projection.keyPaths.map { keyPath -> SQL.Result in
-            let sql = AnyExpression(keyPath).makeSQL()
+            let sql = AnyExpression(keyPath).sql
             return SQL.Result(sql, alias: aliases[keyPath]?.uuidString)
         }
 
@@ -67,13 +67,13 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
 
 extension ProjectedQuery where Group == None {
     init(_ query: Query<Projection.Model>) {
-        self.init(query.makeSQL())
+        self.init(query.sql)
     }
 }
 
 extension ProjectedQuery {
     init(_ query: Query<Projection.Model>, groupedBy: SQL.Ordering) {
-        let sql = query.makeSQL()
+        let sql = query.sql
             .select(SQL.Result(groupedBy.expression, alias: "groupBy"))
             .sorted(by: groupedBy)
         self.init(sql)
