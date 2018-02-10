@@ -57,3 +57,16 @@ extension Action: Hashable {
         return lhs.action == rhs.action
     }
 }
+
+extension Action {
+    internal func makeSQL() -> SQL.Action {
+        switch action {
+        case let .insert(insert):
+            return .insert(insert.makeSQL())
+        case let .delete(delete):
+            return .delete(delete.makeSQL())
+        case let .update(update):
+            return .update(update.makeSQL())
+        }
+    }
+}

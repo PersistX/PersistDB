@@ -213,6 +213,14 @@ extension Store {
         return effect
     }
 
+    /// Perform an action in the store.
+    ///
+    /// - important: This is done asynchronously.
+    @discardableResult
+    public func perform(_ action: Action) -> SignalProducer<Never, NoError> {
+        return perform(action.makeSQL()).then(.empty)
+    }
+
     /// Insert a model entity into the store.
     ///
     /// - important: This is done asynchronously.
