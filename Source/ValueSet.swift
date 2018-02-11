@@ -114,6 +114,34 @@ public func == <Model, Value>(
     return Assignment<Model>(keyPath: lhs, value: .generator(rhs.generator))
 }
 
+/// A type-erased `ValueSet`.
+internal struct AnyValueSet {
+    fileprivate var model: AnySchema
+    fileprivate var values: [AnyKeyPath: AnyValue]
+}
+
+extension AnyValueSet: Hashable {
+    internal var hashValue: Int {
+        return model.name.hashValue
+            ^ values.lazy.map { $0.key.hashValue ^ $0.value.hashValue }.reduce(0, ^)
+    }
+
+    internal static func == (lhs: AnyValueSet, rhs: AnyValueSet) -> Bool {
+        return lhs.model == rhs.model && lhs.values == rhs.values
+    }
+}
+
+extension AnyValueSet {
+    /// Create a dictionary of column names to SQL expressions from the value set.
+    internal func makeSQL() -> [String: SQL.Expression] {
+        let values = self.values.map { (keyPath, value) -> (String, SQL.Expression) in
+            let path = model.properties[keyPath]!.path
+            return (path, value.makeSQL())
+        }
+        return Dictionary(uniqueKeysWithValues: values)
+    }
+}
+
 /// A set of values that can be used to insert or update a model entity.
 public struct ValueSet<Model: PersistDB.Model> {
     /// The assignments/values that make up the value set.
@@ -121,6 +149,10 @@ public struct ValueSet<Model: PersistDB.Model> {
 
     fileprivate init(_ values: [PartialKeyPath<Model>: AnyValue]) {
         self.values = values
+    }
+
+    internal var valueSet: AnyValueSet {
+        return AnyValueSet(model: Model.anySchema, values: values)
     }
 }
 
@@ -167,11 +199,7 @@ extension ValueSet: ExpressibleByArrayLiteral {
 extension ValueSet {
     /// Create a dictionary of column names to SQL expressions from the value set.
     internal func makeSQL() -> [String: SQL.Expression] {
-        let values = self.values.map { (keyPath, value) -> (String, SQL.Expression) in
-            let path = Model.schema.properties[keyPath]!.path
-            return (path, value.makeSQL())
-        }
-        return Dictionary(uniqueKeysWithValues: values)
+        return valueSet.makeSQL()
     }
 
     /// Test whether the value set can be used for insertion.
