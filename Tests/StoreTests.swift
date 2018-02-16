@@ -735,7 +735,6 @@ class StoreOpenTests: StoreTests {
             .awaitFirst()
 
         if case .incompatibleSchema? = result?.error {
-
         } else {
             XCTFail("wrong result: " + String(describing: result))
         }

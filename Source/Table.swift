@@ -150,6 +150,11 @@ extension Table {
             selectedIDs = Set(ids)
         }
     }
+
+    /// Return the row for the projection with the given id.
+    public func row(for id: Projection.Model.ID) -> Int? {
+        return indexPath(for: id).flatMap(row(for:))
+    }
 }
 
 extension Table.Row: Hashable {
@@ -204,6 +209,16 @@ extension Table {
         set {
             selectedIDs = Set(newValue.map { self[$0].id })
         }
+    }
+
+    /// Return the index path for the projection with the given id.
+    public func indexPath(for id: Projection.Model.ID) -> IndexPath? {
+        for (g, group) in resultSet.groups.enumerated() {
+            if let v = group.values.index(where: { $0.id == id }) {
+                return [g, v]
+            }
+        }
+        return nil
     }
 }
 

@@ -227,6 +227,16 @@ class TableSelectedRowsSetTests: XCTestCase {
     }
 }
 
+class TableRowForIDTests: XCTestCase {
+    func testIncluded() {
+        XCTAssertEqual(grouped.row(for: .rayBradbury), 4)
+    }
+
+    func testNotIncluded() {
+        XCTAssertNil(grouped.row(for: .liuCixin))
+    }
+}
+
 class TableSectionCountTests: XCTestCase {
     func testEmptyGrouped() {
         XCTAssertEqual(Table<Int, AuthorInfo>().sectionCount, 0)
@@ -316,6 +326,16 @@ class TableSelectedIndexPathsSetTests: XCTestCase {
         ]
 
         XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .orsonScottCard ])
+    }
+}
+
+class TableIndexPathForIDTests: XCTestCase {
+    func testIncluded() {
+        XCTAssertEqual(grouped.indexPath(for: .rayBradbury), [1, 1])
+    }
+
+    func testNotIncluded() {
+        XCTAssertNil(grouped.indexPath(for: .liuCixin))
     }
 }
 
