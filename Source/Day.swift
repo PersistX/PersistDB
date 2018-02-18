@@ -52,6 +52,12 @@ extension Day: Hashable {
     }
 }
 
+extension Day: Comparable {
+    public static func < (lhs: Day, rhs: Day) -> Bool {
+        return lhs.daysSinceReferenceDate < rhs.daysSinceReferenceDate
+    }
+}
+
 extension Day {
     /// A property with the current day that changes when the day changes.
     public static let current = ReactiveSwift.Property<Day>(

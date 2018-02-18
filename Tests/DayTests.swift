@@ -73,6 +73,20 @@ class DayInitWithDateTimeZoneTests: XCTestCase {
     }
 }
 
+class DayComparableTests: XCTestCase {
+    func testLessThan() {
+        let a = Day(daysSinceReferenceDate: 99)
+        let b = Day(daysSinceReferenceDate: 100)
+        XCTAssertLessThan(a, b)
+    }
+
+    func testGreaterThan() {
+        let a = Day(daysSinceReferenceDate: 100)
+        let b = Day(daysSinceReferenceDate: 99)
+        XCTAssertGreaterThan(a, b)
+    }
+}
+
 class DayStartTests: XCTestCase {
     func testReferenceDateStart() {
         let start = Date(timeIntervalSinceReferenceDate: 0)
