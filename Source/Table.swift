@@ -350,6 +350,18 @@ extension Table.Diff: Hashable {
     }
 }
 
+private class Move {
+    let value: (Int, Int)
+
+    init(_ value: (Int, Int)) {
+        self.value = value
+    }
+}
+
+private func == (lhs: Move?, rhs: (Int, Int)) -> Bool {
+    return lhs.map { $0.value == rhs } ?? false
+}
+
 extension Table.Diff {
     /// The indexes of the inserted rows in the diff.
     public var insertedRows: IndexSet {
@@ -367,16 +379,51 @@ extension Table.Diff {
         }
     }
 
-    /// The before and after indexs of the moved rows in the diff.
+    /// The before and after indexes of the moved rows in the diff.
+    ///
+    /// - important: These are treated as **incremental** updates that occur _between_ deleting and
+    ///              inserting.
     public var movedRows: [(Int, Int)] {
-        return deltas.flatMap { delta -> (Int, Int)? in
-            guard
-                case let .move(old, new) = delta,
-                let oldRow = old.row,
-                let newRow = new.row
-            else { return nil }
-            return (oldRow, newRow)
+        let deletedRows = self.deletedRows
+        let insertedRows = self.insertedRows
+        let moves = deltas
+            .flatMap { delta -> (Int, Int)? in
+                guard
+                    case let .move(old, new) = delta,
+                    let oldRow = old.row,
+                    let newRow = new.row
+                else { return nil }
+
+                let oldIdx = oldRow - deletedRows.count(in: 0..<oldRow)
+                let newIdx = newRow - insertedRows.count(in: 0..<newRow)
+                return (oldIdx, newIdx)
+            }
+            .sorted { $0.1 < $1.1 }
+
+        let count = 1 + moves.map(max).reduce(0, max)
+
+        var state = [Move?](repeating: nil, count: count)
+        for move in moves {
+            state[move.0] = Move(move)
         }
+
+        var result: [(Int, Int)] = []
+        for move in moves {
+            let old = state.index { $0 == move }!
+
+            var adjust = 0
+            for (i, m) in state.enumerated() {
+                if i == move.1 + adjust {
+                    result.append((old, i))
+                    state.remove(at: old)
+                    state.insert(Move(move), at: i)
+                    break
+                } else if let m = m, m.value != move && m.value.1 > move.1 {
+                    adjust += 1
+                }
+            }
+        }
+        return result
     }
 
     /// The indexes of the updated rows in the diff.
