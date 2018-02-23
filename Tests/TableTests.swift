@@ -78,6 +78,17 @@ class TableSelectedTests: XCTestCase {
     }
 }
 
+class TableSelectedValuesTests: XCTestCase {
+    func testEmpty() {
+        XCTAssertTrue(grouped.selectedValues.isEmpty)
+    }
+
+    func testNonEmpty() {
+        let table = Table(grouped.resultSet, selectedIDs: [.jrrTolkien, .rayBradbury])
+        XCTAssertEqual(table.selectedValues, [ AuthorInfo(.jrrTolkien), AuthorInfo(.rayBradbury) ])
+    }
+}
+
 class TableRowCountTests: XCTestCase {
     func testEmptyGrouped() {
         XCTAssertEqual(Table<Int, AuthorInfo>().rowCount, 0)

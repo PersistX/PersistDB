@@ -40,6 +40,11 @@ extension Table {
         if selectedIDs.isEmpty { return nil }
         return selectedIDs.contains(Projection.Model.idKeyPath)
     }
+
+    /// The values that are selected in the table.
+    public var selectedValues: Set<Projection> {
+        return Set(resultSet.filter { selectedIDs.contains($0.id) })
+    }
 }
 
 extension Table where Key == None {
