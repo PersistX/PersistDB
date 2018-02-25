@@ -4,7 +4,7 @@ import Schemata
 /// An ordered set of results from a query.
 ///
 /// Result sets that haven't been grouped use `None` as `Key`.
-public struct ResultSet<Key: ModelValue, Projection: PersistDB.ModelProjection> {
+public struct ResultSet<Key: Hashable, Projection: PersistDB.ModelProjection> {
     /// The groups in the result set.
     public private(set) var groups: [Group<Key, Projection>]
 
