@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 /// A view model for a table of results.
-public struct Table<Key: ModelValue, Projection: PersistDB.ModelProjection> {
+public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
     /// The result set backing the table.
     public var resultSet: ResultSet<Key, Projection> {
         didSet {
