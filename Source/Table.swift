@@ -39,6 +39,32 @@ public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
     }
 }
 
+extension Table: Hashable {
+    public var hashValue: Int {
+        return resultSet.hashValue
+    }
+
+    public static func == (lhs: Table, rhs: Table) -> Bool {
+        return lhs.resultSet == rhs.resultSet
+            && lhs.selectedIDs == rhs.selectedIDs
+            && lhs.hasGroupRows == rhs.hasGroupRows
+    }
+}
+
+extension Table {
+    /// Return a new table where the group keys have been transformed.
+    ///
+    /// - important: The keys **must** remain unique.
+    public func mapKeys<T>(_ transform: (Key) -> T) -> Table<T, Projection> {
+        let groups = resultSet.groups.map { Group(key: transform($0.key), values: $0.values) }
+        return Table<T, Projection>(
+            ResultSet(groups),
+            selectedIDs: selectedIDs,
+            hasGroupRows: hasGroupRows
+        )
+    }
+}
+
 extension Table {
     /// A predicate that matches the selected projections' models.
     public var selected: Predicate<Projection.Model>? {
