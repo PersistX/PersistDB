@@ -58,6 +58,29 @@ class TableResultDidSetSelectedIDsTests: XCTestCase {
     }
 }
 
+class TableMapKeysTests: XCTestCase {
+    func test() {
+        let mapped = grouped.mapKeys { $0.description }
+        let expected: Table<String, AuthorInfo> = Table([
+            Group(key: "1892", values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: "1920", values: [AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury)]),
+            Group(key: "1951", values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        XCTAssertEqual(mapped, expected)
+    }
+
+    func testPreservesSelection() {
+        let table = Table(grouped.resultSet, selectedIDs: [.jrrTolkien, .rayBradbury])
+        let mapped = table.mapKeys { $0.description }
+        XCTAssertEqual(mapped.selectedIDs, table.selectedIDs)
+    }
+
+    func testPreservesGrouping() {
+        let mapped = ungrouped.mapKeys { $0.description }
+        XCTAssertFalse(mapped.hasGroupRows)
+    }
+}
+
 class TableSelectedTests: XCTestCase {
     func testEmpty() {
         XCTAssertNil(grouped.selected)
