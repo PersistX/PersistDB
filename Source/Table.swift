@@ -345,6 +345,21 @@ extension Table.Diff.Delta: Hashable {
     }
 }
 
+extension Table.Diff.Delta: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case let .delete(index):
+            return "- \(index.indexPath)\t"
+        case let .insert(index):
+            return "+ \(index.indexPath)"
+        case let .move(before, after):
+            return "\(before.indexPath)\t -> \(after.indexPath)"
+        case let .update(index):
+            return "~ \(index.indexPath)"
+        }
+    }
+}
+
 extension Table.Diff: Hashable {
     public var hashValue: Int {
         return deltas.map { $0.hashValue }.reduce(0, ^)
@@ -352,6 +367,12 @@ extension Table.Diff: Hashable {
 
     public static func == (lhs: Table.Diff, rhs: Table.Diff) -> Bool {
         return lhs.deltas == rhs.deltas
+    }
+}
+
+extension Table.Diff: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return deltas.map { $0.debugDescription }.joined(separator: "\n")
     }
 }
 
