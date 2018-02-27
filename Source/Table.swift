@@ -39,6 +39,18 @@ public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
     }
 }
 
+extension Table: Hashable {
+    public var hashValue: Int {
+        return resultSet.hashValue
+    }
+
+    public static func == (lhs: Table, rhs: Table) -> Bool {
+        return lhs.resultSet == rhs.resultSet
+            && lhs.selectedIDs == rhs.selectedIDs
+            && lhs.hasGroupRows == rhs.hasGroupRows
+    }
+}
+
 extension Table {
     /// A predicate that matches the selected projections' models.
     public var selected: Predicate<Projection.Model>? {
