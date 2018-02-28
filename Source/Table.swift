@@ -52,20 +52,6 @@ extension Table: Hashable {
 }
 
 extension Table {
-    /// Return a new table where the group keys have been transformed.
-    ///
-    /// - important: The keys **must** remain unique.
-    public func mapKeys<T>(_ transform: (Key) -> T) -> Table<T, Projection> {
-        let groups = resultSet.groups.map { Group(key: transform($0.key), values: $0.values) }
-        return Table<T, Projection>(
-            ResultSet(groups),
-            selectedIDs: selectedIDs,
-            hasGroupRows: hasGroupRows
-        )
-    }
-}
-
-extension Table {
     /// A predicate that matches the selected projections' models.
     public var selected: Predicate<Projection.Model>? {
         if selectedIDs.isEmpty { return nil }
