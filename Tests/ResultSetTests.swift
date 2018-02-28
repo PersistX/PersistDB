@@ -45,6 +45,18 @@ class ResultSetCollectionTests: XCTestCase {
     }
 }
 
+class ResultSetMapKeysTests: XCTestCase {
+    func test() {
+        let mapped = grouped.mapKeys { $0.description }
+        let expected: ResultSet<String, AuthorInfo> = ResultSet([
+            Group(key: "1892", values: [AuthorInfo(.jrrTolkien)]),
+            Group(key: "1920", values: [AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury)]),
+            Group(key: "1951", values: [AuthorInfo(.orsonScottCard)]),
+        ])
+        XCTAssertEqual(mapped, expected)
+    }
+}
+
 class ResultSetDiffTests: XCTestCase {
     func testNoDiff() {
         let actual = grouped.diff(from: grouped)

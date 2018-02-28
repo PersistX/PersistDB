@@ -30,6 +30,14 @@ extension ResultSet {
     public var keys: [Key] {
         return groups.map { $0.key }
     }
+
+    /// Return a new result set where the group keys have been transformed.
+    ///
+    /// - important: The keys **must** remain unique.
+    public func mapKeys<T>(_ transform: (Key) -> T) -> ResultSet<T, Projection> {
+        let groups = self.groups.map { Group(key: transform($0.key), values: $0.values) }
+        return ResultSet<T, Projection>(groups)
+    }
 }
 
 extension ResultSet where Key == None {
