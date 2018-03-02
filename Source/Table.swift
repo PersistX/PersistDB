@@ -454,9 +454,11 @@ extension Table.Diff {
             var adjust = 0
             for (i, m) in state.enumerated() {
                 if i == move.1 + adjust {
-                    result.append((old, i))
-                    state.remove(at: old)
-                    state.insert(Move(move), at: i)
+                    if old != i {
+                        result.append((old, i))
+                        state.remove(at: old)
+                        state.insert(Move(move), at: i)
+                    }
                     break
                 } else if let m = m, m.value != move && m.value.1 > move.1 {
                     adjust += 1

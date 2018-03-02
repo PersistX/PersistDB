@@ -1020,6 +1020,18 @@ class TableDiffMovedRowsTests: XCTestCase {
         XCTAssertTrue(moved[0] == (4, 6))
         XCTAssertTrue(moved[1] == (3, 8))
     }
+
+    func testMoveToSameLocation() {
+        let old = Table<Int, AuthorInfo>([
+            Group(key: 1920, values: [AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury)]),
+        ])
+        let new = Table<Int, AuthorInfo>([
+            Group(key: 1921, values: [AuthorInfo(.isaacAsimov), AuthorInfo(.rayBradbury)]),
+        ])
+        let diff = new.diff(from: old)
+        let moved = diff.movedRows
+        XCTAssertEqual(moved.count, 0)
+    }
 }
 
 class TableDiffUpdatedRowsTests: XCTestCase {
