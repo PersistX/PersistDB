@@ -14,9 +14,6 @@ public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
     /// The IDs of the selected values.
     public var selectedIDs: Set<Projection.Model.ID>
 
-    /// Whether the row-based API should include rows for the groups.
-    public var hasGroupRows: Bool
-
     /// Create an empty table.
     public init() {
         self.init(ResultSet())
@@ -25,12 +22,10 @@ public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
     /// Create a table with the given result set and selection.
     public init(
         _ resultSet: ResultSet<Key, Projection>,
-        selectedIDs: Set<Projection.Model.ID> = [],
-        hasGroupRows: Bool = Key.self != None.self
+        selectedIDs: Set<Projection.Model.ID> = []
     ) {
         self.resultSet = resultSet
         self.selectedIDs = selectedIDs
-        self.hasGroupRows = hasGroupRows
     }
 
     /// Create a table with the given groups.
@@ -47,7 +42,6 @@ extension Table: Hashable {
     public static func == (lhs: Table, rhs: Table) -> Bool {
         return lhs.resultSet == rhs.resultSet
             && lhs.selectedIDs == rhs.selectedIDs
-            && lhs.hasGroupRows == rhs.hasGroupRows
     }
 }
 
@@ -75,7 +69,7 @@ extension Table {
     internal func indexPath(forRow row: Int) -> IndexPath {
         var index = 0
         for (i, group) in resultSet.groups.enumerated() {
-            if hasGroupRows {
+            if resultSet.isGrouped {
                 if index == row {
                     return [i]
                 }
@@ -93,7 +87,7 @@ extension Table {
     }
 
     internal func row(for indexPath: IndexPath) -> Int? {
-        if !hasGroupRows && indexPath.count == 1 {
+        if !resultSet.isGrouped && indexPath.count == 1 {
             return nil
         }
 
@@ -101,14 +95,14 @@ extension Table {
 
         var row = 0
         for g in 0..<group {
-            if hasGroupRows {
+            if resultSet.isGrouped {
                 row += 1
             }
             row += resultSet.groups[g].values.count
         }
 
         if indexPath.count == 2 {
-            if hasGroupRows {
+            if resultSet.isGrouped {
                 row += 1
             }
             row += indexPath[1]
@@ -131,7 +125,7 @@ extension Table {
     ///              the keys and the values from the groups. If this is an _ungrouped_ result set,
     ///              then there are no keys and this will equal `resultSet.count`.
     public var rowCount: Int {
-        if !hasGroupRows {
+        if !resultSet.isGrouped {
             return resultSet.count
         }
         return resultSet.groups.count + resultSet.values.count

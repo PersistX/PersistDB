@@ -8,7 +8,12 @@ private let grouped: Table<Int, AuthorInfo> = Table([
     Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
 ])
 
-private let ungrouped: Table<Int, AuthorInfo> = Table(grouped.resultSet, hasGroupRows: false)
+private let ungrouped: Table<None, AuthorInfo> = Table([
+    AuthorInfo(.isaacAsimov),
+    AuthorInfo(.jrrTolkien),
+    AuthorInfo(.orsonScottCard),
+    AuthorInfo(.rayBradbury),
+])
 
 class TableResultDidSetSelectedIDsTests: XCTestCase {
     func testInsertDoesNotAffectSelection() {
@@ -107,12 +112,8 @@ class TableIndexPathForRowTests: XCTestCase {
         XCTAssertEqual(ungrouped.indexPath(forRow: 0), [0, 0])
     }
 
-    func testUngrouped1x0() {
-        XCTAssertEqual(ungrouped.indexPath(forRow: 1), [1, 0])
-    }
-
-    func testUngrouped1x1() {
-        XCTAssertEqual(ungrouped.indexPath(forRow: 2), [1, 1])
+    func testUngrouped0x2() {
+        XCTAssertEqual(ungrouped.indexPath(forRow: 2), [0, 2])
     }
 
     func testGrouped0() {
@@ -145,16 +146,8 @@ class TableRowForIndexPathTests: XCTestCase {
         XCTAssertEqual(ungrouped.row(for: [0, 0]), 0)
     }
 
-    func testUngrouped1() {
-        XCTAssertNil(ungrouped.row(for: [1]))
-    }
-
-    func testUngrouped1x0() {
-        XCTAssertEqual(ungrouped.row(for: [1, 0]), 1)
-    }
-
-    func testUngrouped1x1() {
-        XCTAssertEqual(ungrouped.row(for: [1, 1]), 2)
+    func testUngrouped0x2() {
+        XCTAssertEqual(ungrouped.row(for: [0, 2]), 2)
     }
 
     func testGrouped0() {
@@ -180,15 +173,11 @@ class TableRowForIndexPathTests: XCTestCase {
 
 class TableSubscriptRowTests: XCTestCase {
     func testUngrouped0x0() {
-        XCTAssertEqual(ungrouped[0], .value(AuthorInfo(.jrrTolkien)))
+        XCTAssertEqual(ungrouped[0], .value(AuthorInfo(.isaacAsimov)))
     }
 
-    func testUngrouped1x0() {
-        XCTAssertEqual(ungrouped[1], .value(AuthorInfo(.isaacAsimov)))
-    }
-
-    func testUngrouped1x1() {
-        XCTAssertEqual(ungrouped[2], .value(AuthorInfo(.rayBradbury)))
+    func testUngrouped0x2() {
+        XCTAssertEqual(ungrouped[2], .value(AuthorInfo(.orsonScottCard)))
     }
 
     func testGrouped0() {
@@ -226,14 +215,9 @@ class TableSelectedRowsGetTests: XCTestCase {
     }
 
     func testUngrouped() {
-        let table = Table(
-            ungrouped.resultSet,
-            selectedIDs: [ .jrrTolkien, .rayBradbury ],
-            hasGroupRows: false
-        )
-        XCTAssertEqual(table.selectedRows.count, 2)
-        XCTAssertTrue(table.selectedRows.contains(0))
-        XCTAssertTrue(table.selectedRows.contains(2))
+        let table = Table(ungrouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
+
+        XCTAssertEqual(table.selectedRows, [1, 3])
     }
 }
 
@@ -248,26 +232,16 @@ class TableSelectedRowsSetTests: XCTestCase {
 
     func testGrouped() {
         var table = Table(grouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
-        var expected = IndexSet()
-        expected.update(with: 3)
-        expected.update(with: 6)
 
-        table.selectedRows = expected
+        table.selectedRows = [3, 6]
 
         XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .orsonScottCard ])
     }
 
     func testUngrouped() {
-        var table = Table(
-            ungrouped.resultSet,
-            selectedIDs: [ .jrrTolkien, .rayBradbury ],
-            hasGroupRows: false
-        )
-        var expected = IndexSet()
-        expected.update(with: 1)
-        expected.update(with: 3)
+        var table = Table(ungrouped.resultSet, selectedIDs: [ .jrrTolkien, .rayBradbury ])
 
-        table.selectedRows = expected
+        table.selectedRows = [0, 2]
 
         XCTAssertEqual(table.selectedIDs, [ .isaacAsimov, .orsonScottCard ])
     }
@@ -297,7 +271,7 @@ class TableSectionCountTests: XCTestCase {
     }
 
     func testUngrouped() {
-        XCTAssertEqual(ungrouped.sectionCount, 3)
+        XCTAssertEqual(ungrouped.sectionCount, 1)
     }
 }
 
@@ -307,7 +281,7 @@ class TableRowCountInSectionTests: XCTestCase {
     }
 
     func testUngrouped() {
-        XCTAssertEqual(ungrouped.rowCount(inSection: 1), 2)
+        XCTAssertEqual(ungrouped.rowCount(inSection: 0), 4)
     }
 }
 
@@ -616,73 +590,68 @@ class TableDiffGroupedTests: XCTestCase {
 class TableDiffUngroupedTests: XCTestCase {
     func testToEmpty() {
         let actual = Table().diff(from: ungrouped)
-        let expected = Table<Int, AuthorInfo>.Diff([
+        let expected = Table<None, AuthorInfo>.Diff([
             .delete(.init(row: nil, indexPath: IndexPath(index: 0))),
             .delete(.init(row: 0, indexPath: [0, 0])),
-            .delete(.init(row: nil, indexPath: IndexPath(index: 1))),
-            .delete(.init(row: 1, indexPath: [1, 0])),
-            .delete(.init(row: 2, indexPath: [1, 1])),
-            .delete(.init(row: nil, indexPath: IndexPath(index: 2))),
-            .delete(.init(row: 3, indexPath: [2, 0])),
+            .delete(.init(row: 1, indexPath: [0, 1])),
+            .delete(.init(row: 2, indexPath: [0, 2])),
+            .delete(.init(row: 3, indexPath: [0, 3])),
         ])
         XCTAssertEqual(actual, expected)
     }
 
     func testFromEmpty() {
         let actual = ungrouped.diff(from: Table())
-        let expected = Table<Int, AuthorInfo>.Diff([
+        let expected = Table<None, AuthorInfo>.Diff([
             .insert(.init(row: nil, indexPath: IndexPath(index: 0))),
             .insert(.init(row: 0, indexPath: [0, 0])),
-            .insert(.init(row: nil, indexPath: IndexPath(index: 1))),
-            .insert(.init(row: 1, indexPath: [1, 0])),
-            .insert(.init(row: 2, indexPath: [1, 1])),
-            .insert(.init(row: nil, indexPath: IndexPath(index: 2))),
-            .insert(.init(row: 3, indexPath: [2, 0])),
+            .insert(.init(row: 1, indexPath: [0, 1])),
+            .insert(.init(row: 2, indexPath: [0, 2])),
+            .insert(.init(row: 3, indexPath: [0, 3])),
         ])
         XCTAssertEqual(actual, expected)
     }
 
     func testDelete() {
-        let new = ResultSet<Int, AuthorInfo>([
-            Group(key: 1920, values: [AuthorInfo(.isaacAsimov)]),
-            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        let new = Table<None, AuthorInfo>([
+            AuthorInfo(.isaacAsimov),
+            AuthorInfo(.orsonScottCard),
         ])
 
-        let actual = Table(new, hasGroupRows: false).diff(from: ungrouped)
-        let expected = Table<Int, AuthorInfo>.Diff([
-            .delete(.init(row: nil, indexPath: [0])),
-            .delete(.init(row: 0, indexPath: [0, 0])),
-            .delete(.init(row: 2, indexPath: [1, 1])),
+        let actual = new.diff(from: ungrouped)
+        let expected = Table<None, AuthorInfo>.Diff([
+            .delete(.init(row: 1, indexPath: [0, 1])),
+            .delete(.init(row: 3, indexPath: [0, 3])),
         ])
         XCTAssertEqual(actual, expected)
     }
 
     func testInsert() {
-        let old = ResultSet<Int, AuthorInfo>([
-            Group(key: 1920, values: [AuthorInfo(.isaacAsimov)]),
-            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        let old = Table<None, AuthorInfo>([
+            AuthorInfo(.isaacAsimov),
+            AuthorInfo(.orsonScottCard),
         ])
 
-        let actual = ungrouped.diff(from: Table(old, hasGroupRows: false))
-        let expected = Table<Int, AuthorInfo>.Diff([
-            .insert(.init(row: nil, indexPath: [0])),
-            .insert(.init(row: 0, indexPath: [0, 0])),
-            .insert(.init(row: 2, indexPath: [1, 1])),
+        let actual = ungrouped.diff(from: old)
+        let expected = Table<None, AuthorInfo>.Diff([
+            .insert(.init(row: 1, indexPath: [0, 1])),
+            .insert(.init(row: 3, indexPath: [0, 3])),
         ])
         XCTAssertEqual(actual, expected)
     }
 
     func testMove() {
-        let new = ResultSet<Int, AuthorInfo>([
-            Group(key: 1892, values: [AuthorInfo(.rayBradbury), AuthorInfo(.jrrTolkien)]),
-            Group(key: 1920, values: [AuthorInfo(.isaacAsimov)]),
-            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        let new = Table<None, AuthorInfo>([
+            ungrouped[[0, 2]],
+            ungrouped[[0, 0]],
+            ungrouped[[0, 1]],
+            ungrouped[[0, 3]],
         ])
 
-        let actual = Table(new, hasGroupRows: false).diff(from: ungrouped)
-        let expected = Table<Int, AuthorInfo>.Diff([
+        let actual = new.diff(from: ungrouped)
+        let expected = Table<None, AuthorInfo>.Diff([
             .move(
-                .init(row: 2, indexPath: [1, 1]),
+                .init(row: 2, indexPath: [0, 2]),
                 .init(row: 0, indexPath: [0, 0])
             ),
         ])
@@ -690,48 +659,51 @@ class TableDiffUngroupedTests: XCTestCase {
     }
 
     func testUpdate() {
-        var info = ungrouped[[1, 0]]
+        var info = ungrouped[[0, 0]]
         info.name = Author.Data.isaacAsimov.givenName
 
-        let new = ResultSet<Int, AuthorInfo>([
-            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
-            Group(key: 1920, values: [info, AuthorInfo(.rayBradbury)]),
-            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        let new = Table<None, AuthorInfo>([
+            info,
+            ungrouped[[0, 1]],
+            ungrouped[[0, 2]],
+            ungrouped[[0, 3]],
         ])
 
-        let actual = Table(new, hasGroupRows: false).diff(from: ungrouped)
-        let expected = Table<Int, AuthorInfo>.Diff([
-            .update(.init(row: 1, indexPath: [1, 0])),
+        let actual = new.diff(from: ungrouped)
+        let expected = Table<None, AuthorInfo>.Diff([
+            .update(.init(row: 0, indexPath: [0, 0])),
         ])
         XCTAssertEqual(actual, expected)
     }
 
     func testInsertBeforeDelete() {
-        let new = ResultSet<Int, AuthorInfo>([
-            Group(key: 1892, values: [AuthorInfo(.jrrTolkien), AuthorInfo(.liuCixin)]),
-            Group(key: 1920, values: [AuthorInfo(.isaacAsimov)]),
-            Group(key: 1951, values: [AuthorInfo(.orsonScottCard)]),
+        let new = Table<None, AuthorInfo>([
+            AuthorInfo(.isaacAsimov),
+            AuthorInfo(.jrrTolkien),
+            AuthorInfo(.liuCixin),
+            AuthorInfo(.orsonScottCard),
         ])
 
-        let actual = Table(new, hasGroupRows: false).diff(from: ungrouped)
-        let expected = Table<Int, AuthorInfo>.Diff([
-            .insert(.init(row: 1, indexPath: [0, 1])),
-            .delete(.init(row: 2, indexPath: [1, 1])),
+        let actual = new.diff(from: ungrouped)
+        let expected = Table<None, AuthorInfo>.Diff([
+            .insert(.init(row: 2, indexPath: [0, 2])),
+            .delete(.init(row: 3, indexPath: [0, 3])),
         ])
         XCTAssertEqual(actual, expected)
     }
 
     func testDeleteBeforeInsert() {
-        let new = ResultSet<Int, AuthorInfo>([
-            Group(key: 1892, values: [AuthorInfo(.jrrTolkien)]),
-            Group(key: 1920, values: [AuthorInfo(.rayBradbury)]),
-            Group(key: 1951, values: [AuthorInfo(.orsonScottCard), AuthorInfo(.liuCixin)]),
+        let new = Table<None, AuthorInfo>([
+            AuthorInfo(.jrrTolkien),
+            AuthorInfo(.liuCixin),
+            AuthorInfo(.orsonScottCard),
+            AuthorInfo(.rayBradbury),
         ])
 
-        let actual = Table(new, hasGroupRows: false).diff(from: ungrouped)
-        let expected = Table<Int, AuthorInfo>.Diff([
-            .delete(.init(row: 1, indexPath: [1, 0])),
-            .insert(.init(row: 3, indexPath: [2, 1])),
+        let actual = new.diff(from: ungrouped)
+        let expected = Table<None, AuthorInfo>.Diff([
+            .delete(.init(row: 0, indexPath: [0, 0])),
+            .insert(.init(row: 1, indexPath: [0, 1])),
         ])
         XCTAssertEqual(actual, expected)
     }
