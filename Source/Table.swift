@@ -383,7 +383,10 @@ extension Table.Diff: Hashable {
 
 extension Table.Diff: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return deltas.map { $0.debugDescription }.joined(separator: "\n")
+        return deltas
+            .map { $0.debugDescription }
+            .sorted()
+            .joined(separator: "\n")
     }
 }
 
