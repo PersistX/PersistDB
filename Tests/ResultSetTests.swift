@@ -15,6 +15,16 @@ private let ungrouped = ResultSet<None, AuthorInfo>([
     AuthorInfo(.rayBradbury),
 ])
 
+class ResultSetInitGroupsTests: XCTestCase {
+    func testIsGrouped() {
+        XCTAssertTrue(grouped.isGrouped)
+    }
+
+    func testIsNotGrouped() {
+        XCTAssertFalse(ungrouped.isGrouped)
+    }
+}
+
 class ResultSetInitProjections: XCTestCase {
     func testNoProjectionsIsEmpty() {
         let empty = [AuthorInfo]()
@@ -54,6 +64,16 @@ class ResultSetMapKeysTests: XCTestCase {
             Group(key: "1951", values: [AuthorInfo(.orsonScottCard)]),
         ])
         XCTAssertEqual(mapped, expected)
+    }
+
+    func testIsGrouped() {
+        let mapped = grouped.mapKeys { $0.description }
+        XCTAssertTrue(mapped.isGrouped)
+    }
+
+    func testIsNotGrouped() {
+        let mapped = ungrouped.mapKeys { _ in "" }
+        XCTAssertFalse(mapped.isGrouped)
     }
 }
 

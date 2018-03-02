@@ -11,17 +11,27 @@ public struct ResultSet<Key: Hashable, Projection: PersistDB.ModelProjection> {
     /// All the values from all the groups in the set.
     public private(set) var values: [Projection]
 
+    /// Whether the result set has been grouped by some key.
+    public let isGrouped: Bool
+
     /// Create an empty result set.
     public init() {
         self.init([])
     }
 
-    /// Create a result set with the given groups.
-    public init(_ groups: [Group<Key, Projection>]) {
-        self.groups = groups
-        values = groups.flatMap { $0.values }
+    fileprivate init(_ groups: [Group<Key, Projection>], isGrouped: Bool) {
+        let values = groups.flatMap { $0.values }
         precondition(Set(groups.map { $0.key }).count == groups.count)
         precondition(Set(values).count == values.count)
+
+        self.groups = groups
+        self.values = values
+        self.isGrouped = isGrouped
+    }
+
+    /// Create a result set with the given groups.
+    public init(_ groups: [Group<Key, Projection>]) {
+        self.init(groups, isGrouped: Key.self != None.self)
     }
 }
 
@@ -36,7 +46,7 @@ extension ResultSet {
     /// - important: The keys **must** remain unique.
     public func mapKeys<T>(_ transform: (Key) -> T) -> ResultSet<T, Projection> {
         let groups = self.groups.map { Group(key: transform($0.key), values: $0.values) }
-        return ResultSet<T, Projection>(groups)
+        return ResultSet<T, Projection>(groups, isGrouped: isGrouped)
     }
 }
 
@@ -53,7 +63,7 @@ extension ResultSet: Hashable {
     }
 
     public static func == (lhs: ResultSet, rhs: ResultSet) -> Bool {
-        return lhs.groups == rhs.groups
+        return lhs.groups == rhs.groups && lhs.isGrouped == rhs.isGrouped
     }
 }
 
