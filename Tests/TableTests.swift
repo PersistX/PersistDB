@@ -707,6 +707,66 @@ class TableDiffUngroupedTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
+
+    func testFromGrouped() {
+        let old = Table(grouped.resultSet.mapKeys { $0.description })
+        let new = Table(ungrouped.resultSet.mapKeys { _ in "" })
+
+        let actual = new.diff(from: old)
+        let expected = Table<String, AuthorInfo>.Diff([
+            .delete(.init(row: 0, indexPath: [0])),
+            .delete(.init(row: 2, indexPath: [1])),
+            .delete(.init(row: 5, indexPath: [2])),
+            .insert(.init(row: nil, indexPath: [0])),
+            .move(
+                .init(row: 1, indexPath: [0, 0]),
+                .init(row: 1, indexPath: [0, 1])
+            ),
+            .move(
+                .init(row: 3, indexPath: [1, 0]),
+                .init(row: 0, indexPath: [0, 0])
+            ),
+            .move(
+                .init(row: 4, indexPath: [1, 1]),
+                .init(row: 3, indexPath: [0, 3])
+            ),
+            .move(
+                .init(row: 6, indexPath: [2, 0]),
+                .init(row: 2, indexPath: [0, 2])
+            ),
+        ])
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testToGrouped() {
+        let old = Table(ungrouped.resultSet.mapKeys { _ in "" })
+        let new = Table(grouped.resultSet.mapKeys { $0.description })
+
+        let actual = new.diff(from: old)
+        let expected = Table<String, AuthorInfo>.Diff([
+            .insert(.init(row: 0, indexPath: [0])),
+            .insert(.init(row: 2, indexPath: [1])),
+            .insert(.init(row: 5, indexPath: [2])),
+            .delete(.init(row: nil, indexPath: [0])),
+            .move(
+                .init(row: 1, indexPath: [0, 1]),
+                .init(row: 1, indexPath: [0, 0])
+            ),
+            .move(
+                .init(row: 0, indexPath: [0, 0]),
+                .init(row: 3, indexPath: [1, 0])
+            ),
+            .move(
+                .init(row: 3, indexPath: [0, 3]),
+                .init(row: 4, indexPath: [1, 1])
+            ),
+            .move(
+                .init(row: 2, indexPath: [0, 2]),
+                .init(row: 6, indexPath: [2, 0])
+            ),
+        ])
+        XCTAssertEqual(actual, expected)
+    }
 }
 
 class TableDiffInsertedRowsTests: XCTestCase {
