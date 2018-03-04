@@ -312,6 +312,11 @@ public struct Expression<Model: PersistDB.Model, Value> {
     internal init(_ expression: AnyExpression) {
         self.expression = expression
     }
+
+    /// Create an expression from a keypath.
+    public init(_ keyPath: KeyPath<Model, Value>) {
+        expression = AnyExpression(keyPath)
+    }
 }
 
 extension Expression: Hashable {
