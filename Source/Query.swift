@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 /// A value representing a query of a model type.
-public struct Query<Model: PersistDB.Model> {
+public struct Query<Key: ModelValue, Model: PersistDB.Model> {
     /// The predicates used to filter results.
     public var predicates: [Predicate<Model>]
 
@@ -12,10 +12,26 @@ public struct Query<Model: PersistDB.Model> {
     ///         to break ties.
     public var order: [Ordering<Model>]
 
+    /// The grouping that's used by this query.
+    public var groupedBy: Grouping<Model, Key>
+
+    public init(
+        predicates: [Predicate<Model>],
+        order: [Ordering<Model>],
+        groupedBy: Grouping<Model, Key>
+    ) {
+        self.predicates = predicates
+        self.order = order
+        self.groupedBy = groupedBy
+    }
+}
+
+extension Query where Key == None {
     /// Creates a query that returns all instances of `Model` in the store.
     public init() {
         predicates = []
         order = []
+        groupedBy = .none
     }
 }
 
@@ -28,16 +44,7 @@ extension Query: Hashable {
     public static func == (lhs: Query, rhs: Query) -> Bool {
         return lhs.predicates == rhs.predicates
             && lhs.order == rhs.order
-    }
-}
-
-extension Query {
-    internal var sql: SQL.Query {
-        let order = self.order.isEmpty ? Model.defaultOrder : self.order
-        return SQL.Query(
-            predicates: predicates.map { $0.expression.sql },
-            order: order.map { $0.sql }
-        )
+            && lhs.groupedBy == rhs.groupedBy
     }
 }
 
@@ -47,6 +54,18 @@ extension Query {
         var result = self
         result.predicates.append(predicate)
         return result
+    }
+
+    /// Returns a query that is grouped by the given keypath.
+    public func group<Value>(
+        by keyPath: KeyPath<Model, Value>,
+        ascending: Bool = true
+    ) -> Query<Value, Model> {
+        return Query<Value, Model>(
+            predicates: predicates,
+            order: order,
+            groupedBy: Grouping(Expression(AnyExpression(keyPath)), ascending: ascending)
+        )
     }
 
     /// Returns a query that is sorted by the given keypath.

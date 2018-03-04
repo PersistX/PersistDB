@@ -11,7 +11,7 @@ public protocol Model: Schemata.Model {
 
 extension Model {
     /// A `Query` matching all values.
-    public static var all: Query<Self> {
+    public static var all: Query<None, Self> {
         return .init()
     }
 }
