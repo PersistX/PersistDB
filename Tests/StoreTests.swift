@@ -196,6 +196,27 @@ class StoreFetchGroupedByTests: StoreTests {
         let actual = fetchGrouped(Author.all.sort(by: \.name).group(by: \.born))
         XCTAssertEqual(actual, expected)
     }
+
+    func testGroupByExpression() {
+        insert(.orsonScottCard, .jrrTolkien, .isaacAsimov, .rayBradbury)
+
+        let expected = ResultSet<Int, AuthorName>([
+            Group(
+                key: 12,
+                values: [ AuthorName(.isaacAsimov), AuthorName(.rayBradbury) ]
+            ),
+            Group(
+                key: 14,
+                values: [ AuthorName(.jrrTolkien) ]
+            ),
+            Group(
+                key: 16,
+                values: [ AuthorName(.orsonScottCard) ]
+            ),
+        ])
+        let actual = fetchGrouped(Author.all.group(by: Expression(\Author.name).count))
+        XCTAssertEqual(actual, expected)
+    }
 }
 
 class StoreInsertTests: StoreTests {
