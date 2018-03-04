@@ -27,7 +27,7 @@ final class TaskListViewController: UIViewController {
         }
 
         /// The query matching the tasks for the segment.
-        var query: Query<Task> {
+        var query: Query<None, Task> {
             switch self {
             case .all:
                 return Task.all

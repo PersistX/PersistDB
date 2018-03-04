@@ -132,7 +132,7 @@ Stores can only be loaded asynchronously so the main thread can’t accidentally
 Sets of objects are fetched with `Query`s, which use `Predicate`s to filter the available models and `SortDescriptor`s to sort them.
 
 ```swift
-let harryPotter: Query<Book> = Book.all
+let harryPotter: Query<None, Book> = Book.all
     .filter(\.author.name == "J.K. Rowling")
     .sort(by: \.title)
 ```

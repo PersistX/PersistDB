@@ -64,7 +64,9 @@ class StoreTests: XCTestCase {
             .value!
     }
 
-    fileprivate func fetchAll(_ query: Query<Author> = Author.all) -> ResultSet<None, AuthorInfo>! {
+    fileprivate func fetchAll(
+        _ query: Query<None, Author> = Author.all
+    ) -> ResultSet<None, AuthorInfo>! {
         return store!
             .fetch(query)
             .awaitFirst()?
@@ -72,15 +74,17 @@ class StoreTests: XCTestCase {
     }
 
     fileprivate func fetchGrouped(
-        _ query: Query<Author> = Author.all
+        _ query: Query<Int, Author> = Author.all.group(by: \.born)
     ) -> ResultSet<Int, AuthorName> {
         return store!
-            .fetch(query, groupedBy: \Author.born)
+            .fetch(query)
             .awaitFirst()!
             .value!
     }
 
-    fileprivate func fetchWidgets(_ query: Query<Widget> = Widget.all) -> ResultSet<None, Widget> {
+    fileprivate func fetchWidgets(
+        _ query: Query<None, Widget> = Widget.all
+    ) -> ResultSet<None, Widget> {
         return store!.fetch(query).awaitFirst()!.value!
     }
 }
@@ -168,7 +172,7 @@ class StoreFetchGroupedByTests: StoreTests {
                 values: [ AuthorName(.orsonScottCard) ]
             ),
         ])
-        let actual = fetchGrouped(Author.all.sort(by: \.name).sort(by: \.born))
+        let actual = fetchGrouped(Author.all.sort(by: \.name).group(by: \.born))
         XCTAssertEqual(actual, expected)
     }
 
@@ -189,7 +193,7 @@ class StoreFetchGroupedByTests: StoreTests {
                 values: [ AuthorName(.orsonScottCard) ]
             ),
         ])
-        let actual = fetchGrouped(Author.all.sort(by: \.name))
+        let actual = fetchGrouped(Author.all.sort(by: \.name).group(by: \.born))
         XCTAssertEqual(actual, expected)
     }
 }
@@ -505,6 +509,7 @@ class StoreObserveGroupedByTests: StoreTests {
         .all
         .filter(\.name != Author.Data.jrrTolkien.name)
         .sort(by: \.name)
+        .group(by: \.born)
     private var observation: SignalProducer<ResultSet<Int, AuthorName>, NoError>!
     private var observed: ResultSet<Int, AuthorName>?
 
@@ -512,7 +517,7 @@ class StoreObserveGroupedByTests: StoreTests {
         super.setUp()
 
         observation = store!
-            .observe(query, groupedBy: \.born)
+            .observe(query)
             .skip(first: 1)
             .take(first: 1)
             .replayLazily(upTo: 1)
@@ -538,7 +543,7 @@ class StoreObserveGroupedByTests: StoreTests {
     func testSendsInitialResultsWhenEmpty() {
         insert(.jrrTolkien)
         XCTAssertEqual(
-            store!.observe(query, groupedBy: \.born).awaitFirst()!.value!,
+            store!.observe(query).awaitFirst()!.value!,
             fetchGrouped(query)
         )
     }
@@ -547,7 +552,7 @@ class StoreObserveGroupedByTests: StoreTests {
         insert(.jrrTolkien, .isaacAsimov, .orsonScottCard)
 
         XCTAssertEqual(
-            store!.observe(query, groupedBy: \.born).awaitFirst()!.value!,
+            store!.observe(query).awaitFirst()!.value!,
             fetchGrouped(query)
         )
     }

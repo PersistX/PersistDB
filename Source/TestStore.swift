@@ -82,7 +82,7 @@ public final class TestStore {
 
     /// Synchronously fetch the results of the query.
     public func fetch<Model>(
-        _ query: Query<Model>
+        _ query: Query<None, Model>
     ) -> [Model.ID] {
         return store
             .fetch(query)
@@ -93,7 +93,7 @@ public final class TestStore {
 
     /// Synchronously fetch the results of the query.
     public func fetch<Projection: ModelProjection>(
-        _ query: Query<Projection.Model>
+        _ query: Query<None, Projection.Model>
     ) -> [Projection] {
         return store
             .fetch(query)

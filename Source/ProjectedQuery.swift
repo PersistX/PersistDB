@@ -12,7 +12,7 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
     let keyPaths: [UUID: PartialKeyPath<Projection.Model>]
 
     /// Create a new projected query from a SQL query.
-    fileprivate init(_ sql: SQL.Query) {
+    internal init(_ query: Query<Group, Projection.Model>) {
         let projection = Projection.projection
 
         keyPaths = Dictionary(uniqueKeysWithValues: projection.keyPaths.map { keyPath in
@@ -25,11 +25,24 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
             return SQL.Result(sql, alias: aliases[keyPath]?.uuidString)
         }
 
-        self.sql = SQL.Query(
-            results: sql.results + results,
-            predicates: sql.predicates,
-            order: sql.order
-        )
+        let order = (query.order.isEmpty ? Projection.Model.defaultOrder : query.order)
+            .map { $0.sql }
+        let predicates = query.predicates.map { $0.expression.sql }
+
+        if query.groupedBy == .none {
+            sql = SQL.Query(
+                results: results,
+                predicates: predicates,
+                order: order
+            )
+        } else {
+            let groupBy = SQL.Result(query.groupedBy.expression.expression.sql, alias: "groupBy")
+            sql = SQL.Query(
+                results: [groupBy] + results,
+                predicates: predicates,
+                order: [ query.groupedBy.sql ] + order
+            )
+        }
     }
 
     /// Create a result set from the `Row`s returned from the query.
@@ -62,20 +75,5 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
             }
             return (keyPath, value)
         })
-    }
-}
-
-extension ProjectedQuery where Group == None {
-    init(_ query: Query<Projection.Model>) {
-        self.init(query.sql)
-    }
-}
-
-extension ProjectedQuery {
-    init(_ query: Query<Projection.Model>, groupedBy: SQL.Ordering) {
-        let sql = query.sql
-            .select(SQL.Result(groupedBy.expression, alias: "groupBy"))
-            .sorted(by: groupedBy)
-        self.init(sql)
     }
 }

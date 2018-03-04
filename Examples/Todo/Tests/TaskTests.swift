@@ -1,4 +1,5 @@
 import PersistDB
+import Schemata
 @testable import Todo
 import XCTest
 
@@ -11,7 +12,7 @@ private let later = Date(timeIntervalSinceReferenceDate: 10)
 private let latest = Date(timeIntervalSinceReferenceDate: 1000)
 
 private func AssertMatch(
-    _ query: Query<Task>,
+    _ query: Query<None, Task>,
     _ valueSet: ValueSet<Task>,
     file: StaticString = #file,
     line: UInt = #line
@@ -23,7 +24,7 @@ private func AssertMatch(
 }
 
 private func AssertNoMatch(
-    _ query: Query<Task>,
+    _ query: Query<None, Task>,
     _ valueSet: ValueSet<Task>,
     file: StaticString = #file,
     line: UInt = #line
