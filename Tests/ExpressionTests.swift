@@ -52,13 +52,18 @@ class AnyExpressionSQLTests: XCTestCase {
         XCTAssertEqual(expr.sql, sql)
     }
 
-    func testNow() {
+    func testDateNow() {
         let before = Date()
         let date = Date.from(.now)
         let after = Date()
 
         XCTAssertGreaterThan(date, before)
         XCTAssertLessThan(date, after)
+    }
+
+    func testLength() {
+        let expression = AnyExpression.function(.length, [ .value(.text("test")) ])
+        XCTAssertEqual(Int.from(expression), 4)
     }
 }
 
@@ -81,5 +86,11 @@ class ExpressionInitTests: XCTestCase {
     func testDateNow() {
         let expr = Expression<Book, Date>.now
         XCTAssertEqual(expr.expression, .now)
+    }
+
+    func testStringCount() {
+        let count = Expression<Book, String>("test").count
+        let expected = AnyExpression.function(.length, [ .value(.text("test")) ])
+        XCTAssertEqual(count.expression, expected)
     }
 }
