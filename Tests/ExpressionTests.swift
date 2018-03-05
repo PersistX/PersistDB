@@ -69,27 +69,27 @@ class AnyExpressionSQLTests: XCTestCase {
 
 class ExpressionInitTests: XCTestCase {
     func test_initWithValue() {
-        let expression = Expression<Book, String>("foo")
+        let expression = Expression("foo")
         XCTAssertEqual(expression.expression, .value(.text("foo")))
     }
 
     func test_initWithOptionalValue_some() {
-        let expression = Expression<Book, String?>("foo")
+        let expression = Expression<None, String?>("foo")
         XCTAssertEqual(expression.expression, .value(.text("foo")))
     }
 
     func test_initWithOptionalValue_none() {
-        let expression = Expression<Book, String?>(nil)
+        let expression = Expression<None, String?>(nil)
         XCTAssertEqual(expression.expression, .value(.null))
     }
 
     func testDateNow() {
-        let expr = Expression<Book, Date>.now
+        let expr = Expression.now
         XCTAssertEqual(expr.expression, .now)
     }
 
     func testStringCount() {
-        let count = Expression<Book, String>("test").count
+        let count = Expression("test").count
         let expected = AnyExpression.function(.length, [ .value(.text("test")) ])
         XCTAssertEqual(count.expression, expected)
     }
