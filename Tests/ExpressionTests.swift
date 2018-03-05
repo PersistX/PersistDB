@@ -1,5 +1,17 @@
 @testable import PersistDB
+import Schemata
 import XCTest
+
+extension AnyModelValue {
+    fileprivate static func from(_ expression: AnyExpression) -> Self {
+        let anyValue = Self.anyValue
+        let primitive = TestDB()
+            .query(.select([ .init(expression.sql, alias: "result") ]))[0]
+            .dictionary["result"]!
+            .primitive(anyValue.encoded)
+        return anyValue.decode(primitive).value! as! Self // swiftlint:disable:this force_cast
+    }
+}
 
 class AnyExpressionSQLTests: XCTestCase {
     func testNullEquals() {
@@ -41,21 +53,12 @@ class AnyExpressionSQLTests: XCTestCase {
     }
 
     func testNow() {
-        let db = TestDB()
-        let query = SQL.Query
-            .select([.init(AnyExpression.now.sql, alias: "now")])
-
         let before = Date()
-        let result = db.query(query)[0]
+        let date = Date.from(.now)
         let after = Date()
 
-        let primitive = result.dictionary["now"]?.primitive(.date)
-        if case let .date(date)? = primitive {
-            XCTAssertGreaterThan(date, before)
-            XCTAssertLessThan(date, after)
-        } else {
-            XCTFail("Wrong primitive: " + String(describing: primitive))
-        }
+        XCTAssertGreaterThan(date, before)
+        XCTAssertLessThan(date, after)
     }
 }
 
