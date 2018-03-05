@@ -28,6 +28,7 @@ internal indirect enum AnyExpression {
 
     internal enum Function {
         case coalesce
+        case length
         case max
         case min
     }
@@ -133,16 +134,19 @@ extension AnyExpression.Function: Hashable {
         switch self {
         case .coalesce:
             return 1
-        case .max:
+        case .length:
             return 2
-        case .min:
+        case .max:
             return 3
+        case .min:
+            return 4
         }
     }
 
     static func == (lhs: AnyExpression.Function, rhs: AnyExpression.Function) -> Bool {
         switch (lhs, rhs) {
         case (.coalesce, .coalesce),
+             (.length, .length),
              (.max, .max),
              (.min, .min):
             return true
@@ -171,6 +175,8 @@ extension AnyExpression.Function {
         switch self {
         case .coalesce:
             return .coalesce
+        case .length:
+            return .length
         case .max:
             return .max
         case .min:
@@ -312,6 +318,11 @@ public struct Expression<Model: PersistDB.Model, Value> {
     internal init(_ expression: AnyExpression) {
         self.expression = expression
     }
+
+    /// Create an expression from a keypath.
+    public init(_ keyPath: KeyPath<Model, Value>) {
+        expression = AnyExpression(keyPath)
+    }
 }
 
 extension Expression: Hashable {
@@ -340,6 +351,13 @@ extension Expression where Value: ModelValue {
 extension Expression where Value: OptionalProtocol, Value.Wrapped: ModelValue {
     public init(_ value: Value?) {
         expression = .value(value.map(Value.Wrapped.anyValue.encode)?.sql ?? .null)
+    }
+}
+
+extension Expression where Value == String {
+    /// The number of characters in the string prior to the first null character.
+    public var count: Expression<Model, Int> {
+        return Expression<Model, Int>(.function(.length, [ expression ]))
     }
 }
 

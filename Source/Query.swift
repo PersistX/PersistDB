@@ -61,10 +61,18 @@ extension Query {
         by keyPath: KeyPath<Model, Value>,
         ascending: Bool = true
     ) -> Query<Value, Model> {
+        return group(by: Expression(AnyExpression(keyPath)), ascending: ascending)
+    }
+
+    /// Returns a query that is grouped by the given expression.
+    public func group<Value>(
+        by expression: Expression<Model, Value>,
+        ascending: Bool = true
+    ) -> Query<Value, Model> {
         return Query<Value, Model>(
             predicates: predicates,
             order: order,
-            groupedBy: Grouping(Expression(AnyExpression(keyPath)), ascending: ascending)
+            groupedBy: Grouping(expression, ascending: ascending)
         )
     }
 
