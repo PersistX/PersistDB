@@ -312,13 +312,15 @@ extension AnyExpression {
 }
 
 /// An expression that can be used in `Predicate`s, `Ordering`s, etc.
-public struct Expression<Model: PersistDB.Model, Value> {
+public struct Expression<Model, Value> {
     internal let expression: AnyExpression
 
     internal init(_ expression: AnyExpression) {
         self.expression = expression
     }
+}
 
+extension Expression where Model: PersistDB.Model {
     /// Create an expression from a keypath.
     public init(_ keyPath: KeyPath<Model, Value>) {
         expression = AnyExpression(keyPath)
@@ -335,20 +337,20 @@ extension Expression: Hashable {
     }
 }
 
-extension Expression where Value == Date {
+extension Expression where Model == None, Value == Date {
     /// An expression that evaluates to the current datetime.
     public static var now: Expression {
         return Expression(.now)
     }
 }
 
-extension Expression where Value: ModelValue {
+extension Expression where Model == None, Value: ModelValue {
     public init(_ value: Value) {
         expression = .value(Value.anyValue.encode(value).sql)
     }
 }
 
-extension Expression where Value: OptionalProtocol, Value.Wrapped: ModelValue {
+extension Expression where Model == None, Value: OptionalProtocol, Value.Wrapped: ModelValue {
     public init(_ value: Value?) {
         expression = .value(value.map(Value.Wrapped.anyValue.encode)?.sql ?? .null)
     }

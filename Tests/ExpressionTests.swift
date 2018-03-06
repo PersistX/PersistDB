@@ -1,5 +1,17 @@
 @testable import PersistDB
+import Schemata
 import XCTest
+
+extension AnyModelValue {
+    fileprivate static func from(_ expression: AnyExpression) -> Self {
+        let anyValue = Self.anyValue
+        let primitive = TestDB()
+            .query(.select([ .init(expression.sql, alias: "result") ]))[0]
+            .dictionary["result"]!
+            .primitive(anyValue.encoded)
+        return anyValue.decode(primitive).value! as! Self // swiftlint:disable:this force_cast
+    }
+}
 
 class AnyExpressionSQLTests: XCTestCase {
     func testNullEquals() {
@@ -40,43 +52,45 @@ class AnyExpressionSQLTests: XCTestCase {
         XCTAssertEqual(expr.sql, sql)
     }
 
-    func testNow() {
-        let db = TestDB()
-        let query = SQL.Query
-            .select([.init(AnyExpression.now.sql, alias: "now")])
-
+    func testDateNow() {
         let before = Date()
-        let result = db.query(query)[0]
+        let date = Date.from(.now)
         let after = Date()
 
-        let primitive = result.dictionary["now"]?.primitive(.date)
-        if case let .date(date)? = primitive {
-            XCTAssertGreaterThan(date, before)
-            XCTAssertLessThan(date, after)
-        } else {
-            XCTFail("Wrong primitive: " + String(describing: primitive))
-        }
+        XCTAssertGreaterThan(date, before)
+        XCTAssertLessThan(date, after)
+    }
+
+    func testLength() {
+        let expression = AnyExpression.function(.length, [ .value(.text("test")) ])
+        XCTAssertEqual(Int.from(expression), 4)
     }
 }
 
 class ExpressionInitTests: XCTestCase {
     func test_initWithValue() {
-        let expression = Expression<Book, String>("foo")
+        let expression = Expression("foo")
         XCTAssertEqual(expression.expression, .value(.text("foo")))
     }
 
     func test_initWithOptionalValue_some() {
-        let expression = Expression<Book, String?>("foo")
+        let expression = Expression<None, String?>("foo")
         XCTAssertEqual(expression.expression, .value(.text("foo")))
     }
 
     func test_initWithOptionalValue_none() {
-        let expression = Expression<Book, String?>(nil)
+        let expression = Expression<None, String?>(nil)
         XCTAssertEqual(expression.expression, .value(.null))
     }
 
     func testDateNow() {
-        let expr = Expression<Book, Date>.now
+        let expr = Expression.now
         XCTAssertEqual(expr.expression, .now)
+    }
+
+    func testStringCount() {
+        let count = Expression("test").count
+        let expected = AnyExpression.function(.length, [ .value(.text("test")) ])
+        XCTAssertEqual(count.expression, expected)
     }
 }

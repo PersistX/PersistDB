@@ -100,6 +100,27 @@ public func == <Model, Value: ModelValue>(
     return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
 }
 
+public func == <Model, Value: ModelValue>(
+    lhs: KeyPath<Model, Value>,
+    rhs: Expression<None, Value>
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
+}
+
+public func == <Model, Value: ModelValue>(
+    lhs: KeyPath<Model, Value?>,
+    rhs: Expression<None, Value?>
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
+}
+
+public func == <Model, Value: ModelValue>(
+    lhs: KeyPath<Model, Value?>,
+    rhs: Expression<None, Value>
+) -> Assignment<Model> {
+    return Assignment<Model>(keyPath: lhs, value: .expression(rhs.expression))
+}
+
 public func == <Model, Value>(
     lhs: KeyPath<Model, Value>,
     rhs: Generator<Value>

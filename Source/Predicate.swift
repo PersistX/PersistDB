@@ -2,10 +2,10 @@ import Foundation
 import Schemata
 
 /// A logical condition used for filtering.
-public typealias Predicate<Model: PersistDB.Model> = Expression<Model, Bool>
+public typealias Predicate<Model> = Expression<Model, Bool>
 
 /// Test that a property of the model matches a value.
-public func == <Model, Value: ModelValue>(
+public func == <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Predicate<Model> {
@@ -13,7 +13,7 @@ public func == <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model matches an optional value.
-public func == <Model, Value: ModelValue>(
+public func == <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Predicate<Model> {
@@ -37,7 +37,7 @@ public func == <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model doesn't match a value.
-public func != <Model, Value: ModelValue>(
+public func != <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Predicate<Model> {
@@ -45,7 +45,7 @@ public func != <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model doesn't match an optional value.
-public func != <Model, Value: ModelValue>(
+public func != <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Predicate<Model> {
@@ -69,7 +69,7 @@ public func != <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is less than a value.
-public func < <Model, Value: ModelValue>(
+public func < <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Predicate<Model> {
@@ -77,7 +77,7 @@ public func < <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is less than an optional value.
-public func < <Model, Value: ModelValue>(
+public func < <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Predicate<Model> {
@@ -101,7 +101,7 @@ public func < <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is greater than a value.
-public func > <Model, Value: ModelValue>(
+public func > <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Predicate<Model> {
@@ -109,7 +109,7 @@ public func > <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is greater than an optional value.
-public func > <Model, Value: ModelValue>(
+public func > <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Predicate<Model> {
@@ -133,7 +133,7 @@ public func > <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is less than or equal to a value.
-public func <= <Model, Value: ModelValue>(
+public func <= <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Predicate<Model> {
@@ -141,7 +141,7 @@ public func <= <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is less than or equal to an optional value.
-public func <= <Model, Value: ModelValue>(
+public func <= <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Predicate<Model> {
@@ -165,7 +165,7 @@ public func <= <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is greater than or equal to a value.
-public func >= <Model, Value: ModelValue>(
+public func >= <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value>,
     rhs: Value
 ) -> Predicate<Model> {
@@ -173,7 +173,7 @@ public func >= <Model, Value: ModelValue>(
 }
 
 /// Test that a property of the model is greater than or equal to an optional value.
-public func >= <Model, Value: ModelValue>(
+public func >= <Model: PersistDB.Model, Value: ModelValue>(
     lhs: KeyPath<Model, Value?>,
     rhs: Value?
 ) -> Predicate<Model> {
