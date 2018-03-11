@@ -153,6 +153,12 @@ extension Author.ID: Hashable {
     }
 }
 
+extension Author.ID: CustomDebugStringConvertible {
+    var debugDescription: String {
+        return int.description
+    }
+}
+
 extension Author: Hashable {
     var hashValue: Int {
         return id.hashValue ^ name.hashValue ^ books.hashValue
@@ -324,6 +330,12 @@ extension AuthorName: Hashable {
 
     static func == (lhs: AuthorName, rhs: AuthorName) -> Bool {
         return lhs.id == rhs.id && lhs.name == rhs.name
+    }
+}
+
+extension AuthorName: CustomDebugStringConvertible {
+    var debugDescription: String {
+        return "(\(id): \(name))"
     }
 }
 
