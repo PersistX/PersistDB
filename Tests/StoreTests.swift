@@ -73,9 +73,9 @@ class StoreTests: XCTestCase {
             .value
     }
 
-    fileprivate func fetchGrouped(
-        _ query: Query<Int, Author> = Author.all.group(by: \.born)
-    ) -> ResultSet<Int, AuthorName> {
+    fileprivate func fetchGrouped<Key>(
+        _ query: Query<Key, Author>
+    ) -> ResultSet<Key, AuthorName> {
         return store!
             .fetch(query)
             .awaitFirst()!
@@ -139,7 +139,7 @@ class StoreFetchByIDTests: StoreTests {
 
 class StoreFetchGroupedByTests: StoreTests {
     func testNoResults() {
-        XCTAssertEqual(fetchGrouped(), ResultSet())
+        XCTAssertEqual(fetchGrouped(Author.all.group(by: \.born)), ResultSet())
     }
 
     func testOneResult() {
@@ -151,7 +151,7 @@ class StoreFetchGroupedByTests: StoreTests {
                 values: [ AuthorName(.isaacAsimov) ]
             ),
         ])
-        let actual = fetchGrouped()
+        let actual = fetchGrouped(Author.all.group(by: \.born))
         XCTAssertEqual(actual, expected)
     }
 
@@ -217,6 +217,19 @@ class StoreFetchGroupedByTests: StoreTests {
         let actual = fetchGrouped(Author.all.group(by: Expression(\Author.name).count))
         XCTAssertEqual(actual, expected)
     }
+
+    #if swift(>=4.1)
+        func testGroupByOptionalKeyPath() {
+            insert(.orsonScottCard, .isaacAsimov)
+
+            let expected = ResultSet<Int?, AuthorName>([
+                Group(key: nil, values: [ AuthorName(.orsonScottCard) ]),
+                Group(key: 1992, values: [ AuthorName(.isaacAsimov) ]),
+            ])
+            let actual = fetchGrouped(Author.all.group(by: \.died))
+            XCTAssertEqual(actual, expected)
+        }
+    #endif
 }
 
 class StoreInsertTests: StoreTests {
