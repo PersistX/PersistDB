@@ -95,7 +95,8 @@ public final class Store {
     /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
     ///            one couldn't be opened.
     ///
-    /// - important: Nothing will be done until the returned producer is started.
+    /// - important: Nothing will be done until the returned producer is started. Subsequent starts
+    ///              will immediately return the same store.
     ///
     /// This will create a store at that URL if one doesn't already exist.
     public static func open(
@@ -117,6 +118,7 @@ public final class Store {
                 }
             }
             .observe(on: UIScheduler())
+            .replayLazily(upTo: 1)
     }
 
     /// Open an on-disk store.
@@ -128,7 +130,8 @@ public final class Store {
     /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
     ///            one couldn't be opened.
     ///
-    /// - important: Nothing will be done until the returned producer is started.
+    /// - important: Nothing will be done until the returned producer is started. Subsequent starts
+    ///              will immediately return the same store.
     ///
     /// This will create a store at that URL if one doesn't already exist.
     public static func open(
@@ -148,7 +151,8 @@ public final class Store {
     /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
     ///            one couldn't be opened.
     ///
-    /// - important: Nothing will be done until the returned producer is started.
+    /// - important: Nothing will be done until the returned producer is started. Subsequent starts
+    ///              will immediately return the same store.
     ///
     /// This will create a store at that URL if one doesn't already exist.
     public static func open(
@@ -171,6 +175,7 @@ public final class Store {
             .flatMap(.latest) { url in
                 self.open(at: url, for: schemas)
             }
+            .replayLazily(upTo: 1)
     }
 
     /// Open an on-disk store inside the Application Support directory.
@@ -183,7 +188,8 @@ public final class Store {
     /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
     ///            one couldn't be opened.
     ///
-    /// - important: Nothing will be done until the returned producer is started.
+    /// - important: Nothing will be done until the returned producer is started. Subsequent starts
+    ///              will immediately return the same store.
     ///
     /// This will create a store at that URL if one doesn't already exist.
     public static func open(
