@@ -11,6 +11,25 @@ public enum OpenError: Error {
     case unknown(AnyError)
 }
 
+private struct Tagged<Value> {
+    let uuid: UUID
+    let value: Value
+
+    init(_ value: Value) {
+        uuid = UUID()
+        self.value = value
+    }
+
+    private init(uuid: UUID, value: Value) {
+        self.uuid = uuid
+        self.value = value
+    }
+
+    func map<NewValue>(_ transform: (Value) -> NewValue) -> Tagged<NewValue> {
+        return Tagged<NewValue>(uuid: uuid, value: transform(value))
+    }
+}
+
 /// A store of model objects, either in memory or on disk, that can be modified, queried, and
 /// observed.
 public final class Store {
@@ -28,8 +47,8 @@ public final class Store {
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    fileprivate let actions: Signal<(UUID, SQL.Action), NoError>.Observer
-    fileprivate let effects: Signal<(UUID, SQL.Effect), NoError>
+    fileprivate let actions: Signal<Tagged<SQL.Action>, NoError>.Observer
+    fileprivate let effects: Signal<Tagged<SQL.Effect>, NoError>
 
     /// The designated initializer.
     ///
@@ -66,12 +85,12 @@ public final class Store {
             }
         }
 
-        let pipe = Signal<(UUID, SQL.Action), NoError>.pipe()
+        let pipe = Signal<Tagged<SQL.Action>, NoError>.pipe()
         actions = pipe.input
         effects = pipe.output
             .observe(on: scheduler)
-            .map { uuid, action in
-                return (uuid, db.perform(action))
+            .map { action in
+                return action.map(db.perform)
             }
             .observe(on: UIScheduler())
     }
@@ -253,12 +272,12 @@ extension Store {
     ///   - action: The SQL action to perform.
     /// - returns: A signal producer that sends the effect of the action and then completes.
     private func perform(_ action: SQL.Action) -> SignalProducer<SQL.Effect, NoError> {
-        let uuid = UUID()
-        defer { actions.send(value: (uuid, action)) }
+        let tagged = Tagged(action)
+        defer { actions.send(value: tagged) }
 
-        let effect = SignalProducer<(UUID, SQL.Effect), NoError>(effects)
-            .filter { $0.0 == uuid }
-            .map { $0.1 }
+        let effect = SignalProducer<Tagged<SQL.Effect>, NoError>(effects)
+            .filter { $0.uuid == tagged.uuid }
+            .map { $0.value }
             .take(first: 1)
             .replayLazily(upTo: 1)
         effect.start()
@@ -349,7 +368,7 @@ extension Store {
             .concat(.never)
             .take(
                 until: effects
-                    .map { $0.1 }
+                    .map { $0.value }
                     .filter(projected.sql.invalidated(by:))
                     .map { _ in () }
             )
