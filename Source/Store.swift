@@ -192,6 +192,58 @@ public final class Store {
     ) -> SignalProducer<Store, OpenError> {
         return open(libraryNamed: fileName, for: types.map { $0.anySchema })
     }
+
+    /// Open an on-disk store inside the application group directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - applicationGroup: The identifier for the shared application group.
+    ///   - schemas: The schemas for the models in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// This will create a store at that URL if one doesn't already exist.
+    public static func open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        let url = FileManager
+            .default
+            .containerURL(forSecurityApplicationGroupIdentifier: applicationGroup)!
+            .appendingPathComponent(fileName)
+        return open(at: url, for: schemas)
+    }
+
+    /// Open an on-disk store inside the application group directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - applicationGroup: The identifier for the shared application group.
+    ///   - types: The model types in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// This will create a store at that URL if one doesn't already exist.
+    public static func open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for types: [Schemata.AnyModel.Type]
+    ) -> SignalProducer<Store, OpenError> {
+        return open(
+            libraryNamed: fileName,
+            inApplicationGroup: applicationGroup,
+            for: types.map { $0.anySchema }
+        )
+    }
 }
 
 extension Store {
