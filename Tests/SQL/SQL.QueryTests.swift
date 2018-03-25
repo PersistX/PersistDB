@@ -311,11 +311,7 @@ class SQLQueryJoinTests: SQLQueryTests {
         )
         let query = SQL.Query
             .select(Book.Table.allColumns)
-            .sorted(
-                by:
-                    join.ascending,
-                Book.Table.title.ascending
-            )
+            .sorted(by: join.ascending, Book.Table.title.ascending)
 
         XCTAssertEqual(query, query)
         XCTAssertEqual(
@@ -431,11 +427,7 @@ class SQLQuerySortedByTests: SQLQueryTests {
         let query = SQL.Query
             .select(Book.Table.allColumns)
             .where(.binary(.equal, Book.Table.author, Author.Table.id))
-            .sorted(
-                by:
-                    Author.Table.name.ascending,
-                Book.Table.title.ascending
-            )
+            .sorted(by: Author.Table.name.ascending, Book.Table.title.ascending)
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             db.query(query),

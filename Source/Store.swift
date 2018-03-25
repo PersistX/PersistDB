@@ -11,6 +11,25 @@ public enum OpenError: Error {
     case unknown(AnyError)
 }
 
+private struct Tagged<Value> {
+    let uuid: UUID
+    let value: Value
+
+    init(_ value: Value) {
+        uuid = UUID()
+        self.value = value
+    }
+
+    private init(uuid: UUID, value: Value) {
+        self.uuid = uuid
+        self.value = value
+    }
+
+    func map<NewValue>(_ transform: (Value) -> NewValue) -> Tagged<NewValue> {
+        return Tagged<NewValue>(uuid: uuid, value: transform(value))
+    }
+}
+
 /// A store of model objects, either in memory or on disk, that can be modified, queried, and
 /// observed.
 public final class Store {
@@ -28,8 +47,8 @@ public final class Store {
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    fileprivate let actions: Signal<(UUID, SQL.Action), NoError>.Observer
-    fileprivate let effects: Signal<(UUID, SQL.Effect), NoError>
+    fileprivate let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
+    fileprivate let effects: Signal<Tagged<SQL.Effect>?, NoError>
 
     /// The designated initializer.
     ///
@@ -66,12 +85,12 @@ public final class Store {
             }
         }
 
-        let pipe = Signal<(UUID, SQL.Action), NoError>.pipe()
+        let pipe = Signal<Tagged<SQL.Action>?, NoError>.pipe()
         actions = pipe.input
         effects = pipe.output
             .observe(on: scheduler)
-            .map { uuid, action in
-                return (uuid, db.perform(action))
+            .map { action in
+                return action?.map(db.perform)
             }
             .observe(on: UIScheduler())
     }
@@ -192,6 +211,83 @@ public final class Store {
     ) -> SignalProducer<Store, OpenError> {
         return open(libraryNamed: fileName, for: types.map { $0.anySchema })
     }
+
+    /// Open an on-disk store inside the application group directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - applicationGroup: The identifier for the shared application group.
+    ///   - schemas: The schemas for the models in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// This will create a store at that URL if one doesn't already exist.
+    public static func open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        let url = FileManager
+            .default
+            .containerURL(forSecurityApplicationGroupIdentifier: applicationGroup)!
+            .appendingPathComponent(fileName)
+        return open(at: url, for: schemas)
+            .on(value: { store in
+                let nc = CFNotificationCenterGetDarwinNotifyCenter()
+                let name = CFNotificationName("\(applicationGroup)-\(fileName)" as CFString)
+                store
+                    .effects
+                    .filter { $0 != nil }
+                    .observe { _ in
+                        CFNotificationCenterPostNotification(nc, name, nil, nil, true)
+                    }
+
+                let observer = UnsafeRawPointer(Unmanaged.passUnretained(store).toOpaque())
+                CFNotificationCenterAddObserver(
+                    nc,
+                    observer,
+                    { _, observer, _, _, _ in // swiftlint:disable:this opening_brace
+                        if let observer = observer {
+                            let store = Unmanaged<Store>.fromOpaque(observer).takeUnretainedValue()
+                            store.actions.send(value: nil)
+                        }
+                    },
+                    name.rawValue,
+                    nil,
+                    .deliverImmediately
+                )
+            })
+    }
+
+    /// Open an on-disk store inside the application group directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - applicationGroup: The identifier for the shared application group.
+    ///   - types: The model types in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    ///
+    /// This will create a store at that URL if one doesn't already exist.
+    public static func open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for types: [Schemata.AnyModel.Type]
+    ) -> SignalProducer<Store, OpenError> {
+        return open(
+            libraryNamed: fileName,
+            inApplicationGroup: applicationGroup,
+            for: types.map { $0.anySchema }
+        )
+    }
 }
 
 extension Store {
@@ -201,12 +297,13 @@ extension Store {
     ///   - action: The SQL action to perform.
     /// - returns: A signal producer that sends the effect of the action and then completes.
     private func perform(_ action: SQL.Action) -> SignalProducer<SQL.Effect, NoError> {
-        let uuid = UUID()
-        defer { actions.send(value: (uuid, action)) }
+        let tagged = Tagged(action)
+        defer { actions.send(value: tagged) }
 
-        let effect = SignalProducer<(UUID, SQL.Effect), NoError>(effects)
-            .filter { $0.0 == uuid }
-            .map { $0.1 }
+        let effect = SignalProducer<Tagged<SQL.Effect>?, NoError>(effects)
+            .filterMap { $0 }
+            .filter { $0.uuid == tagged.uuid }
+            .map { $0.value }
             .take(first: 1)
             .replayLazily(upTo: 1)
         effect.start()
@@ -297,8 +394,7 @@ extension Store {
             .concat(.never)
             .take(
                 until: effects
-                    .map { $0.1 }
-                    .filter(projected.sql.invalidated(by:))
+                    .filter { $0?.map(projected.sql.invalidated(by:)).value ?? true }
                     .map { _ in () }
             )
             .repeat(.max)
