@@ -47,8 +47,8 @@ public final class Store {
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    fileprivate let actions: Signal<Tagged<SQL.Action>, NoError>.Observer
-    fileprivate let effects: Signal<Tagged<SQL.Effect>, NoError>
+    fileprivate let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
+    fileprivate let effects: Signal<Tagged<SQL.Effect>?, NoError>
 
     /// The designated initializer.
     ///
@@ -85,12 +85,12 @@ public final class Store {
             }
         }
 
-        let pipe = Signal<Tagged<SQL.Action>, NoError>.pipe()
+        let pipe = Signal<Tagged<SQL.Action>?, NoError>.pipe()
         actions = pipe.input
         effects = pipe.output
             .observe(on: scheduler)
             .map { action in
-                return action.map(db.perform)
+                return action?.map(db.perform)
             }
             .observe(on: UIScheduler())
     }
@@ -236,6 +236,31 @@ public final class Store {
             .containerURL(forSecurityApplicationGroupIdentifier: applicationGroup)!
             .appendingPathComponent(fileName)
         return open(at: url, for: schemas)
+            .on(value: { store in
+                let nc = CFNotificationCenterGetDarwinNotifyCenter()
+                let name = CFNotificationName("\(applicationGroup)-\(fileName)" as CFString)
+                store
+                    .effects
+                    .filter { $0 != nil }
+                    .observe { _ in
+                        CFNotificationCenterPostNotification(nc, name, nil, nil, true)
+                    }
+
+                let observer = UnsafeRawPointer(Unmanaged.passUnretained(store).toOpaque())
+                CFNotificationCenterAddObserver(
+                    nc,
+                    observer,
+                    { _, observer, _, _, _ in // swiftlint:disable:this opening_brace
+                        if let observer = observer {
+                            let store = Unmanaged<Store>.fromOpaque(observer).takeUnretainedValue()
+                            store.actions.send(value: nil)
+                        }
+                    },
+                    name.rawValue,
+                    nil,
+                    .deliverImmediately
+                )
+            })
     }
 
     /// Open an on-disk store inside the application group directory.
@@ -275,7 +300,8 @@ extension Store {
         let tagged = Tagged(action)
         defer { actions.send(value: tagged) }
 
-        let effect = SignalProducer<Tagged<SQL.Effect>, NoError>(effects)
+        let effect = SignalProducer<Tagged<SQL.Effect>?, NoError>(effects)
+            .filterMap { $0 }
             .filter { $0.uuid == tagged.uuid }
             .map { $0.value }
             .take(first: 1)
@@ -368,8 +394,7 @@ extension Store {
             .concat(.never)
             .take(
                 until: effects
-                    .map { $0.value }
-                    .filter(projected.sql.invalidated(by:))
+                    .filter { $0?.map(projected.sql.invalidated(by:)).value ?? true }
                     .map { _ in () }
             )
             .repeat(.max)
