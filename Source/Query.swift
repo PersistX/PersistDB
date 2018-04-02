@@ -103,3 +103,12 @@ extension Query {
         return result
     }
 }
+
+extension Query {
+    public var count: Aggregate<Model, Int> {
+        return Aggregate(
+            expression: .function(.count, [ AnyExpression(Model.idKeyPath) ]),
+            predicates: predicates
+        )
+    }
+}

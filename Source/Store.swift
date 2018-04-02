@@ -509,4 +509,36 @@ extension Store {
         let projected = ProjectedQuery<Key, Projection>(query)
         return observe(projected)
     }
+
+    /// Fetch an aggregate value from the store.
+    ///
+    /// - parameters:
+    ///   - aggregate: The aggregate value to fetch.
+    ///
+    /// - returns: A `SignalProducer` that will fetch the aggregate.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public func fetch<Model, Value>(
+        _ aggregate: Aggregate<Model, Value>
+    ) -> SignalProducer<Value, NoError> {
+        return fetch(aggregate.sql, aggregate.result(for:))
+    }
+
+    /// Observe an aggregate value from the store.
+    ///
+    /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
+    /// value will be re-fetched and re-sent.
+    ///
+    /// - parameters:
+    ///   - aggregate: The aggregate value to fetch.
+    ///
+    /// - returns: A `SignalProducer` that will send the aggregate value, sending a new value
+    ///            whenever it's changed.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public func observe<Model, Value>(
+        _ aggregate: Aggregate<Model, Value>
+    ) -> SignalProducer<Value, NoError> {
+        return observe(aggregate.sql, aggregate.result(for:))
+    }
 }
