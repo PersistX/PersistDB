@@ -256,6 +256,21 @@ class SQLQueryOperatorTests: SQLQueryTests {
 }
 
 class SQLQueryAggregateTests: SQLQueryTests {
+    func testCount() {
+        let join = SQL.Expression.join(
+            SQL.Column(table: Book.table, name: "author"),
+            SQL.Column(table: Author.table, name: "id"),
+            .binary(.equal, Author.Table.name, .value(.text(Author.Data.jrrTolkien.name)))
+        )
+        let query = SQL.Query
+            .select([ SQL.Result(.function(.count, []), alias: "count") ])
+            .where(join)
+        XCTAssertEqual(
+            Set(db.query(query)),
+            Set([ ["count": 2] ])
+        )
+    }
+
     func testMax() {
         let maximum = SQL.Expression.function(.max, [ Author.Table.born, Author.Table.died ])
         let query = SQL.Query
