@@ -28,6 +28,7 @@ internal indirect enum AnyExpression {
 
     internal enum Function {
         case coalesce
+        case count
         case length
         case max
         case min
@@ -134,12 +135,14 @@ extension AnyExpression.Function: Hashable {
         switch self {
         case .coalesce:
             return 1
-        case .length:
+        case .count:
             return 2
-        case .max:
+        case .length:
             return 3
-        case .min:
+        case .max:
             return 4
+        case .min:
+            return 5
         }
     }
 
@@ -175,6 +178,8 @@ extension AnyExpression.Function {
         switch self {
         case .coalesce:
             return .coalesce
+        case .count:
+            return .count
         case .length:
             return .length
         case .max:

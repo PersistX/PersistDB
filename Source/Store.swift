@@ -355,6 +355,54 @@ extension Store {
 }
 
 extension Store {
+    /// Fetch a SQL query from the store.
+    ///
+    /// This method backs the public `fetch` and `observe` methods.
+    ///
+    /// - parameters:
+    ///   - query: The SQL query to be fetched from the store.
+    ///   - transform: A black to transform the SQL rows into a value.
+    ///
+    /// - returns: A `SignalProducer` that will fetch values for entities that match the query.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    private func fetch<Value>(
+        _ query: SQL.Query,
+        _ transform: @escaping ([Row]) -> Value
+    ) -> SignalProducer<Value, NoError> {
+        return SignalProducer(value: query)
+            .observe(on: scheduler)
+            .map(db.query)
+            .map(transform)
+            .observe(on: UIScheduler())
+    }
+
+    /// Observe a SQL query from the store.
+    ///
+    /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
+    /// value will re-fetched and re-sent.
+    ///
+    /// - parameters:
+    ///   - query: The SQL query to be observed.
+    ///   - transform: A black to transform the SQL rows into a value.
+    /// - returns: A `SignalProducer` that will send values for entities that match the
+    ////           query, sending a new value whenever it's changed.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    private func observe<Value>(
+        _ query: SQL.Query,
+        _ transform: @escaping ([Row]) -> Value
+    ) -> SignalProducer<Value, NoError> {
+        return fetch(query, transform)
+            .concat(.never)
+            .take(
+                until: effects
+                    .filter { $0?.map(query.invalidated(by:)).value ?? true }
+                    .map { _ in () }
+            )
+            .repeat(.max)
+    }
+
     /// Fetch a projected query from the store.
     ///
     /// This method backs the public `fetch` and `observe` methods.
@@ -368,11 +416,7 @@ extension Store {
     private func fetch<Group, Projection>(
         _ projected: ProjectedQuery<Group, Projection>
     ) -> SignalProducer<ResultSet<Group, Projection>, NoError> {
-        return SignalProducer(value: projected.sql)
-            .observe(on: scheduler)
-            .map(db.query)
-            .map(projected.resultSet(for:))
-            .observe(on: UIScheduler())
+        return fetch(projected.sql, projected.resultSet(for:))
     }
 
     /// Observe a projected query from the store.
@@ -390,14 +434,7 @@ extension Store {
     private func observe<Group, Projection>(
         _ projected: ProjectedQuery<Group, Projection>
     ) -> SignalProducer<ResultSet<Group, Projection>, NoError> {
-        return fetch(projected)
-            .concat(.never)
-            .take(
-                until: effects
-                    .filter { $0?.map(projected.sql.invalidated(by:)).value ?? true }
-                    .map { _ in () }
-            )
-            .repeat(.max)
+        return observe(projected.sql, projected.resultSet(for:))
     }
 
     /// Fetch a projection from the store by the model entity's id.
@@ -471,5 +508,37 @@ extension Store {
     ) -> SignalProducer<ResultSet<Key, Projection>, NoError> {
         let projected = ProjectedQuery<Key, Projection>(query)
         return observe(projected)
+    }
+
+    /// Fetch an aggregate value from the store.
+    ///
+    /// - parameters:
+    ///   - aggregate: The aggregate value to fetch.
+    ///
+    /// - returns: A `SignalProducer` that will fetch the aggregate.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public func fetch<Model, Value>(
+        _ aggregate: Aggregate<Model, Value>
+    ) -> SignalProducer<Value, NoError> {
+        return fetch(aggregate.sql, aggregate.result(for:))
+    }
+
+    /// Observe an aggregate value from the store.
+    ///
+    /// When `insert`, `delete`, or `update` is called that *might* affect the result, the
+    /// value will be re-fetched and re-sent.
+    ///
+    /// - parameters:
+    ///   - aggregate: The aggregate value to fetch.
+    ///
+    /// - returns: A `SignalProducer` that will send the aggregate value, sending a new value
+    ///            whenever it's changed.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public func observe<Model, Value>(
+        _ aggregate: Aggregate<Model, Value>
+    ) -> SignalProducer<Value, NoError> {
+        return observe(aggregate.sql, aggregate.result(for:))
     }
 }

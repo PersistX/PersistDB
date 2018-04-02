@@ -57,6 +57,13 @@ class StoreTests: XCTestCase {
         _ = store!.update(update).await()
     }
 
+    fileprivate func fetch(_ aggregate: Aggregate<Author, Int>) -> Int {
+        return store!
+            .fetch(aggregate)
+            .awaitFirst()!
+            .value!
+    }
+
     fileprivate func fetchOne(_ id: Author.ID) -> AuthorInfo? {
         return store!
             .fetch(id)
@@ -122,6 +129,29 @@ class StoreFetchTests: StoreTests {
             fetchAll().map { $0.id },
             [ .isaacAsimov, .jrrTolkien, .liuCixin, .orsonScottCard, .rayBradbury ]
         )
+    }
+}
+
+class StoreFetchAggregateTests: StoreTests {
+    func testCountZero() {
+        insert(.rayBradbury, .isaacAsimov)
+
+        let aggregate = Author.all.filter(\.born != 1920).count
+        XCTAssertEqual(fetch(aggregate), 0)
+    }
+
+    func testCountSome() {
+        insert(.jrrTolkien, .rayBradbury, .isaacAsimov)
+
+        let aggregate = Author.all.filter(\.born == 1920).count
+        XCTAssertEqual(fetch(aggregate), 2)
+    }
+
+    func testNoPredicates() {
+        insert(.jrrTolkien, .rayBradbury, .isaacAsimov)
+
+        let aggregate = Author.all.count
+        XCTAssertEqual(fetch(aggregate), 3)
     }
 }
 
@@ -535,6 +565,72 @@ class StoreObserveTests: StoreTests {
         }
 
         XCTAssertNil(observed)
+    }
+}
+
+class StoreObserveAggregateTests: StoreTests {
+    private let aggregate = Author
+        .all
+        .filter(\.born == 1920)
+        .count
+    private var observation: SignalProducer<Int, NoError>!
+    private var observed: Int?
+
+    override func setUp() {
+        super.setUp()
+
+        observation = store!
+            .observe(aggregate)
+            .skip(first: 1)
+            .take(first: 1)
+            .replayLazily(upTo: 1)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        observation = nil
+        observed = nil
+    }
+
+    private func observe(_ block: () -> Void) {
+        observation.startWithValues {
+            self.observed = $0
+        }
+
+        block()
+
+        _ = observation.await()
+    }
+
+    func testSendsAfterInsert() {
+        insert(.jrrTolkien, .isaacAsimov)
+
+        observe {
+            insert(.rayBradbury)
+        }
+
+        XCTAssertEqual(observed, 2)
+    }
+
+    func testSendsAfterDeletee() {
+        insert(.jrrTolkien, .rayBradbury, .isaacAsimov)
+
+        observe {
+            delete(.isaacAsimov)
+        }
+
+        XCTAssertEqual(observed, 1)
+    }
+
+    func testSendsAfterUpdate() {
+        insert(.jrrTolkien, .rayBradbury, .isaacAsimov)
+
+        observe {
+            update(.jrrTolkien, [\.born == 1920])
+        }
+
+        XCTAssertEqual(observed, 3)
     }
 }
 

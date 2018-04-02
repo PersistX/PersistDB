@@ -23,6 +23,8 @@
 		BE1DC6081EE3B34800A0671F /* Predicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6071EE3B34800A0671F /* Predicate.swift */; };
 		BE1DC60B1EE3B39800A0671F /* PredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC6091EE3B37600A0671F /* PredicateTests.swift */; };
 		BE1DC60D1EE3BABE00A0671F /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */; };
+		BE3424B820688D2A00789D5D /* Aggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3424B720688D2A00789D5D /* Aggregate.swift */; };
+		BE3424B920688D2A00789D5D /* Aggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3424B720688D2A00789D5D /* Aggregate.swift */; };
 		BE5AD1CB1F2E5C860055BF9F /* TestStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */; };
 		BE5AD1CD1F30AADB0055BF9F /* Ordering.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5AD1CC1F30AADB0055BF9F /* Ordering.swift */; };
 		BE7361001FD5872500B675B4 /* TestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7360FF1FD5872500B675B4 /* TestStore.swift */; };
@@ -178,6 +180,7 @@
 		BE1DC6091EE3B37600A0671F /* PredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicateTests.swift; sourceTree = "<group>"; };
 		BE1DC60C1EE3BABE00A0671F /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		BE1E73901F24355C00B05DFA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		BE3424B720688D2A00789D5D /* Aggregate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aggregate.swift; sourceTree = "<group>"; };
 		BE5AD1CA1F2E5C860055BF9F /* TestStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStoreTests.swift; sourceTree = "<group>"; };
 		BE5AD1CC1F30AADB0055BF9F /* Ordering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ordering.swift; sourceTree = "<group>"; };
 		BE7360FF1FD5872500B675B4 /* TestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStore.swift; sourceTree = "<group>"; };
@@ -352,6 +355,7 @@
 				BEBC36C9200E8F8E000E3AAB /* Extensions */,
 				BE7740D21EFFDB8F00D1F5A5 /* SQL */,
 				BEE76A69202E0FDE007A48DB /* Action.swift */,
+				BE3424B720688D2A00789D5D /* Aggregate.swift */,
 				BE7361011FD5A01500B675B4 /* Database.swift */,
 				BECC0E2220260C10006A1781 /* Day.swift */,
 				BE10ED831FE60763008FFE25 /* Delete.swift */,
@@ -685,6 +689,7 @@
 			files = (
 				BE10ED821FE60494008FFE25 /* Update.swift in Sources */,
 				BEAE8C3A1FD989C500EF63A9 /* ValueSet.swift in Sources */,
+				BE3424B820688D2A00789D5D /* Aggregate.swift in Sources */,
 				BE5AD1CD1F30AADB0055BF9F /* Ordering.swift in Sources */,
 				BE7740EA1EFFDC5500D1F5A5 /* SQL.Schema.swift in Sources */,
 				BE7740E81EFFDC5500D1F5A5 /* SQL.Insert.swift in Sources */,
@@ -757,6 +762,7 @@
 			files = (
 				BEDE90AE201605AE004656FC /* Model.swift in Sources */,
 				BEDE90AD201605AE004656FC /* Insert.swift in Sources */,
+				BE3424B920688D2A00789D5D /* Aggregate.swift in Sources */,
 				BEDE90A5201605AE004656FC /* SQL.Table.swift in Sources */,
 				BEDE90B4201605AE004656FC /* Store.swift in Sources */,
 				BEDE90A3201605AE004656FC /* SQL.Query.swift in Sources */,
