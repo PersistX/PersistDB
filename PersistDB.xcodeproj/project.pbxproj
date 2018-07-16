@@ -470,7 +470,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BE89D60A1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDB (macOS)" */;
 			buildPhases = (
-				BEBC36BD2009935E000E3AAB /* Run Standards */,
 				BE89D5F11EBE3A0100CEC4D1 /* Sources */,
 				BE89D5F21EBE3A0100CEC4D1 /* Frameworks */,
 				BE89D5F31EBE3A0100CEC4D1 /* Headers */,
@@ -489,7 +488,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BE89D60D1EBE3A0100CEC4D1 /* Build configuration list for PBXNativeTarget "PersistDBTests (macOS)" */;
 			buildPhases = (
-				BEBC36BE20099903000E3AAB /* Run Standards */,
 				BE89D5FB1EBE3A0100CEC4D1 /* Sources */,
 				BE89D5FC1EBE3A0100CEC4D1 /* Frameworks */,
 				BE89D5FD1EBE3A0100CEC4D1 /* Resources */,
@@ -508,7 +506,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEDE90812016054D004656FC /* Build configuration list for PBXNativeTarget "PersistDB (iOS)" */;
 			buildPhases = (
-				BEDE90B9201605C8004656FC /* Run Standards */,
 				BEDE906B2016054C004656FC /* Sources */,
 				BEDE906C2016054C004656FC /* Frameworks */,
 				BEDE906D2016054C004656FC /* Headers */,
@@ -527,7 +524,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEDE90842016054D004656FC /* Build configuration list for PBXNativeTarget "PersistDBTests (iOS)" */;
 			buildPhases = (
-				BEDE90BA201605E2004656FC /* Run Standards */,
 				BEDE90742016054D004656FC /* Sources */,
 				BEDE90752016054D004656FC /* Frameworks */,
 				BEDE90762016054D004656FC /* Resources */,
@@ -622,65 +618,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		BEBC36BD2009935E000E3AAB /* Run Standards */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Standards";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x \"${SRCROOT}/Carthage/Checkouts/Standards\" ]\nthen\n  \"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Source\"\nfi";
-		};
-		BEBC36BE20099903000E3AAB /* Run Standards */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Standards";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x \"${SRCROOT}/Carthage/Checkouts/Standards\" ]\nthen\n  \"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Tests\"\nfi";
-		};
-		BEDE90B9201605C8004656FC /* Run Standards */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Standards";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x \"${SRCROOT}/Carthage/Checkouts/Standards\" ]\nthen\n\"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Source\"\nfi";
-		};
-		BEDE90BA201605E2004656FC /* Run Standards */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Standards";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x \"${SRCROOT}/Carthage/Checkouts/Standards\" ]\nthen\n\"${SRCROOT}/Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Tests\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BE89D5F11EBE3A0100CEC4D1 /* Sources */ = {
