@@ -131,7 +131,7 @@ private func diff<K, P>(
     let oldIDs = oldGroups.flatMap { $0.values }.map { $0.id }
     let newIDs = new.values.map { $0.id }
     let valueElements = oldIDs.extendedDiff(newIDs).elements
-    let valueDeltas = valueElements.flatMap { element -> ResultSet<K, P>.Diff.Delta? in
+    let valueDeltas = valueElements.compactMap { element -> ResultSet<K, P>.Diff.Delta? in
         switch element {
         case let .insert(index):
             let id = new[index].id
@@ -152,7 +152,7 @@ private func diff<K, P>(
 
     // 3. Find updated values and values that shifted group boundaries
     let updated = new
-        .flatMap { newValue -> ResultSet<K, P>.Diff.Delta? in
+        .compactMap { newValue -> ResultSet<K, P>.Diff.Delta? in
             guard let oldIndex = oldIndicesByID[newValue.id] else { return nil }
             let newIndex = newIndicesByID[newValue.id]!
             let oldValue = old.groups[oldIndex.0].values[oldIndex.1]

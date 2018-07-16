@@ -53,7 +53,7 @@ extension AnySchema {
     internal var sql: SQL.Schema {
         return SQL.Schema(
             table: SQL.Table(name),
-            columns: Set(properties.values.flatMap { $0.sql })
+            columns: Set(properties.values.compactMap { $0.sql })
         )
     }
 }

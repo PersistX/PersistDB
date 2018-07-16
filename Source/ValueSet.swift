@@ -155,7 +155,7 @@ extension AnyValueSet: Hashable {
 extension AnyValueSet {
     /// Create a dictionary of column names to SQL expressions from the value set.
     internal func makeSQL() -> [String: SQL.Expression] {
-        let values = self.values.map { (keyPath, value) -> (String, SQL.Expression) in
+        let values = self.values.map { keyPath, value -> (String, SQL.Expression) in
             let path = model.properties[keyPath]!.path
             return (path, value.makeSQL())
         }

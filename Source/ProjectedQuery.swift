@@ -49,7 +49,7 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
     func resultSet(for rows: [Row]) -> ResultSet<Group, Projection> {
         let projection = Projection.projection
         let groups = rows
-            .flatMap { row -> (Group, Projection)? in
+            .compactMap { row -> (Group, Projection)? in
                 return projection
                     .makeValue(values(for: row))
                     .map { value in
@@ -69,7 +69,7 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
 
     /// Extract the values for each key path in the projection.
     func values(for row: Row) -> [PartialKeyPath<Projection.Model>: SQL.Value] {
-        return Dictionary(uniqueKeysWithValues: row.dictionary.flatMap { alias, value in
+        return Dictionary(uniqueKeysWithValues: row.dictionary.compactMap { alias, value in
             guard let uuid = UUID(uuidString: alias), let keyPath = keyPaths[uuid] else {
                 return nil
             }

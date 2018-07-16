@@ -297,7 +297,7 @@ extension Table {
         let deltas = resultSet
             .diff(from: table.resultSet)
             .deltas
-            .flatMap { delta -> Diff.Delta? in
+            .compactMap { delta -> Diff.Delta? in
                 switch delta {
                 case let .deleteGroup(group):
                     return .delete(table.index(group: group))
@@ -427,7 +427,7 @@ extension Table.Diff {
         let deletedRows = self.deletedRows
         let insertedRows = self.insertedRows
         let moves = deltas
-            .flatMap { delta -> (Int, Int)? in
+            .compactMap { delta -> (Int, Int)? in
                 guard
                     case let .move(old, new) = delta,
                     let oldRow = old.row,
@@ -496,7 +496,7 @@ extension Table.Diff {
 
     /// The (before, after) indexes of the moved groups in the diff.
     public var movedGroups: [(Int, Int)] {
-        return deltas.flatMap { delta -> (Int, Int)? in
+        return deltas.compactMap { delta -> (Int, Int)? in
             guard
                 case let .move(before, after) = delta,
                 before.indexPath.count == 1
@@ -507,7 +507,7 @@ extension Table.Diff {
 
     /// The index paths of the inserted valuess in the diff.
     public var insertedValues: [IndexPath] {
-        return deltas.flatMap { delta -> IndexPath? in
+        return deltas.compactMap { delta -> IndexPath? in
             guard
                 case let .insert(index) = delta,
                 index.indexPath.count != 1
@@ -518,7 +518,7 @@ extension Table.Diff {
 
     /// The index paths of the deleted values in the diff.
     public var deletedValues: [IndexPath] {
-        return deltas.flatMap { delta -> IndexPath? in
+        return deltas.compactMap { delta -> IndexPath? in
             guard
                 case let .delete(index) = delta,
                 index.indexPath.count != 1
@@ -529,7 +529,7 @@ extension Table.Diff {
 
     /// The index paths of the updated values in the diff.
     public var updatedValues: [IndexPath] {
-        return deltas.flatMap { delta -> IndexPath? in
+        return deltas.compactMap { delta -> IndexPath? in
             guard
                 case let .update(index) = delta,
                 index.indexPath.count != 1
@@ -540,7 +540,7 @@ extension Table.Diff {
 
     /// The index paths of the moved values in the diff.
     public var movedValues: [(IndexPath, IndexPath)] {
-        return deltas.flatMap { delta -> (IndexPath, IndexPath)? in
+        return deltas.compactMap { delta -> (IndexPath, IndexPath)? in
             guard
                 case let .move(before, after) = delta,
                 before.indexPath.count != 1
