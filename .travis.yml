@@ -1,10 +1,13 @@
 language: objective-c
-osx_image: xcode9.2
+osx_image: xcode9.4
 branches:
   only:
     - master
 script: script/cibuild "$TRAVIS_XCODE_WORKSPACE" "$TRAVIS_XCODE_SCHEME" "$XCODE_ACTION"
 xcode_workspace: PersistDB.xcworkspace
+before_install:
+  - brew install swiftformat
+  - brew install swiftlint
 matrix:
   include:
     - xcode_scheme: PersistDB (macOS)
@@ -12,5 +15,6 @@ matrix:
     - xcode_scheme: PersistDB (iOS)
       env: XCODE_ACTION="build-for-testing test-without-building"
     - script: swift test
+    - script: ./Carthage/Checkouts/Standards/test
 notifications:
   email: false
