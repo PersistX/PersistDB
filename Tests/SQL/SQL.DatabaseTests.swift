@@ -1,10 +1,10 @@
 @testable import PersistDB
 import XCTest
 
-class DatabaseSchemaTests: XCTestCase {
+class SQLDatabaseSchemaTests: XCTestCase {
     func test() {
         let schemas = Set([Author.sqlSchema, Book.sqlSchema])
-        let db = Database()
+        let db = SQL.Database()
         schemas.forEach(db.create)
 
         XCTAssertEqual(db.schema(), schemas)

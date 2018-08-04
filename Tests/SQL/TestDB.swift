@@ -11,7 +11,7 @@ extension Author.Data {
         ])
     }
 
-    var row: Row {
+    var row: SQL.Row {
         return [
             "id": .integer(id.int),
             "name": .text(name),
@@ -59,7 +59,7 @@ extension Book.Data {
         ])
     }
 
-    var row: Row {
+    var row: SQL.Row {
         return [
             "id": .text(id.string),
             "author": .integer(author.int),
@@ -99,7 +99,7 @@ extension Book {
 }
 
 class TestDB {
-    private let db: Database
+    private let db: SQL.Database
 
     init() {
         let fixtures: [SQL] = [
@@ -115,7 +115,7 @@ class TestDB {
             Book.Data.childrenOfTheMind.insert.sql,
         ]
 
-        db = Database()
+        db = SQL.Database()
 
         fixtures.forEach { db.execute($0) }
     }
@@ -124,7 +124,7 @@ class TestDB {
         db.delete(delete)
     }
 
-    func query(_ query: SQL.Query) -> [Row] {
+    func query(_ query: SQL.Query) -> [SQL.Row] {
         return db.query(query)
     }
 

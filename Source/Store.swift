@@ -39,7 +39,7 @@ public final class Store {
     }
 
     /// The underlying SQL database.
-    fileprivate let db: Database
+    fileprivate let db: SQL.Database
 
     /// The scheduler used when accessing the database.
     fileprivate let scheduler: QueueScheduler
@@ -62,7 +62,7 @@ public final class Store {
     /// As part of initialization, the store will verify the schema of and create tables in the
     /// database.
     private init(
-        _ db: Database,
+        _ db: SQL.Database,
         for schemas: [AnySchema],
         scheduler: QueueScheduler = Store.makeScheduler()
     ) throws {
@@ -97,7 +97,7 @@ public final class Store {
 
     /// Create an in-memory store for the given schemas.
     public convenience init(for schemas: [AnySchema]) {
-        try! self.init(Database(), for: schemas) // swiftlint:disable:this force_try
+        try! self.init(SQL.Database(), for: schemas) // swiftlint:disable:this force_try
     }
 
     /// Create an in-memory store for the given model types.
@@ -126,7 +126,7 @@ public final class Store {
             .observe(on: scheduler)
             .attemptMap { url in
                 do {
-                    let db = try Database(at: url)
+                    let db = try SQL.Database(at: url)
                     let store = try Store(db, for: schemas, scheduler: scheduler)
                     return .success(store)
                 } catch let error as OpenError {
@@ -368,7 +368,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     private func fetch<Value>(
         _ query: SQL.Query,
-        _ transform: @escaping ([Row]) -> Value
+        _ transform: @escaping ([SQL.Row]) -> Value
     ) -> SignalProducer<Value, NoError> {
         return SignalProducer(value: query)
             .observe(on: scheduler)
@@ -391,7 +391,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     private func observe<Value>(
         _ query: SQL.Query,
-        _ transform: @escaping ([Row]) -> Value
+        _ transform: @escaping ([SQL.Row]) -> Value
     ) -> SignalProducer<Value, NoError> {
         return fetch(query, transform)
             .concat(.never)

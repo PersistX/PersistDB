@@ -1,78 +1,53 @@
 import Foundation
 import SQLite3
 
-/// A row from a SQL database.
-internal struct Row {
-    internal var dictionary: [String: SQL.Value]
-
-    init(_ dictionary: [String: SQL.Value]) {
-        self.dictionary = dictionary
-    }
-}
-
-extension Row: Hashable {
-    var hashValue: Int {
-        return dictionary.reduce(0) { $0 ^ $1.key.hashValue ^ $1.value.hashValue }
-    }
-
-    static func == (lhs: Row, rhs: Row) -> Bool {
-        return lhs.dictionary == rhs.dictionary
-    }
-}
-
-extension Row: ExpressibleByDictionaryLiteral {
-    init(dictionaryLiteral elements: (String, SQL.Value)...) {
-        var dictionary: [String: SQL.Value] = [:]
-        for (key, value) in elements {
-            dictionary[key] = value
+extension SQL {
+    /// An untyped SQLite database that can execute SQL queries.
+    internal class Database {
+        internal struct Error: Swift.Error {
+            let code: Int32
+            let message: String
         }
-        self.init(dictionary)
-    }
-}
 
-/// An untyped SQLite database that can execute SQL queries.
-internal class Database {
-    internal struct Error: Swift.Error {
-        let code: Int32
-        let message: String
-    }
+        private var db: OpaquePointer
 
-    private var db: OpaquePointer
-
-    /// Create an in-memory database.
-    init() {
-        var db: OpaquePointer?
-        guard sqlite3_open(":memory:", &db) == SQLITE_OK else {
-            fatalError("Couldn't open in-memory database")
+        /// Create an in-memory database.
+        init() {
+            var db: OpaquePointer?
+            guard sqlite3_open(":memory:", &db) == SQLITE_OK else {
+                fatalError("Couldn't open in-memory database")
+            }
+            self.db = db!
         }
-        self.db = db!
-    }
 
-    /// Open a database at the specified URL.
-    init(at url: URL) throws {
-        try FileManager.default.createDirectory(
-            at: url.deletingLastPathComponent(),
-            withIntermediateDirectories: true,
-            attributes: nil
-        )
-
-        var db: OpaquePointer?
-        guard sqlite3_open(url.absoluteString, &db) == SQLITE_OK else {
-            defer { sqlite3_close(db) }
-            throw Error(
-                code: sqlite3_errcode(db),
-                message: String(validatingUTF8: sqlite3_errmsg(db))!
+        /// Open a database at the specified URL.
+        init(at url: URL) throws {
+            try FileManager.default.createDirectory(
+                at: url.deletingLastPathComponent(),
+                withIntermediateDirectories: true,
+                attributes: nil
             )
+
+            var db: OpaquePointer?
+            guard sqlite3_open(url.absoluteString, &db) == SQLITE_OK else {
+                defer { sqlite3_close(db) }
+                throw Error(
+                    code: sqlite3_errcode(db),
+                    message: String(validatingUTF8: sqlite3_errmsg(db))!
+                )
+            }
+            self.db = db!
         }
-        self.db = db!
-    }
 
-    deinit {
-        sqlite3_close(db)
+        deinit {
+            sqlite3_close(db)
+        }
     }
+}
 
+extension SQL.Database {
     /// Execute a SQL query.
-    @discardableResult func execute(_ sql: SQL) -> [Row] {
+    @discardableResult func execute(_ sql: SQL) -> [SQL.Row] {
         var stmt: OpaquePointer?
 
         guard sqlite3_prepare_v2(db, sql.sql, Int32(sql.sql.count), &stmt, nil) == SQLITE_OK else {
@@ -98,7 +73,7 @@ internal class Database {
             }
         }
 
-        var rows: [Row] = []
+        var rows: [SQL.Row] = []
         var hasMore = true
         while hasMore {
             let result = sqlite3_step(stmt)
@@ -135,7 +110,7 @@ internal class Database {
                     }
                     values[name] = value
                 }
-                rows.append(Row(values))
+                rows.append(SQL.Row(values))
 
             default:
                 fatalError("Unknown step result \(result)")
@@ -185,7 +160,7 @@ internal class Database {
         }
     }
 
-    func query(_ query: SQL.Query) -> [Row] {
+    func query(_ query: SQL.Query) -> [SQL.Row] {
         return execute(query.sql)
     }
 
@@ -221,7 +196,7 @@ internal class Database {
     }
 
     func schema() -> Set<SQL.Schema> {
-        let schemas = query(Database.schemaQuery)
+        let schemas = query(SQL.Database.schemaQuery)
             .map { row in
                 return row.dictionary["tbl_name"]!.text!
             }

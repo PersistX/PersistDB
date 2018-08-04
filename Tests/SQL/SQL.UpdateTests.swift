@@ -37,7 +37,7 @@ class SQLUpdateTests: XCTestCase {
             Set(db.query(query)),
             Set([
                 Author.Data.orsonScottCard.row,
-                Row([
+                SQL.Row([
                     "id": .integer(Author.ID.jrrTolkien.int),
                     "name": .text(Author.Data.jrrTolkien.name),
                     "givenName": .text(Author.Data.jrrTolkien.givenName),
@@ -65,14 +65,14 @@ class SQLUpdateTests: XCTestCase {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row([
+                SQL.Row([
                     "id": .integer(Author.ID.orsonScottCard.int),
                     "name": .text(Author.Data.orsonScottCard.name),
                     "givenName": .text(Author.Data.orsonScottCard.givenName),
                     "born": .integer(1792),
                     "died": .integer(1873),
                 ]),
-                Row([
+                SQL.Row([
                     "id": .integer(Author.ID.jrrTolkien.int),
                     "name": .text(Author.Data.jrrTolkien.name),
                     "givenName": .text(Author.Data.jrrTolkien.givenName),
