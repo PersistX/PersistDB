@@ -137,7 +137,7 @@ extension SQL.Expression: Hashable {
         case let .exists(query):
             return query.hashValue
         case let .function(function, arguments):
-            return function.hashValue + arguments.reduce(0) { $0 ^ $1.hashValue }
+            return function.hashValue ^ arguments.reduce(0) { $0 ^ $1.hashValue }
         case let .inList(expr, list):
             return expr.hashValue ^ list.reduce(0) { $0 ^ $1.hashValue }
         case let .join(left, right, expr):
