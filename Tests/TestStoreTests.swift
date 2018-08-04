@@ -4,7 +4,9 @@ import XCTest
 class TestStoreFetchIDTests: XCTestCase {
     func test() {
         let theHobbit = Book.ISBN("the-hobbit")
-        let query = Book.all.filter(\Book.title == Book.Data.theHobbit.title)
+        let query = Book.all
+            .filter(\Book.title == Book.Data.theHobbit.title)
+            .sort(by: \.id)
         let store = TestStore(
             [
                 .theHobbit: [
