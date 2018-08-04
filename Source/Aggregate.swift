@@ -19,7 +19,7 @@ extension Aggregate {
         return predicates.reduce(query) { $0.where($1.expression.sql) }
     }
 
-    internal func result(for rows: [Row]) -> Value {
+    internal func result(for rows: [SQL.Row]) -> Value {
         precondition(rows.count == 1)
         return Value.decode(rows[0].dictionary["count"]!)
             as! Value // swiftlint:disable:this force_cast

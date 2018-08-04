@@ -66,8 +66,8 @@ class SQLQuerySelectTests: SQLQueryTests {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row(["id": .integer(Author.ID.orsonScottCard.int)]),
-                Row(["id": .integer(Author.ID.jrrTolkien.int)]),
+                SQL.Row(["id": .integer(Author.ID.orsonScottCard.int)]),
+                SQL.Row(["id": .integer(Author.ID.jrrTolkien.int)]),
             ])
         )
     }
@@ -82,11 +82,11 @@ class SQLQuerySelectTests: SQLQueryTests {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row([
+                SQL.Row([
                     "id": .integer(Author.ID.orsonScottCard.int),
                     "name": .text("Orson Scott Card"),
                 ]),
-                Row([
+                SQL.Row([
                     "id": .integer(Author.ID.jrrTolkien.int),
                     "name": .text("J.R.R. Tolkien"),
                 ]),
@@ -99,8 +99,8 @@ class SQLQuerySelectTests: SQLQueryTests {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row([ "foo": .text("Orson Scott Card") ]),
-                Row([ "foo": .text("J.R.R. Tolkien") ]),
+                SQL.Row([ "foo": .text("Orson Scott Card") ]),
+                SQL.Row([ "foo": .text("J.R.R. Tolkien") ]),
             ])
         )
     }
@@ -110,7 +110,7 @@ class SQLQuerySelectTests: SQLQueryTests {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row([ "foo": .text("bar") ]),
+                SQL.Row([ "foo": .text("bar") ]),
             ])
         )
     }
@@ -122,8 +122,8 @@ class SQLQuerySelectTests: SQLQueryTests {
         XCTAssertEqual(
             Set(db.query(query)),
             Set([
-                Row(["id": .integer(Author.ID.orsonScottCard.int)]),
-                Row(["id": .integer(Author.ID.jrrTolkien.int)]),
+                SQL.Row(["id": .integer(Author.ID.orsonScottCard.int)]),
+                SQL.Row(["id": .integer(Author.ID.jrrTolkien.int)]),
             ])
         )
     }
@@ -277,7 +277,7 @@ class SQLQueryAggregateTests: SQLQueryTests {
             .select([ SQL.Result(maximum) ])
             .where(.binary(.equal, Author.Table.id, .value(.integer(Author.ID.jrrTolkien.int))))
 
-        let row: Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.died!)]
+        let row: SQL.Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.died!)]
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
@@ -291,7 +291,7 @@ class SQLQueryAggregateTests: SQLQueryTests {
             .select([ SQL.Result(maximum) ])
             .where(.binary(.equal, Author.Table.id, .value(.integer(Author.ID.jrrTolkien.int))))
 
-        let row: Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.born)]
+        let row: SQL.Row = [maximum.sql.debugDescription: .integer(Author.Data.jrrTolkien.born)]
         XCTAssertEqual(query, query)
         XCTAssertEqual(
             Set(db.query(query)),
