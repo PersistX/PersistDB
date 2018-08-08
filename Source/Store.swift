@@ -30,9 +30,12 @@ private struct Tagged<Value> {
     }
 }
 
+public enum ReadOnly {}
+public enum ReadWrite {}
+
 /// A store of model objects, either in memory or on disk, that can be modified, queried, and
 /// observed.
-public final class Store {
+public final class Store<Mode> {
     /// Create a new scheduler to use for database access.
     fileprivate static func makeScheduler() -> QueueScheduler {
         return QueueScheduler(qos: .userInitiated, name: "org.persistx.PersistDB")
@@ -246,14 +249,16 @@ public final class Store {
                         CFNotificationCenterPostNotification(nc, name, nil, nil, true)
                     }
 
-                let observer = UnsafeRawPointer(Unmanaged.passUnretained(store).toOpaque())
+                let observer = UnsafeRawPointer(Unmanaged.passUnretained(store.actions).toOpaque())
                 CFNotificationCenterAddObserver(
                     nc,
                     observer,
                     { _, observer, _, _, _ in // swiftlint:disable:this opening_brace
                         if let observer = observer {
-                            let store = Unmanaged<Store>.fromOpaque(observer).takeUnretainedValue()
-                            store.actions.send(value: nil)
+                            let actions = Unmanaged<Signal<Tagged<SQL.Action>?, NoError>.Observer>
+                                .fromOpaque(observer)
+                                .takeUnretainedValue()
+                            actions.send(value: nil)
                         }
                     },
                     name.rawValue,
@@ -290,7 +295,7 @@ public final class Store {
     }
 }
 
-extension Store {
+extension Store where Mode == ReadWrite {
     /// Perform an action.
     ///
     /// - parameter:
