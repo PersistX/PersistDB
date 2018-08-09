@@ -818,19 +818,64 @@ class StoreOpenTests: StoreTests {
         url = nil
     }
 
-    private func makeTemporaryURL() -> URL {
+    func makeTemporaryURL() -> URL {
         return URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent(UUID().uuidString)
             .appendingPathComponent("store.sqlite3")
     }
 
-    private func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<ReadWrite> {
+    func open<Mode>(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<Mode> {
         return Store
             .open(at: url, for: types)
             .awaitFirst()!
             .value!
     }
+}
 
+final class StoreOpenReadOnlyTests: StoreOpenTests {
+    var reader: Store<ReadOnly>!
+
+    override func setUp() {
+        super.setUp()
+        reader = open(at: url)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        reader = nil
+    }
+
+    func testCompatibleStore() {
+        XCTAssertNotNil(reader)
+    }
+
+    func testNoExistingStore() {
+        let result = Store<ReadOnly>
+            .open(at: makeTemporaryURL(), for: fixtures)
+            .awaitFirst()
+
+        if case .incompatibleSchema? = result?.error {
+        } else {
+            XCTFail("wrong result: " + String(describing: result))
+        }
+    }
+
+    func testIncompatibleSchema() {
+        var author = Author.anySchema
+        author.properties[\Author.born]?.path = "bornOn"
+
+        let result = Store<ReadOnly>
+            .open(at: url, for: [author])
+            .awaitFirst()
+
+        if case .incompatibleSchema? = result?.error {
+        } else {
+            XCTFail("wrong result: " + String(describing: result))
+        }
+    }
+}
+
+final class StoreOpenReadWriteTests: StoreOpenTests {
     func testCreatedAtCorrectURL() {
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
     }

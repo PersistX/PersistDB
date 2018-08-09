@@ -83,6 +83,8 @@ public final class Store<Mode> {
                 if existing != sql {
                     throw OpenError.incompatibleSchema
                 }
+            } else if Mode.self == ReadOnly.self {
+                throw OpenError.incompatibleSchema
             } else {
                 db.create(sql)
             }
