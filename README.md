@@ -47,7 +47,7 @@ final class Book {
     let id: ID<Book>
     let title: String
     let author: Author
-    
+
     init(id: Int, title: String, author: Author) {
         self.id = id
         self.title = title
@@ -59,7 +59,7 @@ final class Author {
     let id: ID<Author>
     let name: String
     let books: Set<Book>
-    
+
     init(id: Int, name: String, books: Set<Book>) {
         self.id = id
         self.name = name
@@ -114,7 +114,7 @@ extension BookViewModel: ModelProjection {
 The `Store` is the interface to the database; it is the source of all side-effects. Creating a `Store` is simple:
 
 ```swift
-Store
+Store<ReadWrite>
     .store(at: URL(…), for: [Book.self, Author.self])
     .startWithResult { result in
         switch result {
@@ -177,7 +177,7 @@ struct Task {
     public let createdAt: Date
     public var text: String
     public var url: URL?
-    
+
     public static func newTask(text: String, url: URL? = nil) -> Insert<Task> {
         return Insert([
             \Task.id == .uuid(),
