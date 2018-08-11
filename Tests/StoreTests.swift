@@ -824,7 +824,14 @@ class StoreOpenTests: StoreTests {
             .appendingPathComponent("store.sqlite3")
     }
 
-    func open<Mode>(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<Mode> {
+    func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<ReadOnly> {
+        return Store
+            .open(at: url, for: types)
+            .awaitFirst()!
+            .value!
+    }
+
+    func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<ReadWrite> {
         return Store
             .open(at: url, for: types)
             .awaitFirst()!
