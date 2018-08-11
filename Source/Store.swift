@@ -30,9 +30,12 @@ private struct Tagged<Value> {
     }
 }
 
+public enum ReadOnly {}
+public enum ReadWrite {}
+
 /// A store of model objects, either in memory or on disk, that can be modified, queried, and
 /// observed.
-public final class Store {
+public final class Store<Mode> {
     /// Create a new scheduler to use for database access.
     fileprivate static func makeScheduler() -> QueueScheduler {
         return QueueScheduler(qos: .userInitiated, name: "org.persistx.PersistDB")
@@ -80,6 +83,8 @@ public final class Store {
                 if existing != sql {
                     throw OpenError.incompatibleSchema
                 }
+            } else if Mode.self == ReadOnly.self {
+                throw OpenError.incompatibleSchema
             } else {
                 db.create(sql)
             }
@@ -95,6 +100,210 @@ public final class Store {
             .observe(on: UIScheduler())
     }
 
+    fileprivate static func _open(
+        at url: URL,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        let scheduler = Store.makeScheduler()
+        return SignalProducer(value: url)
+            .observe(on: scheduler)
+            .attemptMap { url in
+                do {
+                    let db = try SQL.Database(at: url)
+                    let store = try Store(db, for: schemas, scheduler: scheduler)
+                    return .success(store)
+                } catch let error as OpenError {
+                    return .failure(error)
+                } catch let error {
+                    return .failure(.unknown(AnyError(error)))
+                }
+            }
+            .observe(on: UIScheduler())
+    }
+
+    fileprivate static func _open(
+        libraryNamed fileName: String,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        return SignalProducer(value: fileName)
+            .attemptMap { fileName in
+                try FileManager
+                    .default
+                    .url(
+                        for: .applicationSupportDirectory,
+                        in: .userDomainMask,
+                        appropriateFor: nil,
+                        create: true
+                    )
+                    .appendingPathComponent(fileName)
+            }
+            .mapError(OpenError.unknown)
+            .flatMap(.latest) { url in
+                self._open(at: url, for: schemas)
+            }
+    }
+
+    fileprivate static func _open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        let url = FileManager
+            .default
+            .containerURL(forSecurityApplicationGroupIdentifier: applicationGroup)!
+            .appendingPathComponent(fileName)
+        return _open(at: url, for: schemas)
+            .on(value: { store in
+                let nc = CFNotificationCenterGetDarwinNotifyCenter()
+                let name = CFNotificationName("\(applicationGroup)-\(fileName)" as CFString)
+                store
+                    .effects
+                    .filter { $0 != nil }
+                    .observe { _ in
+                        CFNotificationCenterPostNotification(nc, name, nil, nil, true)
+                    }
+
+                let observer = UnsafeRawPointer(Unmanaged.passUnretained(store.actions).toOpaque())
+                CFNotificationCenterAddObserver(
+                    nc,
+                    observer,
+                    { _, observer, _, _, _ in // swiftlint:disable:this opening_brace
+                        if let observer = observer {
+                            let actions = Unmanaged<Signal<Tagged<SQL.Action>?, NoError>.Observer>
+                                .fromOpaque(observer)
+                                .takeUnretainedValue()
+                            actions.send(value: nil)
+                        }
+                    },
+                    name.rawValue,
+                    nil,
+                    .deliverImmediately
+                )
+            })
+    }
+}
+
+extension Store where Mode == ReadOnly {
+    /// Open an on-disk store.
+    ///
+    /// - parameters:
+    ///   - url: The file URL of the store to open.
+    ///   - schemas: The schemas for the models in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public static func open(
+        at url: URL,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        return _open(at: url, for: schemas)
+    }
+
+    /// Open an on-disk store.
+    ///
+    /// - parameters:
+    ///   - url: The file URL of the store to open.
+    ///   - types: The model types in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public static func open(
+        at url: URL,
+        for types: [Schemata.AnyModel.Type]
+    ) -> SignalProducer<Store, OpenError> {
+        return _open(at: url, for: types.map { $0.anySchema })
+    }
+
+    /// Open an on-disk store inside the Application Support directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - schemas: The schemas for the models in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public static func open(
+        libraryNamed fileName: String,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        return _open(libraryNamed: fileName, for: schemas)
+    }
+
+    /// Open an on-disk store inside the Application Support directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - types: The model types in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public static func open(
+        libraryNamed fileName: String,
+        for types: [Schemata.AnyModel.Type]
+    ) -> SignalProducer<Store, OpenError> {
+        return _open(libraryNamed: fileName, for: types.map { $0.anySchema })
+    }
+
+    /// Open an on-disk store inside the application group directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - applicationGroup: The identifier for the shared application group.
+    ///   - schemas: The schemas for the models in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public static func open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for schemas: [AnySchema]
+    ) -> SignalProducer<Store, OpenError> {
+        return _open(
+            libraryNamed: fileName,
+            inApplicationGroup: applicationGroup,
+            for: schemas
+        )
+    }
+
+    /// Open an on-disk store inside the application group directory.
+    ///
+    /// - parameters:
+    ///   - fileName: The name of the file within the Application Support directory to use for the
+    ///               store.
+    ///   - applicationGroup: The identifier for the shared application group.
+    ///   - types: The model types in the store.
+    ///
+    /// - returns: A `SignalProducer` that will create and send a `Store` or send an `OpenError` if
+    ///            one couldn't be opened.
+    ///
+    /// - important: Nothing will be done until the returned producer is started.
+    public static func open(
+        libraryNamed fileName: String,
+        inApplicationGroup applicationGroup: String,
+        for types: [Schemata.AnyModel.Type]
+    ) -> SignalProducer<Store, OpenError> {
+        return _open(
+            libraryNamed: fileName,
+            inApplicationGroup: applicationGroup,
+            for: types.map { $0.anySchema }
+        )
+    }
+}
+
+extension Store where Mode == ReadWrite {
     /// Create an in-memory store for the given schemas.
     public convenience init(for schemas: [AnySchema]) {
         try! self.init(SQL.Database(), for: schemas) // swiftlint:disable:this force_try
@@ -121,21 +330,7 @@ public final class Store {
         at url: URL,
         for schemas: [AnySchema]
     ) -> SignalProducer<Store, OpenError> {
-        let scheduler = Store.makeScheduler()
-        return SignalProducer(value: url)
-            .observe(on: scheduler)
-            .attemptMap { url in
-                do {
-                    let db = try SQL.Database(at: url)
-                    let store = try Store(db, for: schemas, scheduler: scheduler)
-                    return .success(store)
-                } catch let error as OpenError {
-                    return .failure(error)
-                } catch let error {
-                    return .failure(.unknown(AnyError(error)))
-                }
-            }
-            .observe(on: UIScheduler())
+        return _open(at: url, for: schemas)
     }
 
     /// Open an on-disk store.
@@ -154,7 +349,7 @@ public final class Store {
         at url: URL,
         for types: [Schemata.AnyModel.Type]
     ) -> SignalProducer<Store, OpenError> {
-        return open(at: url, for: types.map { $0.anySchema })
+        return _open(at: url, for: types.map { $0.anySchema })
     }
 
     /// Open an on-disk store inside the Application Support directory.
@@ -174,22 +369,7 @@ public final class Store {
         libraryNamed fileName: String,
         for schemas: [AnySchema]
     ) -> SignalProducer<Store, OpenError> {
-        return SignalProducer(value: fileName)
-            .attemptMap { fileName in
-                try FileManager
-                    .default
-                    .url(
-                        for: .applicationSupportDirectory,
-                        in: .userDomainMask,
-                        appropriateFor: nil,
-                        create: true
-                    )
-                    .appendingPathComponent(fileName)
-            }
-            .mapError(OpenError.unknown)
-            .flatMap(.latest) { url in
-                self.open(at: url, for: schemas)
-            }
+        return _open(libraryNamed: fileName, for: schemas)
     }
 
     /// Open an on-disk store inside the Application Support directory.
@@ -209,7 +389,7 @@ public final class Store {
         libraryNamed fileName: String,
         for types: [Schemata.AnyModel.Type]
     ) -> SignalProducer<Store, OpenError> {
-        return open(libraryNamed: fileName, for: types.map { $0.anySchema })
+        return _open(libraryNamed: fileName, for: types.map { $0.anySchema })
     }
 
     /// Open an on-disk store inside the application group directory.
@@ -231,36 +411,11 @@ public final class Store {
         inApplicationGroup applicationGroup: String,
         for schemas: [AnySchema]
     ) -> SignalProducer<Store, OpenError> {
-        let url = FileManager
-            .default
-            .containerURL(forSecurityApplicationGroupIdentifier: applicationGroup)!
-            .appendingPathComponent(fileName)
-        return open(at: url, for: schemas)
-            .on(value: { store in
-                let nc = CFNotificationCenterGetDarwinNotifyCenter()
-                let name = CFNotificationName("\(applicationGroup)-\(fileName)" as CFString)
-                store
-                    .effects
-                    .filter { $0 != nil }
-                    .observe { _ in
-                        CFNotificationCenterPostNotification(nc, name, nil, nil, true)
-                    }
-
-                let observer = UnsafeRawPointer(Unmanaged.passUnretained(store).toOpaque())
-                CFNotificationCenterAddObserver(
-                    nc,
-                    observer,
-                    { _, observer, _, _, _ in // swiftlint:disable:this opening_brace
-                        if let observer = observer {
-                            let store = Unmanaged<Store>.fromOpaque(observer).takeUnretainedValue()
-                            store.actions.send(value: nil)
-                        }
-                    },
-                    name.rawValue,
-                    nil,
-                    .deliverImmediately
-                )
-            })
+        return _open(
+            libraryNamed: fileName,
+            inApplicationGroup: applicationGroup,
+            for: schemas
+        )
     }
 
     /// Open an on-disk store inside the application group directory.
@@ -282,7 +437,7 @@ public final class Store {
         inApplicationGroup applicationGroup: String,
         for types: [Schemata.AnyModel.Type]
     ) -> SignalProducer<Store, OpenError> {
-        return open(
+        return _open(
             libraryNamed: fileName,
             inApplicationGroup: applicationGroup,
             for: types.map { $0.anySchema }
@@ -290,7 +445,7 @@ public final class Store {
     }
 }
 
-extension Store {
+extension Store where Mode == ReadWrite {
     /// Perform an action.
     ///
     /// - parameter:

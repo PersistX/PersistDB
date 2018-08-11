@@ -20,7 +20,7 @@ extension Insert where Model == Author {
 }
 
 class StoreTests: XCTestCase {
-    var store: Store?
+    var store: Store<ReadWrite>?
 
     override func setUp() {
         super.setUp()
@@ -818,19 +818,71 @@ class StoreOpenTests: StoreTests {
         url = nil
     }
 
-    private func makeTemporaryURL() -> URL {
+    func makeTemporaryURL() -> URL {
         return URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent(UUID().uuidString)
             .appendingPathComponent("store.sqlite3")
     }
 
-    private func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store {
+    func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<ReadOnly> {
         return Store
             .open(at: url, for: types)
             .awaitFirst()!
             .value!
     }
 
+    func open(at url: URL, for types: [AnyModel.Type] = fixtures) -> Store<ReadWrite> {
+        return Store
+            .open(at: url, for: types)
+            .awaitFirst()!
+            .value!
+    }
+}
+
+final class StoreOpenReadOnlyTests: StoreOpenTests {
+    var reader: Store<ReadOnly>!
+
+    override func setUp() {
+        super.setUp()
+        reader = open(at: url)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        reader = nil
+    }
+
+    func testCompatibleStore() {
+        XCTAssertNotNil(reader)
+    }
+
+    func testNoExistingStore() {
+        let result = Store<ReadOnly>
+            .open(at: makeTemporaryURL(), for: fixtures)
+            .awaitFirst()
+
+        if case .incompatibleSchema? = result?.error {
+        } else {
+            XCTFail("wrong result: " + String(describing: result))
+        }
+    }
+
+    func testIncompatibleSchema() {
+        var author = Author.anySchema
+        author.properties[\Author.born]?.path = "bornOn"
+
+        let result = Store<ReadOnly>
+            .open(at: url, for: [author])
+            .awaitFirst()
+
+        if case .incompatibleSchema? = result?.error {
+        } else {
+            XCTFail("wrong result: " + String(describing: result))
+        }
+    }
+}
+
+final class StoreOpenReadWriteTests: StoreOpenTests {
     func testCreatedAtCorrectURL() {
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
     }
@@ -843,7 +895,7 @@ class StoreOpenTests: StoreTests {
 
     func testDoesWorkOnSubscription() {
         let url = makeTemporaryURL()
-        let producer = Store.open(at: url, for: fixtures)
+        let producer = Store<ReadWrite>.open(at: url, for: fixtures)
         let fileManager = FileManager.default
 
         XCTAssertFalse(fileManager.fileExists(atPath: url.path))
@@ -865,7 +917,7 @@ class StoreOpenTests: StoreTests {
         var author = Author.anySchema
         author.properties[\Author.born]?.path = "bornOn"
 
-        let result = Store
+        let result = Store<ReadWrite>
             .open(at: url, for: [author])
             .awaitFirst()
 

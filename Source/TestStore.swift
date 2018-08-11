@@ -63,7 +63,7 @@ extension Insert {
 ///
 /// - important: This class should **only** be used for testing.
 public final class TestStore {
-    let store: Store
+    let store: Store<ReadWrite>
 
     /// Create a test store for the given types without inserting any fixtures.
     public init(for types: [Schemata.AnyModel.Type]) {
