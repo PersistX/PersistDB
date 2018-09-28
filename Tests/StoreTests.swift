@@ -861,8 +861,7 @@ final class StoreOpenReadOnlyTests: StoreOpenTests {
             .open(at: makeTemporaryURL(), for: fixtures)
             .awaitFirst()
 
-        if case .incompatibleSchema? = result?.error {
-        } else {
+        if case .incompatibleSchema? = result?.error {} else {
             XCTFail("wrong result: " + String(describing: result))
         }
     }
@@ -875,8 +874,7 @@ final class StoreOpenReadOnlyTests: StoreOpenTests {
             .open(at: url, for: [author])
             .awaitFirst()
 
-        if case .incompatibleSchema? = result?.error {
-        } else {
+        if case .incompatibleSchema? = result?.error {} else {
             XCTFail("wrong result: " + String(describing: result))
         }
     }
@@ -921,8 +919,7 @@ final class StoreOpenReadWriteTests: StoreOpenTests {
             .open(at: url, for: [author])
             .awaitFirst()
 
-        if case .incompatibleSchema? = result?.error {
-        } else {
+        if case .incompatibleSchema? = result?.error {} else {
             XCTFail("wrong result: " + String(describing: result))
         }
     }

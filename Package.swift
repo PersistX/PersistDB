@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:4.2
 
 import PackageDescription
 
@@ -11,9 +11,9 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/PersistX/Schemata.git", from: "0.1.2"),
+        .package(url: "https://github.com/PersistX/Schemata.git", from: "0.2.0"),
         .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "4.0.0"),
-        .package(url: "https://github.com/tonyarnold/Differ.git", from: "1.2.3"),
+        .package(url: "https://github.com/tonyarnold/Differ.git", from: "1.3.0"),
     ],
     targets: [
         .target(
@@ -31,5 +31,5 @@ let package = Package(
             path: "Tests"
         ),
     ],
-    swiftLanguageVersions: [4]
+    swiftLanguageVersions: [.v4_2]
 )

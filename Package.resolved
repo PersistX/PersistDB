@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/tonyarnold/Differ.git",
         "state": {
           "branch": null,
-          "revision": "a3252fbc44b6fbc2a87539dc555a8e014233fe20",
-          "version": "1.2.3"
+          "revision": "2547774f17f637a5c233ee575b678ff2efcabd1d",
+          "version": "1.3.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "9c1379fdcd58c4f2278aea5e029394ba9a2b8f07",
-          "version": "7.1.3"
+          "revision": "cd6dfb86f496fcd96ce0bc6da962cd936bf41903",
+          "version": "7.3.1"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/Quick/Quick.git",
         "state": {
           "branch": null,
-          "revision": "b060679e70d13c3c7dcd124201b5b1b34ce6f340",
-          "version": "1.3.1"
+          "revision": "5fbf13871d185526993130c3a1fad0b70bfe37ce",
+          "version": "1.3.2"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/PersistX/Schemata.git",
         "state": {
           "branch": null,
-          "revision": "ed0e4dc9e1e7787da64c626df9a5a61b6b3d9ac2",
-          "version": "0.1.2"
+          "revision": "aa965cbcac52190c5f80600c4b6963371cde927b",
+          "version": "0.2.0"
         }
       }
     ]
