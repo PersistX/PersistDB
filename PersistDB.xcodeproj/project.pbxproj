@@ -993,7 +993,7 @@
 				PRODUCT_NAME = PersistDB;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1018,7 +1018,7 @@
 				PRODUCT_NAME = PersistDB;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1039,7 +1039,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1059,7 +1059,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
