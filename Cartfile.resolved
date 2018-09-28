@@ -1,5 +1,5 @@
-github "PersistX/Schemata" "0.1.1"
-github "PersistX/Standards" "ea78af155f7416efea5841b013576d77e26d3050"
+github "PersistX/Schemata" "0.2.0"
+github "PersistX/Standards" "89c30330fcac972a84a4876125064001b9c89f0f"
 github "ReactiveCocoa/ReactiveSwift" "4.0.0"
 github "antitypical/Result" "4.0.0"
-github "tonyarnold/Differ" "1.2.3"
+github "tonyarnold/Differ" "1.3.0"
