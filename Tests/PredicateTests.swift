@@ -6,7 +6,6 @@ private let book = SQL.Table("Book")
 private let widget = SQL.Table("Widget")
 
 class PredicateSQLTests: XCTestCase {
-
     // MARK: - sql
 
     func testEqualDate() {
