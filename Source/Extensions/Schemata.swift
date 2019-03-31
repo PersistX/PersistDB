@@ -45,7 +45,12 @@ extension AnyProperty {
 extension AnyModelValue {
     internal static func decode(_ value: SQL.Value) -> Any? {
         let primitive = value.primitive(anyValue.encoded)
-        return anyValue.decode(primitive).value
+        switch anyValue.decode(primitive) {
+        case let .success(value):
+            return value
+        case .failure:
+            return nil
+        }
     }
 }
 

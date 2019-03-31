@@ -9,7 +9,8 @@ extension AnyModelValue {
             .query(.select([ .init(expression.sql, alias: "result") ]))[0]
             .dictionary["result"]!
             .primitive(anyValue.encoded)
-        return anyValue.decode(primitive).value! as! Self // swiftlint:disable:this force_cast
+        // swiftlint:disable:next force_cast force_try
+        return try! anyValue.decode(primitive).get() as! Self
     }
 }
 

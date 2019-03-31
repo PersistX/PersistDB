@@ -487,8 +487,12 @@ extension Store where Mode == ReadWrite {
                 guard case let .inserted(_, id) = effect else { fatalError("Mistaken effect") }
                 let anyValue = Model.ID.anyValue
                 let primitive = id.primitive(anyValue.encoded)
-                let decoded = anyValue.decode(primitive).value!
-                return decoded as! Model.ID // swiftlint:disable:this force_cast
+                switch anyValue.decode(primitive) {
+                case let .success(decoded):
+                    return decoded as! Model.ID // swiftlint:disable:this force_cast
+                case .failure:
+                    fatalError("Decoding ID should never fail")
+                }
             }
     }
 
