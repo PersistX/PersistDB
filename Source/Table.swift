@@ -197,7 +197,7 @@ extension Table {
     /// Return the index path for the projection with the given id.
     public func indexPath(for id: Projection.Model.ID) -> IndexPath? {
         for (g, group) in resultSet.groups.enumerated() {
-            if let v = group.values.index(where: { $0.id == id }) {
+            if let v = group.values.firstIndex(where: { $0.id == id }) {
                 return [g, v]
             }
         }
@@ -372,7 +372,7 @@ extension Table.Diff {
 
         var result: [(Int, Int)] = []
         for move in moves {
-            let old = state.index { $0 == move }!
+            let old = state.firstIndex { $0 == move }!
 
             var adjust = 0
             for (i, m) in state.enumerated() {

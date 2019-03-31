@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/tonyarnold/Differ.git",
         "state": {
           "branch": null,
-          "revision": "2547774f17f637a5c233ee575b678ff2efcabd1d",
-          "version": "1.3.0"
+          "revision": "bc40b8ea4ec483bb77f4084438068677657d90bf",
+          "version": "1.4.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "cd6dfb86f496fcd96ce0bc6da962cd936bf41903",
-          "version": "7.3.1"
+          "revision": "43304bf2b1579fd555f2fdd51742771c1e4f2b98",
+          "version": "8.0.1"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/Quick/Quick.git",
         "state": {
           "branch": null,
-          "revision": "5fbf13871d185526993130c3a1fad0b70bfe37ce",
-          "version": "1.3.2"
+          "revision": "0b4ed6c706dd0cce923b5019a605a9bcc6b1b600",
+          "version": "2.0.0"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/ReactiveCocoa/ReactiveSwift.git",
         "state": {
           "branch": null,
-          "revision": "4f6a12ae6762e825b0e19a4f7076eafa43847e6e",
-          "version": "4.0.0"
+          "revision": "e285cea17cca8e23928d1e85a235638184e39ac9",
+          "version": "5.0.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/antitypical/Result.git",
         "state": {
           "branch": null,
-          "revision": "8fc088dcf72802801efeecba76ea8fb041fb773d",
-          "version": "4.0.0"
+          "revision": "2ca499ba456795616fbc471561ff1d963e6ae160",
+          "version": "4.1.0"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/PersistX/Schemata.git",
         "state": {
           "branch": null,
-          "revision": "aa965cbcac52190c5f80600c4b6963371cde927b",
-          "version": "0.2.0"
+          "revision": "43066deb2c7ae2aad2240c42ce598988b90743b7",
+          "version": "0.3.0"
         }
       }
     ]
