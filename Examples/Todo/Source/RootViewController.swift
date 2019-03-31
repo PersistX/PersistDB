@@ -9,7 +9,7 @@ final class RootViewController: UIViewController {
 
     enum State {
         case loading
-        case opened(Store)
+        case opened(Store<ReadWrite>)
         case failed(OpenError)
     }
 
@@ -20,9 +20,9 @@ final class RootViewController: UIViewController {
                 view.removeFromSuperview()
 
             case let .viewController(vc)?:
-                vc.willMove(toParentViewController: nil)
+                vc.willMove(toParent: nil)
                 vc.view.removeFromSuperview()
-                vc.removeFromParentViewController()
+                vc.removeFromParent()
 
             case nil:
                 break
@@ -37,7 +37,7 @@ final class RootViewController: UIViewController {
                 view.addConstraint(subview.centerYAnchor.constraint(equalTo: view.centerYAnchor))
 
             case let .viewController(vc)?:
-                vc.willMove(toParentViewController: self)
+                vc.willMove(toParent: self)
                 view.addSubview(vc.view)
                 let constraints = [
                     vc.view.topAnchor.constraint(equalTo: view.topAnchor),
@@ -46,7 +46,7 @@ final class RootViewController: UIViewController {
                     vc.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 ]
                 constraints.forEach(view.addConstraint)
-                addChildViewController(vc)
+                addChild(vc)
 
             case nil:
                 break
@@ -58,7 +58,7 @@ final class RootViewController: UIViewController {
         didSet {
             switch state {
             case .loading:
-                let loadingView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+                let loadingView = UIActivityIndicatorView(style: .gray)
                 loadingView.translatesAutoresizingMaskIntoConstraints = false
                 content = .view(loadingView)
                 loadingView.startAnimating()
@@ -80,7 +80,7 @@ final class RootViewController: UIViewController {
         super.viewDidLoad()
 
         state = .loading
-        Store
+        Store<ReadWrite>
             .open(libraryNamed: "Todo", for: [Task.self])
             .startWithResult { result in
                 switch result {
