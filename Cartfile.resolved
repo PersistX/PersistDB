@@ -1,4 +1,4 @@
-github "PersistX/Schemata" "0.3.1"
+github "PersistX/Schemata" "0.3.2"
 github "PersistX/Standards" "89c30330fcac972a84a4876125064001b9c89f0f"
 github "ReactiveCocoa/ReactiveSwift" "5.0.0"
 github "antitypical/Result" "4.1.0"

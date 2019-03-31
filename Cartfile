@@ -1,4 +1,4 @@
-github "PersistX/Schemata" ~> 0.3.1
+github "PersistX/Schemata" ~> 0.3.2
 github "ReactiveCocoa/ReactiveSwift" ~> 5.0
 github "tonyarnold/Differ" ~> 1.4.0
 
