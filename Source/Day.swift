@@ -3,7 +3,7 @@ import ReactiveSwift
 import Schemata
 
 /// A particular day (i.e. a `Date` without a time)
-public struct Day {
+public struct Day: Hashable {
     public let daysSinceReferenceDate: Int
 
     public init(daysSinceReferenceDate: Int) {
@@ -13,11 +13,13 @@ public struct Day {
     public init(_ date: Date = Date(), timeZone: TimeZone = .current) {
         var calendar = Calendar.current
         calendar.timeZone = timeZone
-        let reference = calendar.date(from: DateComponents(
-            year: 2001,
-            month: 1,
-            day: 1
-        ))!
+        let reference = calendar.date(
+            from: DateComponents(
+                year: 2001,
+                month: 1,
+                day: 1
+            )
+        )!
         let components = calendar.dateComponents([.day], from: reference, to: date)
         daysSinceReferenceDate = components.day!
     }
@@ -28,27 +30,19 @@ extension Day {
     internal func start(in timeZone: TimeZone = .current) -> Date {
         var calendar = Calendar.current
         calendar.timeZone = timeZone
-        let reference = calendar.date(from: DateComponents(
-            year: 2001,
-            month: 1,
-            day: 1
-        ))!
+        let reference = calendar.date(
+            from: DateComponents(
+                year: 2001,
+                month: 1,
+                day: 1
+            )
+        )!
         return calendar.date(byAdding: .day, value: daysSinceReferenceDate, to: reference)!
     }
 
     /// The start timestamp of `self` in the current timezone.
     public var start: Date {
         return start()
-    }
-}
-
-extension Day: Hashable {
-    public var hashValue: Int {
-        return daysSinceReferenceDate.hashValue
-    }
-
-    public static func == (lhs: Day, rhs: Day) -> Bool {
-        return lhs.daysSinceReferenceDate == rhs.daysSinceReferenceDate
     }
 }
 

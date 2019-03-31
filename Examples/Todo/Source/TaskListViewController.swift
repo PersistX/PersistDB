@@ -40,7 +40,7 @@ final class TaskListViewController: UIViewController {
     }
 
     /// The store backing the application.
-    let store: Store
+    let store: Store<ReadWrite>
 
     /// The currently viewed segment.
     ///
@@ -53,15 +53,17 @@ final class TaskListViewController: UIViewController {
         didSet {
             let diff = table.diff(from: oldValue)
 
-            tableView.performBatchUpdates({
-                tableView.insertSections(diff.insertedGroups, with: .fade)
-                tableView.deleteSections(diff.deletedGroups, with: .fade)
-                diff.movedGroups.forEach(tableView.moveSection)
+            tableView.performBatchUpdates(
+                { // swiftlint:disable:this opening_brace
+                    tableView.insertSections(diff.insertedGroups, with: .fade)
+                    tableView.deleteSections(diff.deletedGroups, with: .fade)
+                    diff.movedGroups.forEach(tableView.moveSection)
 
-                tableView.insertRows(at: diff.insertedValues, with: .fade)
-                tableView.deleteRows(at: diff.deletedValues, with: .fade)
-                diff.movedValues.forEach(tableView.moveRow)
-            })
+                    tableView.insertRows(at: diff.insertedValues, with: .fade)
+                    tableView.deleteRows(at: diff.deletedValues, with: .fade)
+                    diff.movedValues.forEach(tableView.moveRow)
+                }
+            )
 
             for indexPath in diff.updatedValues {
                 let cell = tableView.cellForRow(at: indexPath) as? TaskCell
@@ -73,11 +75,13 @@ final class TaskListViewController: UIViewController {
     }
 
     /// The control to switch between the different segments.
-    let segmentedControl = UISegmentedControl(items: [
-        Segment.all.title,
-        Segment.active.title,
-        Segment.completed.title,
-    ])
+    let segmentedControl = UISegmentedControl(
+        items: [
+            Segment.all.title,
+            Segment.active.title,
+            Segment.completed.title,
+        ]
+    )
 
     /// The text field for adding tasks.
     let inputField = UITextField()
@@ -85,7 +89,7 @@ final class TaskListViewController: UIViewController {
     /// The table of tasks.
     let tableView = UITableView()
 
-    init(store: Store) {
+    init(store: Store<ReadWrite>) {
         self.store = store
         super.init(nibName: nil, bundle: nil)
     }
@@ -121,12 +125,18 @@ final class TaskListViewController: UIViewController {
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            inputField.topAnchor
-                .constraintEqualToSystemSpacingBelow(segmentedControl.bottomAnchor, multiplier: 2),
-            inputField.leadingAnchor
-                .constraintEqualToSystemSpacingAfter(view.leadingAnchor, multiplier: 1),
-            view.trailingAnchor
-                .constraintEqualToSystemSpacingAfter(inputField.trailingAnchor, multiplier: 1),
+            inputField.topAnchor.constraint(
+                equalToSystemSpacingBelow: segmentedControl.bottomAnchor,
+                multiplier: 2
+            ),
+            inputField.leadingAnchor.constraint(
+                equalToSystemSpacingAfter: view.leadingAnchor,
+                multiplier: 1
+            ),
+            view.trailingAnchor.constraint(
+                equalToSystemSpacingAfter: inputField.trailingAnchor,
+                multiplier: 1
+            ),
 
             tableView.topAnchor.constraint(equalTo: inputField.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -180,7 +190,7 @@ extension TaskListViewController: UITableViewDataSource {
 
     func tableView(
         _: UITableView,
-        commit editingStyle: UITableViewCellEditingStyle,
+        commit editingStyle: UITableViewCell.EditingStyle,
         forRowAt indexPath: IndexPath
     ) {
         if editingStyle == .delete {
@@ -194,9 +204,11 @@ extension TaskListViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: false)
 
         let task = table[indexPath]
-        store.update(Update(
-            predicate: \Task.id == task.id,
-            valueSet: task.isCompleted ? Task.incomplete : Task.complete
-        ))
+        store.update(
+            Update(
+                predicate: \Task.id == task.id,
+                valueSet: task.isCompleted ? Task.incomplete : Task.complete
+            )
+        )
     }
 }

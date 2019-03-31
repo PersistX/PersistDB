@@ -42,16 +42,16 @@ public final class Store<Mode> {
     }
 
     /// The underlying SQL database.
-    fileprivate let db: SQL.Database
+    private let db: SQL.Database
 
     /// The scheduler used when accessing the database.
-    fileprivate let scheduler: QueueScheduler
+    private let scheduler: QueueScheduler
 
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    fileprivate let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
-    fileprivate let effects: Signal<Tagged<SQL.Effect>?, NoError>
+    private let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
+    private let effects: Signal<Tagged<SQL.Effect>?, NoError>
 
     /// The designated initializer.
     ///
@@ -114,7 +114,7 @@ public final class Store<Mode> {
                     return .success(store)
                 } catch let error as OpenError {
                     return .failure(error)
-                } catch let error {
+                } catch {
                     return .failure(.unknown(AnyError(error)))
                 }
             }
@@ -487,8 +487,12 @@ extension Store where Mode == ReadWrite {
                 guard case let .inserted(_, id) = effect else { fatalError("Mistaken effect") }
                 let anyValue = Model.ID.anyValue
                 let primitive = id.primitive(anyValue.encoded)
-                let decoded = anyValue.decode(primitive).value!
-                return decoded as! Model.ID // swiftlint:disable:this force_cast
+                switch anyValue.decode(primitive) {
+                case let .success(decoded):
+                    return decoded as! Model.ID // swiftlint:disable:this force_cast
+                case .failure:
+                    fatalError("Decoding ID should never fail")
+                }
             }
     }
 

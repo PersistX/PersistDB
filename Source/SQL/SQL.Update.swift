@@ -1,24 +1,10 @@
 import Foundation
 
 extension SQL {
-    internal struct Update {
+    internal struct Update: Hashable {
         internal var table: Table
         internal var values: [String: SQL.Expression]
         internal var predicate: SQL.Expression?
-    }
-}
-
-extension SQL.Update: Hashable {
-    internal var hashValue: Int {
-        return table.hashValue
-            ^ values.map { $0.key.hashValue ^ $0.value.hashValue }.reduce(0, ^)
-            ^ (predicate?.hashValue ?? 0)
-    }
-
-    internal static func == (lhs: SQL.Update, rhs: SQL.Update) -> Bool {
-        return lhs.table == rhs.table
-            && lhs.values == rhs.values
-            && lhs.predicate == rhs.predicate
     }
 }
 

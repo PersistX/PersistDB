@@ -1,20 +1,9 @@
 import Schemata
 
 /// A type-erased insert action
-internal struct AnyInsert {
+internal struct AnyInsert: Hashable {
     internal var schema: AnySchema
     internal var valueSet: AnyValueSet
-}
-
-extension AnyInsert: Hashable {
-    var hashValue: Int {
-        return valueSet.hashValue
-    }
-
-    static func == (lhs: AnyInsert, rhs: AnyInsert) -> Bool {
-        return lhs.schema == rhs.schema
-            && lhs.valueSet == rhs.valueSet
-    }
 }
 
 extension AnyInsert {
@@ -27,7 +16,7 @@ extension AnyInsert {
 }
 
 /// An action that inserts a model entity.
-public struct Insert<Model: PersistDB.Model> {
+public struct Insert<Model: PersistDB.Model>: Hashable {
     public let valueSet: ValueSet<Model>
 
     public init(_ valueSet: ValueSet<Model>) {
@@ -43,16 +32,6 @@ public struct Insert<Model: PersistDB.Model> {
 extension Insert {
     internal var insert: AnyInsert {
         return AnyInsert(schema: Model.anySchema, valueSet: valueSet.valueSet)
-    }
-}
-
-extension Insert: Hashable {
-    public var hashValue: Int {
-        return valueSet.hashValue
-    }
-
-    public static func == (lhs: Insert, rhs: Insert) -> Bool {
-        return lhs.valueSet == rhs.valueSet
     }
 }
 

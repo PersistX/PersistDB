@@ -25,7 +25,7 @@ final class ErrorView: UIView {
         let constraints = [
             headerLabel.topAnchor.constraint(equalTo: topAnchor),
             bodyLabel.topAnchor
-                .constraintEqualToSystemSpacingBelow(headerLabel.bottomAnchor, multiplier: 1),
+                .constraint(equalToSystemSpacingBelow: headerLabel.bottomAnchor, multiplier: 1),
             bodyLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             headerLabel.widthAnchor.constraint(equalToConstant: 300),

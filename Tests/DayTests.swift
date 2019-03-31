@@ -114,12 +114,12 @@ class DayStartTests: XCTestCase {
 }
 
 class DayValueTests: XCTestCase {
-    func testDecode() {
+    func testDecode() throws {
         let day = Day(
             Date(timeIntervalSinceReferenceDate: 60 * 60 * 24),
             timeZone: .utc
         )
-        XCTAssertEqual(Day.value.decode(1).value, day)
+        XCTAssertEqual(try Day.value.decode(1).get(), day)
     }
 
     func testEncode() {

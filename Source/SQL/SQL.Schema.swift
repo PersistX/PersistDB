@@ -2,9 +2,9 @@ import Foundation
 
 extension SQL {
     /// A description of a table in a database.
-    internal struct Schema {
+    internal struct Schema: Hashable {
         /// A description of a column in a database.
-        internal struct Column {
+        internal struct Column: Hashable {
             var name: String
             var type: DataType
             var nullable: Bool
@@ -33,29 +33,6 @@ extension SQL {
             self.table = table
             self.columns = columns
         }
-    }
-}
-
-extension SQL.Schema.Column: Hashable {
-    internal var hashValue: Int {
-        return name.hashValue
-    }
-
-    internal static func == (lhs: SQL.Schema.Column, rhs: SQL.Schema.Column) -> Bool {
-        return lhs.name == rhs.name
-            && lhs.type == rhs.type
-            && lhs.nullable == rhs.nullable
-            && lhs.primaryKey == rhs.primaryKey
-    }
-}
-
-extension SQL.Schema: Hashable {
-    internal var hashValue: Int {
-        return table.hashValue
-    }
-
-    internal static func == (lhs: SQL.Schema, rhs: SQL.Schema) -> Bool {
-        return lhs.table == rhs.table && lhs.columns == rhs.columns
     }
 }
 

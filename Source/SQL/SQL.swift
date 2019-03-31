@@ -39,7 +39,7 @@ extension String {
 }
 
 /// A SQL statement with placeholders for sanitized values.
-public struct SQL {
+public struct SQL: Hashable {
     /// The SQL statement.
     public private(set) var sql: String
 
@@ -132,16 +132,6 @@ internal func += (lhs: inout SQL, rhs: SQL) {
 
 internal func += (lhs: inout SQL, rhs: String) {
     lhs.append(rhs)
-}
-
-extension SQL: Hashable {
-    public var hashValue: Int {
-        return parameters.reduce(sql.hashValue) { $0 ^ $1.hashValue }
-    }
-
-    public static func == (lhs: SQL, rhs: SQL) -> Bool {
-        return lhs.sql == rhs.sql && lhs.parameters == rhs.parameters
-    }
 }
 
 extension Sequence where Iterator.Element == SQL {

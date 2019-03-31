@@ -549,17 +549,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = PersistX;
 				TargetAttributes = {
 					BE89D5F51EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					BE89D5FE1EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					BEDE906F2016054C004656FC = {
@@ -574,10 +574,11 @@
 			};
 			buildConfigurationList = BE89D5F01EBE3A0100CEC4D1 /* Build configuration list for PBXProject "PersistDB" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = BE89D5EC1EBE3A0100CEC4D1;
 			productRefGroup = BE89D5F71EBE3A0100CEC4D1 /* Products */;
@@ -844,6 +845,7 @@
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -897,6 +899,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -920,7 +923,6 @@
 				PRODUCT_NAME = PersistDB;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -941,7 +943,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDB;
 				PRODUCT_NAME = PersistDB;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -955,7 +956,6 @@
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -969,7 +969,6 @@
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -993,7 +992,6 @@
 				PRODUCT_NAME = PersistDB;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1018,7 +1016,6 @@
 				PRODUCT_NAME = PersistDB;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1039,7 +1036,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1059,7 +1055,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.PersistDBTests;
 				PRODUCT_NAME = PersistDBTests;
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

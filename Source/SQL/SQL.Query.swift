@@ -22,14 +22,6 @@ extension SQL {
             return expression.tables
         }
 
-        internal var hashValue: Int {
-            return expression.hashValue
-        }
-
-        internal static func == (lhs: Result, rhs: Result) -> Bool {
-            return lhs.expression == rhs.expression && lhs.alias == rhs.alias
-        }
-
         func `as`(_ alias: String) -> Result {
             return Result(expression, alias: alias)
         }
@@ -38,7 +30,7 @@ extension SQL {
 
 extension SQL {
     /// A SQL query.
-    internal struct Query {
+    internal struct Query: Hashable {
         internal var results: [Result]
         internal var predicates: [Expression]
         internal var order: [Ordering]
@@ -143,19 +135,6 @@ extension SQL.Query {
     /// An expression that tests whether `self` has any results.
     internal var exists: SQL.Expression {
         return .exists(self)
-    }
-}
-
-extension SQL.Query: Hashable {
-    internal var hashValue: Int {
-        return results.reduce(0) { $0 ^ $1.hashValue }
-            + predicates.reduce(0) { $0 ^ $1.hashValue }
-    }
-
-    internal static func == (lhs: SQL.Query, rhs: SQL.Query) -> Bool {
-        return lhs.results == rhs.results
-            && lhs.predicates == rhs.predicates
-            && lhs.order == rhs.order
     }
 }
 

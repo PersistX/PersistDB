@@ -176,7 +176,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEDE90FB2017B9EC004656FC /* Build configuration list for PBXNativeTarget "Todo" */;
 			buildPhases = (
-				BEDE91012017C227004656FC /* Run Standards */,
 				BEDE90DA2017B9EB004656FC /* Sources */,
 				BEDE90DB2017B9EB004656FC /* Frameworks */,
 				BEDE90DC2017B9EB004656FC /* Resources */,
@@ -195,7 +194,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEDE90FE2017B9EC004656FC /* Build configuration list for PBXNativeTarget "TodoTests" */;
 			buildPhases = (
-				BEDE91022017C23D004656FC /* Run Standards */,
 				BEDE90EE2017B9EC004656FC /* Sources */,
 				BEDE90EF2017B9EC004656FC /* Frameworks */,
 				BEDE90F02017B9EC004656FC /* Resources */,
@@ -269,37 +267,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		BEDE91012017C227004656FC /* Run Standards */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Standards";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x \"${SRCROOT}/../../Carthage/Checkouts/Standards\" ]\nthen\n\"${SRCROOT}/../../Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Source\"\nfi";
-		};
-		BEDE91022017C23D004656FC /* Run Standards */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Standards";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -x \"${SRCROOT}/../../Carthage/Checkouts/Standards\" ]\nthen\n\"${SRCROOT}/../../Carthage/Checkouts/Standards/build\" \"${SRCROOT}/Tests\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BEDE90DA2017B9EB004656FC /* Sources */ = {
@@ -407,6 +374,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -456,6 +424,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -469,7 +438,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.Todo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -483,7 +451,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.Todo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -498,7 +465,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.TodoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Todo.app/Todo";
 			};
@@ -514,7 +480,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.persistx.TodoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Todo.app/Todo";
 			};

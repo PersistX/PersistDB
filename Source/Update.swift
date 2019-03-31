@@ -1,22 +1,10 @@
 import Schemata
 
 /// A type-erased update action
-internal struct AnyUpdate {
+internal struct AnyUpdate: Hashable {
     internal var schema: AnySchema
     internal var predicate: AnyExpression?
     internal var valueSet: AnyValueSet
-}
-
-extension AnyUpdate: Hashable {
-    var hashValue: Int {
-        return valueSet.hashValue
-    }
-
-    static func == (lhs: AnyUpdate, rhs: AnyUpdate) -> Bool {
-        return lhs.schema == rhs.schema
-            && lhs.predicate == rhs.predicate
-            && lhs.valueSet == rhs.valueSet
-    }
 }
 
 extension AnyUpdate {
@@ -30,7 +18,7 @@ extension AnyUpdate {
 }
 
 /// An action that updates model entities.
-public struct Update<Model: PersistDB.Model> {
+public struct Update<Model: PersistDB.Model>: Hashable {
     public var predicate: Predicate<Model>?
     public let valueSet: ValueSet<Model>
 
@@ -47,18 +35,6 @@ extension Update {
             predicate: predicate?.expression,
             valueSet: valueSet.valueSet
         )
-    }
-}
-
-extension Update: Hashable {
-    public var hashValue: Int {
-        return (predicate?.hashValue ?? 0)
-            ^ valueSet.hashValue
-    }
-
-    public static func == (lhs: Update, rhs: Update) -> Bool {
-        return lhs.predicate == rhs.predicate
-            && lhs.valueSet == rhs.valueSet
     }
 }
 

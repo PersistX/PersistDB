@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 /// A value representing a query of a model type.
-public struct Query<Key: ModelValue, Model: PersistDB.Model> {
+public struct Query<Key: ModelValue, Model: PersistDB.Model>: Hashable {
     /// The predicates used to filter results.
     public var predicates: [Predicate<Model>]
 
@@ -32,19 +32,6 @@ extension Query where Key == None {
         predicates = []
         order = []
         groupedBy = .none
-    }
-}
-
-extension Query: Hashable {
-    public var hashValue: Int {
-        return predicates.map { $0.hashValue }.reduce(0, ^)
-            ^ order.map { $0.hashValue }.reduce(0, ^)
-    }
-
-    public static func == (lhs: Query, rhs: Query) -> Bool {
-        return lhs.predicates == rhs.predicates
-            && lhs.order == rhs.order
-            && lhs.groupedBy == rhs.groupedBy
     }
 }
 

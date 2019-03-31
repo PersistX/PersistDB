@@ -32,7 +32,7 @@ extension SQL {
     }
 
     /// A SQL expression.
-    internal indirect enum Expression {
+    internal indirect enum Expression: Hashable {
         case binary(BinaryOperator, Expression, Expression)
         case cast(Expression, DataType)
         case column(Column)
@@ -122,56 +122,6 @@ extension SQL.Expression {
             }
         }
         return result
-    }
-}
-
-extension SQL.Expression: Hashable {
-    var hashValue: Int {
-        switch self {
-        case let .binary(op, lhs, rhs):
-            return op.hashValue ^ lhs.hashValue ^ rhs.hashValue
-        case let .cast(expr, type):
-            return expr.hashValue ^ type.hashValue
-        case let .column(column):
-            return column.hashValue
-        case let .exists(query):
-            return query.hashValue
-        case let .function(function, arguments):
-            return function.hashValue ^ arguments.reduce(0) { $0 ^ $1.hashValue }
-        case let .inList(expr, list):
-            return expr.hashValue ^ list.reduce(0) { $0 ^ $1.hashValue }
-        case let .join(left, right, expr):
-            return left.hashValue ^ right.hashValue ^ expr.hashValue
-        case let .unary(op, expr):
-            return op.hashValue ^ expr.hashValue
-        case let .value(value):
-            return value.hashValue
-        }
-    }
-
-    static func == (lhs: SQL.Expression, rhs: SQL.Expression) -> Bool {
-        switch (lhs, rhs) {
-        case let (.binary(op1, lhs1, rhs1), .binary(op2, lhs2, rhs2)):
-            return op1 == op2 && lhs1 == lhs2 && rhs1 == rhs2
-        case let (.cast(lhs), .cast(rhs)):
-            return lhs == rhs
-        case let (.column(lhs), .column(rhs)):
-            return lhs == rhs
-        case let (.exists(query1), .exists(query2)):
-            return query1 == query2
-        case let (.function(function1, args1), .function(function2, args2)):
-            return function1 == function2 && args1 == args2
-        case let (.inList(expr1, list1), .inList(expr2, list2)):
-            return expr1 == expr2 && list1 == list2
-        case let (.join(left1, right1, expr1), .join(left2, right2, expr2)):
-            return left1 == left2 && right1 == right2 && expr1 == expr2
-        case let (.unary(op1, expr1), .unary(op2, expr2)):
-            return op1 == op2 && expr1 == expr2
-        case let (.value(value1), .value(value2)):
-            return value1 == value2
-        default:
-            return false
-        }
     }
 }
 

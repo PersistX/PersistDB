@@ -36,11 +36,13 @@ class TestStoreFetchProjectionTests: XCTestCase {
     func test() {
         let widget = Widget(id: 1, date: Date(), double: 3.2, uuid: UUID())
         let store = TestStore(
-            [ widget.id: [
-                \Widget.date == widget.date,
-                \Widget.double == widget.double,
-                \Widget.uuid == widget.uuid,
-            ] ]
+            [
+                widget.id: [
+                    \Widget.date == widget.date,
+                    \Widget.double == widget.double,
+                    \Widget.uuid == widget.uuid,
+                ],
+            ]
         )
 
         let fetched: [Widget] = store.fetch(Widget.all)

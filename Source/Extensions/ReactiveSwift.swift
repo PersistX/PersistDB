@@ -23,7 +23,7 @@ extension SignalProducer {
             }
         }
 
-        while !done && abs(started.timeIntervalSinceNow) < timeout {
+        while !done, abs(started.timeIntervalSinceNow) < timeout {
             RunLoop.main.run(mode: RunLoop.Mode.default, before: Date(timeIntervalSinceNow: 0.01))
         }
 

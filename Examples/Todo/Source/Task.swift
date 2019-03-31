@@ -4,7 +4,7 @@ import Schemata
 /// A task in the app and in the database, the central model of the application.
 ///
 /// Please also see the tests for this class.
-struct Task {
+struct Task: Hashable {
     /// The id for the task.
     let id: UUID
     /// When the task was created.
@@ -18,19 +18,6 @@ struct Task {
 extension Task {
     var isCompleted: Bool {
         return completedAt != nil
-    }
-}
-
-extension Task: Hashable {
-    var hashValue: Int {
-        return id.hashValue
-    }
-
-    static func == (lhs: Task, rhs: Task) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.createdAt == rhs.createdAt
-            && lhs.completedAt == rhs.completedAt
-            && lhs.text == rhs.text
     }
 }
 
