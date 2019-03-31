@@ -25,11 +25,15 @@ matrix:
   include:
     - <<: *xcode10_2
       <<: *macOS
+      name: macOS
     - <<: *xcode10_2
       <<: *iOS
+      name: iOS
     - <<: *xcode10_2
+      name: SwiftPM
       script: swift test
     - <<: *xcode10_2
+      name: Standards
       script: ./Carthage/Checkouts/Standards/test
 
 notifications:
