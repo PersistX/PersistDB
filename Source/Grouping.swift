@@ -1,7 +1,7 @@
 import Schemata
 
 /// A expression that will be used to group a query.
-public struct Grouping<Model: PersistDB.Model, Key: ModelValue> {
+public struct Grouping<Model: PersistDB.Model, Key: ModelValue>: Hashable {
     /// The underlying expression.
     public var expression: Expression<Model, Key>
 
@@ -11,16 +11,6 @@ public struct Grouping<Model: PersistDB.Model, Key: ModelValue> {
     public init(_ expression: Expression<Model, Key>, ascending: Bool = true) {
         self.expression = expression
         self.ascending = ascending
-    }
-}
-
-extension Grouping: Hashable {
-    public var hashValue: Int {
-        return expression.hashValue
-    }
-
-    public static func == (lhs: Grouping, rhs: Grouping) -> Bool {
-        return lhs.expression == rhs.expression && lhs.ascending == rhs.ascending
     }
 }
 

@@ -10,12 +10,12 @@ import Schemata
 /// `AnyExpression`s can also generate new values, e.g. UUIDs, which are expressed as values in SQL.
 /// These values are expressed as values within `AnyExpression`, but the act of generating the
 /// corresponding `SQL.Expression` causes it to generate any such values.
-internal indirect enum AnyExpression {
-    internal enum UnaryOperator: String {
+internal indirect enum AnyExpression: Hashable {
+    internal enum UnaryOperator: String, Hashable {
         case not
     }
 
-    internal enum BinaryOperator: String {
+    internal enum BinaryOperator: String, Hashable {
         case and
         case equal
         case greaterThan
@@ -26,7 +26,7 @@ internal indirect enum AnyExpression {
         case or
     }
 
-    internal enum Function {
+    internal enum Function: Hashable {
         case coalesce
         case count
         case length
@@ -43,66 +43,11 @@ internal indirect enum AnyExpression {
     case value(SQL.Value)
 }
 
-extension AnyExpression.UnaryOperator: Hashable {
-    var hashValue: Int {
-        switch self {
-        case .not:
-            return 0
-        }
-    }
-
-    static func == (lhs: AnyExpression.UnaryOperator, rhs: AnyExpression.UnaryOperator) -> Bool {
-        switch (lhs, rhs) {
-        case (.not, .not):
-            return true
-        }
-    }
-}
-
 extension AnyExpression.UnaryOperator {
     var sql: SQL.UnaryOperator {
         switch self {
         case .not:
             return .not
-        }
-    }
-}
-
-extension AnyExpression.BinaryOperator: Hashable {
-    var hashValue: Int {
-        switch self {
-        case .and:
-            return 0
-        case .equal:
-            return 1
-        case .greaterThan:
-            return 2
-        case .greaterThanOrEqual:
-            return 3
-        case .lessThan:
-            return 4
-        case .lessThanOrEqual:
-            return 5
-        case .notEqual:
-            return 6
-        case .or:
-            return 7
-        }
-    }
-
-    static func == (lhs: AnyExpression.BinaryOperator, rhs: AnyExpression.BinaryOperator) -> Bool {
-        switch (lhs, rhs) {
-        case (.and, .and),
-             (.equal, .equal),
-             (.greaterThan, .greaterThan),
-             (.greaterThanOrEqual, .greaterThanOrEqual),
-             (.lessThan, .lessThan),
-             (.lessThanOrEqual, .lessThanOrEqual),
-             (.notEqual, .notEqual),
-             (.or, .or):
-            return true
-        default:
-            return false
         }
     }
 }
@@ -126,35 +71,6 @@ extension AnyExpression.BinaryOperator {
             return .notEqual
         case .or:
             return .or
-        }
-    }
-}
-
-extension AnyExpression.Function: Hashable {
-    var hashValue: Int {
-        switch self {
-        case .coalesce:
-            return 1
-        case .count:
-            return 2
-        case .length:
-            return 3
-        case .max:
-            return 4
-        case .min:
-            return 5
-        }
-    }
-
-    static func == (lhs: AnyExpression.Function, rhs: AnyExpression.Function) -> Bool {
-        switch (lhs, rhs) {
-        case (.coalesce, .coalesce),
-             (.length, .length),
-             (.max, .max),
-             (.min, .min):
-            return true
-        default:
-            return false
         }
     }
 }
@@ -190,61 +106,25 @@ extension AnyExpression.Function {
     }
 }
 
-extension AnyExpression: Hashable {
-    var hashValue: Int {
-        switch self {
-        case let .binary(op, lhs, rhs):
-            return op.hashValue ^ lhs.hashValue ^ rhs.hashValue
-        case let .function(function, expression):
-            return function.hashValue ^ expression.map { $0.hashValue }.reduce(0, ^)
-        case let .inList(expr, list):
-            return expr.hashValue ^ list.map { $0.hashValue }.reduce(0, ^)
-        case let .keyPath(properties):
-            return properties.map { $0.hashValue }.reduce(0, ^)
-        case .now:
-            return 0
-        case let .value(value):
-            return value.hashValue
-        case let .unary(op, expr):
-            return op.hashValue ^ expr.hashValue
-        }
-    }
-
-    static func == (lhs: AnyExpression, rhs: AnyExpression) -> Bool {
-        switch (lhs, rhs) {
-        case let (.binary(lhs), .binary(rhs)):
-            return lhs == rhs
-        case let (.function(lhsFunc, lhsArgs), .function(rhsFunc, rhsArgs)):
-            return lhsFunc == rhsFunc && lhsArgs == rhsArgs
-        case let (.inList(lhsExpr, lhsList), .inList(rhsExpr, rhsList)):
-            return lhsExpr == rhsExpr && lhsList == rhsList
-        case let (.keyPath(lhs), .keyPath(rhs)):
-            return lhs == rhs
-        case (.now, .now):
-            return true
-        case let (.unary(lhs), .unary(rhs)):
-            return lhs == rhs
-        case let (.value(lhs), .value(rhs)):
-            return lhs == rhs
-        default:
-            return false
-        }
-    }
-}
-
 extension SQL {
     fileprivate static var now: SQL.Expression {
-        let seconds = SQL.Expression.function(.strftime, [
-            .value(.text("%s")),
-            .value(.text("now")),
-        ])
-        let subseconds = SQL.Expression.function(.substr, [
-            .function(.strftime, [
-                .value(.text("%f")),
+        let seconds = SQL.Expression.function(
+            .strftime, [
+                .value(.text("%s")),
                 .value(.text("now")),
-            ]),
-            .value(.integer(4)),
-        ])
+            ]
+        )
+        let subseconds = SQL.Expression.function(
+            .substr, [
+                .function(
+                    .strftime, [
+                        .value(.text("%f")),
+                        .value(.text("now")),
+                    ]
+                ),
+                .value(.integer(4)),
+            ]
+        )
         return .cast(
             .binary(
                 .concatenate,
@@ -317,7 +197,7 @@ extension AnyExpression {
 }
 
 /// An expression that can be used in `Predicate`s, `Ordering`s, etc.
-public struct Expression<Model, Value> {
+public struct Expression<Model, Value>: Hashable {
     internal let expression: AnyExpression
 
     internal init(_ expression: AnyExpression) {
@@ -329,16 +209,6 @@ extension Expression where Model: PersistDB.Model {
     /// Create an expression from a keypath.
     public init(_ keyPath: KeyPath<Model, Value>) {
         expression = AnyExpression(keyPath)
-    }
-}
-
-extension Expression: Hashable {
-    public var hashValue: Int {
-        return expression.hashValue
-    }
-
-    public static func == (lhs: Expression, rhs: Expression) -> Bool {
-        return lhs.expression == rhs.expression
     }
 }
 

@@ -2,7 +2,7 @@ import Foundation
 
 extension SQL {
     /// A table in a SQL database
-    internal struct Table {
+    internal struct Table: Hashable {
         /// The name of the table in the database.
         internal var name: String
 
@@ -14,16 +14,6 @@ extension SQL {
         internal subscript(_ name: String) -> SQL.Column {
             return SQL.Column(table: self, name: name)
         }
-    }
-}
-
-extension SQL.Table: Hashable {
-    internal var hashValue: Int {
-        return name.hashValue
-    }
-
-    internal static func == (lhs: SQL.Table, rhs: SQL.Table) -> Bool {
-        return lhs.name == rhs.name
     }
 }
 

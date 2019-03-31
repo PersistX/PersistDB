@@ -2,31 +2,9 @@ import ReactiveSwift
 import Schemata
 
 /// A value that can be used in an assigment in a value set.
-private enum AnyValue {
+private enum AnyValue: Hashable {
     case expression(AnyExpression)
     case generator(AnyGenerator)
-}
-
-extension AnyValue: Hashable {
-    fileprivate var hashValue: Int {
-        switch self {
-        case let .expression(expression):
-            return expression.hashValue
-        case let .generator(generator):
-            return generator.hashValue
-        }
-    }
-
-    fileprivate static func == (lhs: AnyValue, rhs: AnyValue) -> Bool {
-        switch (lhs, rhs) {
-        case let (.expression(lhs), .expression(rhs)):
-            return lhs == rhs
-        case let (.generator(lhs), .generator(rhs)):
-            return lhs == rhs
-        default:
-            return false
-        }
-    }
 }
 
 extension AnyValue {
@@ -43,19 +21,9 @@ extension AnyValue {
 /// An assignment of a value or expression to a model entity's property.
 ///
 /// This is meant to be used in conjunction with `ValueSet`.
-public struct Assignment<Model: PersistDB.Model> {
+public struct Assignment<Model: PersistDB.Model>: Hashable {
     internal let keyPath: PartialKeyPath<Model>
     fileprivate let value: AnyValue
-}
-
-extension Assignment: Hashable {
-    public var hashValue: Int {
-        return keyPath.hashValue
-    }
-
-    public static func == (lhs: Assignment, rhs: Assignment) -> Bool {
-        return lhs.keyPath == rhs.keyPath && lhs.value == rhs.value
-    }
 }
 
 public func == <Model, Value: ModelValue>(
@@ -136,20 +104,9 @@ public func == <Model, Value>(
 }
 
 /// A type-erased `ValueSet`.
-internal struct AnyValueSet {
+internal struct AnyValueSet: Hashable {
     fileprivate var model: AnySchema
     fileprivate var values: [AnyKeyPath: AnyValue]
-}
-
-extension AnyValueSet: Hashable {
-    internal var hashValue: Int {
-        return model.name.hashValue
-            ^ values.lazy.map { $0.key.hashValue ^ $0.value.hashValue }.reduce(0, ^)
-    }
-
-    internal static func == (lhs: AnyValueSet, rhs: AnyValueSet) -> Bool {
-        return lhs.model == rhs.model && lhs.values == rhs.values
-    }
 }
 
 extension AnyValueSet {
@@ -164,7 +121,7 @@ extension AnyValueSet {
 }
 
 /// A set of values that can be used to insert or update a model entity.
-public struct ValueSet<Model: PersistDB.Model> {
+public struct ValueSet<Model: PersistDB.Model>: Hashable {
     /// The assignments/values that make up the value set.
     fileprivate var values: [PartialKeyPath<Model>: AnyValue]
 
@@ -196,18 +153,6 @@ extension ValueSet {
     /// Create a new value set by replacing values in `self` with the values from `valueSet`.
     public func update(with valueSet: ValueSet) -> ValueSet {
         return ValueSet(values.merging(valueSet.values) { $1 })
-    }
-}
-
-extension ValueSet: Hashable {
-    public var hashValue: Int {
-        return values
-            .map { $0.key.hashValue ^ $0.value.hashValue }
-            .reduce(0, ^)
-    }
-
-    public static func == (lhs: ValueSet, rhs: ValueSet) -> Bool {
-        return lhs.values == rhs.values
     }
 }
 

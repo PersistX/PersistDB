@@ -2,7 +2,7 @@ import Foundation
 import Schemata
 
 /// A view model for a table of results.
-public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
+public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection>: Hashable {
     /// The result set backing the table.
     public var resultSet: ResultSet<Key, Projection> {
         didSet {
@@ -31,17 +31,6 @@ public struct Table<Key: Hashable, Projection: PersistDB.ModelProjection> {
     /// Create a table with the given groups.
     public init(_ groups: [Group<Key, Projection>]) {
         self.init(ResultSet(groups))
-    }
-}
-
-extension Table: Hashable {
-    public var hashValue: Int {
-        return resultSet.hashValue
-    }
-
-    public static func == (lhs: Table, rhs: Table) -> Bool {
-        return lhs.resultSet == rhs.resultSet
-            && lhs.selectedIDs == rhs.selectedIDs
     }
 }
 
@@ -87,7 +76,7 @@ extension Table {
     }
 
     internal func row(for indexPath: IndexPath) -> Int? {
-        if !resultSet.isGrouped && indexPath.count == 1 {
+        if !resultSet.isGrouped, indexPath.count == 1 {
             return nil
         }
 
@@ -114,7 +103,7 @@ extension Table {
 
 extension Table {
     /// A row in a `Table`, which is either a `Key` for the group or a `Projection` within it.
-    public enum Row {
+    public enum Row: Hashable {
         case group(Key)
         case value(Projection)
     }
@@ -173,28 +162,6 @@ extension Table {
     }
 }
 
-extension Table.Row: Hashable {
-    public var hashValue: Int {
-        switch self {
-        case let .group(key):
-            return key.hashValue
-        case let .value(projection):
-            return projection.hashValue
-        }
-    }
-
-    public static func == (lhs: Table.Row, rhs: Table.Row) -> Bool {
-        switch (lhs, rhs) {
-        case let (.group(lhs), .group(rhs)):
-            return lhs == rhs
-        case let (.value(lhs), .value(rhs)):
-            return lhs == rhs
-        default:
-            return false
-        }
-    }
-}
-
 extension Table {
     /// The number of sections in the result set.
     public var sectionCount: Int {
@@ -240,7 +207,7 @@ extension Table {
 
 extension Table {
     /// An index into a result set, which includes both a flat row and a nested index path.
-    public struct Index {
+    public struct Index: Hashable {
         /// The row of the index if treated as a flat result set.
         public let row: Int?
 
@@ -257,9 +224,9 @@ extension Table {
     /// The difference between two `Table`s.
     ///
     /// This can be used to implement incremental updates.
-    public struct Diff {
+    public struct Diff: Hashable {
         /// One of the changes that makes up a diff.
-        public enum Delta {
+        public enum Delta: Hashable {
             /// The item at the given index was deleted.
             case delete(Table.Index)
 
@@ -322,40 +289,6 @@ extension Table {
     }
 }
 
-extension Table.Index: Hashable {
-    public var hashValue: Int {
-        return row ?? 0
-    }
-
-    public static func == (lhs: Table.Index, rhs: Table.Index) -> Bool {
-        return lhs.row == rhs.row && lhs.indexPath == rhs.indexPath
-    }
-}
-
-extension Table.Diff.Delta: Hashable {
-    public var hashValue: Int {
-        switch self {
-        case let .delete(index), let .insert(index), let .update(index):
-            return index.hashValue
-        case let .move(a, b):
-            return a.hashValue ^ b.hashValue
-        }
-    }
-
-    public static func == (lhs: Table.Diff.Delta, rhs: Table.Diff.Delta) -> Bool {
-        switch (lhs, rhs) {
-        case let (.delete(lhs), .delete(rhs)),
-             let (.insert(lhs), .insert(rhs)),
-             let (.update(lhs), .update(rhs)):
-            return lhs == rhs
-        case let (.move(lhs), .move(rhs)):
-            return lhs == rhs
-        default:
-            return false
-        }
-    }
-}
-
 extension Table.Diff.Delta: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
@@ -368,16 +301,6 @@ extension Table.Diff.Delta: CustomDebugStringConvertible {
         case let .update(index):
             return "~ \(index.indexPath)"
         }
-    }
-}
-
-extension Table.Diff: Hashable {
-    public var hashValue: Int {
-        return deltas.map { $0.hashValue }.reduce(0, ^)
-    }
-
-    public static func == (lhs: Table.Diff, rhs: Table.Diff) -> Bool {
-        return lhs.deltas == rhs.deltas
     }
 }
 
@@ -460,7 +383,7 @@ extension Table.Diff {
                         state.insert(Move(move), at: i)
                     }
                     break
-                } else if let m = m, m.value != move && m.value.1 > move.1 {
+                } else if let m = m, m.value != move, m.value.1 > move.1 {
                     adjust += 1
                 }
             }

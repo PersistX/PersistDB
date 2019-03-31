@@ -4,7 +4,7 @@ import Schemata
 /// An ordered set of results from a query.
 ///
 /// Result sets that haven't been grouped use `None` as `Key`.
-public struct ResultSet<Key: Hashable, Projection: PersistDB.ModelProjection> {
+public struct ResultSet<Key: Hashable, Projection: PersistDB.ModelProjection>: Hashable {
     /// The groups in the result set.
     public private(set) var groups: [Group<Key, Projection>]
 
@@ -54,16 +54,6 @@ extension ResultSet where Key == None {
     /// Create a ungrouped result set with the given projections.
     public init(_ projections: [Projection]) {
         self.init([ Group(key: .none, values: projections) ])
-    }
-}
-
-extension ResultSet: Hashable {
-    public var hashValue: Int {
-        return groups.map { $0.hashValue }.reduce(0, ^)
-    }
-
-    public static func == (lhs: ResultSet, rhs: ResultSet) -> Bool {
-        return lhs.groups == rhs.groups && lhs.isGrouped == rhs.isGrouped
     }
 }
 
@@ -171,9 +161,9 @@ private func diff<K, P>(
 
 extension ResultSet {
     /// The difference between two result sets.
-    public struct Diff {
+    public struct Diff: Hashable {
         /// A change within a diff.
-        public enum Delta {
+        public enum Delta: Hashable {
             /// The group at the given index in the old set was deleted.
             ///
             /// Values within the group are assumed to be deleted unless in a `.updateValue`.
@@ -212,51 +202,5 @@ extension ResultSet {
     /// Calculate the diff from `resultSet` to `self`.
     public func diff(from resultSet: ResultSet) -> Diff {
         return PersistDB.diff(from: resultSet, to: self)
-    }
-}
-
-extension ResultSet.Diff.Delta: Hashable {
-    public var hashValue: Int {
-        switch self {
-        case let .deleteGroup(i),
-             let .insertGroup(i):
-            return i
-        case let .moveGroup(g1, g2):
-            return g1 ^ g2
-        case let .deleteValue(g, v),
-             let .insertValue(g, v),
-             let .updateValue(g, v):
-            return g ^ v
-        case let .moveValue(g1, v1, g2, v2):
-            return g1 ^ v1 ^ g2 ^ v2
-        }
-    }
-
-    public static func == (lhs: ResultSet.Diff.Delta, rhs: ResultSet.Diff.Delta) -> Bool {
-        switch (lhs, rhs) {
-        case let (.deleteGroup(lhs), .deleteGroup(rhs)),
-             let (.insertGroup(lhs), .insertGroup(rhs)):
-            return lhs == rhs
-        case let (.moveGroup(lhs), .moveGroup(rhs)):
-            return lhs == rhs
-        case let (.deleteValue(lhs), .deleteValue(rhs)),
-             let (.insertValue(lhs), .insertValue(rhs)),
-             let (.updateValue(lhs), .updateValue(rhs)):
-            return lhs == rhs
-        case let (.moveValue(lhs), .moveValue(rhs)):
-            return lhs == rhs
-        default:
-            return false
-        }
-    }
-}
-
-extension ResultSet.Diff: Hashable {
-    public var hashValue: Int {
-        return deltas.map { $0.hashValue }.reduce(0, ^)
-    }
-
-    public static func == (lhs: ResultSet.Diff, rhs: ResultSet.Diff) -> Bool {
-        return lhs.deltas == rhs.deltas
     }
 }

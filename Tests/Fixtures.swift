@@ -4,8 +4,8 @@ import Schemata
 
 // MARK: - Book
 
-struct Book {
-    struct ISBN {
+struct Book: Hashable {
+    struct ISBN: Hashable {
         let string: String
 
         init(_ string: String) {
@@ -16,16 +16,6 @@ struct Book {
     let id: ISBN
     let title: String
     let author: Author
-}
-
-extension Book.ISBN: Hashable {
-    var hashValue: Int {
-        return string.hashValue
-    }
-
-    static func == (lhs: Book.ISBN, rhs: Book.ISBN) -> Bool {
-        return lhs.string == rhs.string
-    }
 }
 
 extension Book.ISBN: ExpressibleByStringLiteral {
@@ -39,16 +29,6 @@ extension Book.ISBN: ExpressibleByStringLiteral {
 
     init(extendedGraphemeClusterLiteral value: String) {
         self.init(value)
-    }
-}
-
-extension Book: Hashable {
-    var hashValue: Int {
-        return id.hashValue ^ title.hashValue ^ author.hashValue
-    }
-
-    static func == (lhs: Book, rhs: Book) -> Bool {
-        return lhs.id == rhs.id && lhs.title == rhs.title && lhs.author == rhs.author
     }
 }
 
@@ -126,8 +106,8 @@ extension Book.Data {
 
 // MARK: - Author
 
-struct Author {
-    struct ID {
+struct Author: Hashable {
+    struct ID: Hashable {
         let int: Int
 
         init(_ int: Int) {
@@ -143,34 +123,9 @@ struct Author {
     let books: Set<Book>
 }
 
-extension Author.ID: Hashable {
-    var hashValue: Int {
-        return int.hashValue
-    }
-
-    static func == (lhs: Author.ID, rhs: Author.ID) -> Bool {
-        return lhs.int == rhs.int
-    }
-}
-
 extension Author.ID: CustomDebugStringConvertible {
     var debugDescription: String {
         return int.description
-    }
-}
-
-extension Author: Hashable {
-    var hashValue: Int {
-        return id.hashValue ^ name.hashValue ^ books.hashValue
-    }
-
-    static func == (lhs: Author, rhs: Author) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-            && lhs.givenName == rhs.givenName
-            && lhs.born == rhs.born
-            && lhs.died == rhs.died
-            && lhs.books == rhs.books
     }
 }
 
@@ -257,7 +212,7 @@ extension Author.Data {
 
 // MARK: - AuthorInfo
 
-struct AuthorInfo {
+struct AuthorInfo: Hashable {
     var id: Author.ID
     var name: String
     var born: Int
@@ -288,22 +243,9 @@ extension AuthorInfo {
     }
 }
 
-extension AuthorInfo: Hashable {
-    var hashValue: Int {
-        return id.hashValue
-    }
-
-    static func == (lhs: AuthorInfo, rhs: AuthorInfo) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-            && lhs.born == rhs.born
-            && lhs.died == rhs.died
-    }
-}
-
 // MARK: - AuthorName
 
-struct AuthorName {
+struct AuthorName: Hashable {
     var id: Author.ID
     var name: String
 }
@@ -323,16 +265,6 @@ extension AuthorName {
     }
 }
 
-extension AuthorName: Hashable {
-    var hashValue: Int {
-        return id.hashValue
-    }
-
-    static func == (lhs: AuthorName, rhs: AuthorName) -> Bool {
-        return lhs.id == rhs.id && lhs.name == rhs.name
-    }
-}
-
 extension AuthorName: CustomDebugStringConvertible {
     var debugDescription: String {
         return "(\(id): \(name))"
@@ -341,24 +273,11 @@ extension AuthorName: CustomDebugStringConvertible {
 
 // MARK: - Widget
 
-struct Widget {
+struct Widget: Hashable {
     let id: Int
     let date: Date
     let double: Double
     let uuid: UUID
-}
-
-extension Widget: Hashable {
-    var hashValue: Int {
-        return id.hashValue
-    }
-
-    static func == (lhs: Widget, rhs: Widget) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.date == rhs.date
-            && lhs.double == rhs.double
-            && lhs.uuid == rhs.uuid
-    }
 }
 
 extension Widget: PersistDB.Model {

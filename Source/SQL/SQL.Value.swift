@@ -3,7 +3,7 @@ import Schemata
 
 extension SQL {
     /// A SQL value to a SQL statement
-    internal enum Value {
+    internal enum Value: Hashable {
         /// An integer value
         case integer(Int)
 
@@ -55,36 +55,6 @@ extension SQL.Value: CustomStringConvertible {
             return value.description
         case let .text(value):
             return "'\(value)'"
-        }
-    }
-}
-
-extension SQL.Value: Hashable {
-    internal var hashValue: Int {
-        switch self {
-        case let .integer(value):
-            return value.hashValue
-        case .null:
-            return 0
-        case let .real(value):
-            return value.hashValue
-        case let .text(value):
-            return value.hashValue
-        }
-    }
-
-    internal static func == (lhs: SQL.Value, rhs: SQL.Value) -> Bool {
-        switch (lhs, rhs) {
-        case let (.integer(left), .integer(right)):
-            return left == right
-        case (.null, .null):
-            return true
-        case let (.real(left), .real(right)):
-            return left == right
-        case let (.text(left), .text(right)):
-            return left == right
-        default:
-            return false
         }
     }
 }

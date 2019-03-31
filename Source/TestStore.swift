@@ -3,21 +3,13 @@ import ReactiveSwift
 import Result
 import Schemata
 
-private struct ID<A: PersistDB.Model>: ModelProjection {
+private struct ID<A: PersistDB.Model>: ModelProjection, Hashable {
     typealias Model = A
 
     let id: Model.ID
 
     static var projection: Projection<Model, ID<Model>> {
         return Projection<Model, ID<Model>>(ID.init, Model.idKeyPath)
-    }
-
-    var hashValue: Int {
-        return id.hashValue
-    }
-
-    static func == (lhs: ID, rhs: ID) -> Bool {
-        return lhs.id == rhs.id
     }
 }
 
