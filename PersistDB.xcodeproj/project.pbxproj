@@ -549,17 +549,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = PersistX;
 				TargetAttributes = {
 					BE89D5F51EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					BE89D5FE1EBE3A0100CEC4D1 = {
 						CreatedOnToolsVersion = 8.3.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					BEDE906F2016054C004656FC = {
@@ -574,10 +574,11 @@
 			};
 			buildConfigurationList = BE89D5F01EBE3A0100CEC4D1 /* Build configuration list for PBXProject "PersistDB" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = BE89D5EC1EBE3A0100CEC4D1;
 			productRefGroup = BE89D5F71EBE3A0100CEC4D1 /* Products */;
