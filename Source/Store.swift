@@ -42,16 +42,16 @@ public final class Store<Mode> {
     }
 
     /// The underlying SQL database.
-    fileprivate let db: SQL.Database
+    private let db: SQL.Database
 
     /// The scheduler used when accessing the database.
-    fileprivate let scheduler: QueueScheduler
+    private let scheduler: QueueScheduler
 
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    fileprivate let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
-    fileprivate let effects: Signal<Tagged<SQL.Effect>?, NoError>
+    private let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
+    private let effects: Signal<Tagged<SQL.Effect>?, NoError>
 
     /// The designated initializer.
     ///
@@ -114,7 +114,7 @@ public final class Store<Mode> {
                     return .success(store)
                 } catch let error as OpenError {
                     return .failure(error)
-                } catch let error {
+                } catch {
                     return .failure(.unknown(AnyError(error)))
                 }
             }

@@ -647,18 +647,20 @@ class SQLQueryInvalidatedByTests: XCTestCase {
     func testInvalidatedByUpdateToDoubleJoinedAliasedColumnResult() {
         let publisher = SQL.Table("Publisher")
         let query = SQL.Query
-            .select([.init(
-                .join(
-                    Book.table["author"],
-                    Author.table["id"],
+            .select([
+                .init(
                     .join(
-                        Author.table["publisher"],
-                        publisher["id"],
-                        .column(publisher["name"])
-                    )
+                        Book.table["author"],
+                        Author.table["id"],
+                        .join(
+                            Author.table["publisher"],
+                            publisher["id"],
+                            .column(publisher["name"])
+                        )
+                    ),
+                    alias: "foo"
                 ),
-                alias: "foo"
-            )])
+            ])
         let update = SQL.Update(
             table: publisher,
             values: [
