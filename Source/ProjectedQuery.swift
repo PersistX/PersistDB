@@ -29,7 +29,8 @@ internal struct ProjectedQuery<Group: ModelValue, Projection: PersistDB.ModelPro
             .map { $0.sql }
         let predicates = query.predicates.map { $0.expression.sql }
 
-        if query.groupedBy == .none {
+        if let groupedBy = query.groupedBy as? Grouping<Projection.Model, None>,
+            groupedBy == Grouping<Projection.Model, None>.none {
             sql = SQL.Query(
                 results: results,
                 predicates: predicates,

@@ -1,6 +1,5 @@
 @testable import PersistDB
 import ReactiveSwift
-import Result
 import Schemata
 import XCTest
 
@@ -16,6 +15,26 @@ extension Insert where Model == Author {
             \Author.died == data.died,
         ]
         self.init(ValueSet(assignments))
+    }
+}
+
+extension Result {
+    fileprivate var value: Success? {
+        switch self {
+        case let .success(value):
+            return value
+        case .failure:
+            return nil
+        }
+    }
+
+    fileprivate var error: Failure? {
+        switch self {
+        case .success:
+            return nil
+        case let .failure(error):
+            return error
+        }
     }
 }
 
@@ -110,7 +129,7 @@ class StoreFetchTests: StoreTests {
     }
 
     func testPerformWorkOnSubscription() {
-        let producer: SignalProducer<ResultSet<None, AuthorInfo>, NoError>
+        let producer: SignalProducer<ResultSet<None, AuthorInfo>, Never>
             = store!.fetch(Author.all)
 
         insert(.jrrTolkien)
@@ -355,7 +374,7 @@ class StoreUpdateTests: StoreTests {
 }
 
 class StoreObserveByIDTests: StoreTests {
-    private var observation: SignalProducer<AuthorInfo?, NoError>!
+    private var observation: SignalProducer<AuthorInfo?, Never>!
     private var observed: AuthorInfo??
 
     override func setUp() {
@@ -433,7 +452,7 @@ class StoreObserveTests: StoreTests {
         .all
         .filter(\.born >= 1900)
         .sort(by: \.name)
-    private var observation: SignalProducer<ResultSet<None, AuthorInfo>, NoError>!
+    private var observation: SignalProducer<ResultSet<None, AuthorInfo>, Never>!
     private var observed: ResultSet<None, AuthorInfo>?
 
     override func setUp() {
@@ -573,7 +592,7 @@ class StoreObserveAggregateTests: StoreTests {
         .all
         .filter(\.born == 1920)
         .count
-    private var observation: SignalProducer<Int, NoError>!
+    private var observation: SignalProducer<Int, Never>!
     private var observed: Int?
 
     override func setUp() {
@@ -640,7 +659,7 @@ class StoreObserveGroupedByTests: StoreTests {
         .filter(\.name != Author.Data.jrrTolkien.name)
         .sort(by: \.name)
         .group(by: \.born)
-    private var observation: SignalProducer<ResultSet<Int, AuthorName>, NoError>!
+    private var observation: SignalProducer<ResultSet<Int, AuthorName>, Never>!
     private var observed: ResultSet<Int, AuthorName>?
 
     override func setUp() {
