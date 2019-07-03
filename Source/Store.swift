@@ -1,6 +1,5 @@
 import Foundation
 import ReactiveSwift
-import Result
 import Schemata
 
 /// An error that occurred while opening an on-disk `Store`.
@@ -8,7 +7,7 @@ public enum OpenError: Error {
     /// The schema of the on-disk database is incompatible with the schema of the store.
     case incompatibleSchema
     /// An unknown error occurred. An unfortunate reality.
-    case unknown(AnyError)
+    case unknown(Error)
 }
 
 private struct Tagged<Value> {
@@ -50,8 +49,8 @@ public final class Store<Mode> {
     /// A pipe of the actions and effects that are mutating the store.
     ///
     /// Used to determine when observed queries must be refetched.
-    private let actions: Signal<Tagged<SQL.Action>?, NoError>.Observer
-    private let effects: Signal<Tagged<SQL.Effect>?, NoError>
+    private let actions: Signal<Tagged<SQL.Action>?, Never>.Observer
+    private let effects: Signal<Tagged<SQL.Effect>?, Never>
 
     /// The designated initializer.
     ///
@@ -90,7 +89,7 @@ public final class Store<Mode> {
             }
         }
 
-        let pipe = Signal<Tagged<SQL.Action>?, NoError>.pipe()
+        let pipe = Signal<Tagged<SQL.Action>?, Never>.pipe()
         actions = pipe.input
         effects = pipe.output
             .observe(on: scheduler)
@@ -115,7 +114,7 @@ public final class Store<Mode> {
                 } catch let error as OpenError {
                     return .failure(error)
                 } catch {
-                    return .failure(.unknown(AnyError(error)))
+                    return .failure(.unknown(error))
                 }
             }
             .observe(on: UIScheduler())
@@ -169,7 +168,7 @@ public final class Store<Mode> {
                     observer,
                     { _, observer, _, _, _ in // swiftlint:disable:this opening_brace
                         if let observer = observer {
-                            let actions = Unmanaged<Signal<Tagged<SQL.Action>?, NoError>.Observer>
+                            let actions = Unmanaged<Signal<Tagged<SQL.Action>?, Never>.Observer>
                                 .fromOpaque(observer)
                                 .takeUnretainedValue()
                             actions.send(value: nil)
@@ -451,11 +450,11 @@ extension Store where Mode == ReadWrite {
     /// - parameter:
     ///   - action: The SQL action to perform.
     /// - returns: A signal producer that sends the effect of the action and then completes.
-    private func perform(_ action: SQL.Action) -> SignalProducer<SQL.Effect, NoError> {
+    private func perform(_ action: SQL.Action) -> SignalProducer<SQL.Effect, Never> {
         let tagged = Tagged(action)
         defer { actions.send(value: tagged) }
 
-        let effect = SignalProducer<Tagged<SQL.Effect>?, NoError>(effects)
+        let effect = SignalProducer<Tagged<SQL.Effect>?, Never>(effects)
             .filterMap { $0 }
             .filter { $0.uuid == tagged.uuid }
             .map { $0.value }
@@ -469,7 +468,7 @@ extension Store where Mode == ReadWrite {
     ///
     /// - important: This is done asynchronously.
     @discardableResult
-    public func perform(_ action: Action) -> SignalProducer<Never, NoError> {
+    public func perform(_ action: Action) -> SignalProducer<Never, Never> {
         return perform(action.makeSQL()).then(.empty)
     }
 
@@ -481,7 +480,7 @@ extension Store where Mode == ReadWrite {
     ///   - insert: The entity to insert
     /// - returns: A signal producer that sends the ID after the model has been inserted.
     @discardableResult
-    public func insert<Model>(_ insert: Insert<Model>) -> SignalProducer<Model.ID, NoError> {
+    public func insert<Model>(_ insert: Insert<Model>) -> SignalProducer<Model.ID, Never> {
         return perform(.insert(insert.makeSQL()))
             .map { effect -> Model.ID in
                 guard case let .inserted(_, id) = effect else { fatalError("Mistaken effect") }
@@ -500,7 +499,7 @@ extension Store where Mode == ReadWrite {
     ///
     /// - important: This is done asynchronously.
     @discardableResult
-    public func delete<Model>(_ delete: Delete<Model>) -> SignalProducer<Never, NoError> {
+    public func delete<Model>(_ delete: Delete<Model>) -> SignalProducer<Never, Never> {
         return perform(.delete(delete.makeSQL())).then(.empty)
     }
 
@@ -508,7 +507,7 @@ extension Store where Mode == ReadWrite {
     ///
     /// - important: This is done asynchronously.
     @discardableResult
-    public func update<Model>(_ update: Update<Model>) -> SignalProducer<Never, NoError> {
+    public func update<Model>(_ update: Update<Model>) -> SignalProducer<Never, Never> {
         return perform(.update(update.makeSQL())).then(.empty)
     }
 }
@@ -528,7 +527,7 @@ extension Store {
     private func fetch<Value>(
         _ query: SQL.Query,
         _ transform: @escaping ([SQL.Row]) -> Value
-    ) -> SignalProducer<Value, NoError> {
+    ) -> SignalProducer<Value, Never> {
         return SignalProducer(value: query)
             .observe(on: scheduler)
             .map(db.query)
@@ -551,7 +550,7 @@ extension Store {
     private func observe<Value>(
         _ query: SQL.Query,
         _ transform: @escaping ([SQL.Row]) -> Value
-    ) -> SignalProducer<Value, NoError> {
+    ) -> SignalProducer<Value, Never> {
         return fetch(query, transform)
             .concat(.never)
             .take(
@@ -574,7 +573,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     private func fetch<Group, Projection>(
         _ projected: ProjectedQuery<Group, Projection>
-    ) -> SignalProducer<ResultSet<Group, Projection>, NoError> {
+    ) -> SignalProducer<ResultSet<Group, Projection>, Never> {
         return fetch(projected.sql, projected.resultSet(for:))
     }
 
@@ -592,7 +591,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     private func observe<Group, Projection>(
         _ projected: ProjectedQuery<Group, Projection>
-    ) -> SignalProducer<ResultSet<Group, Projection>, NoError> {
+    ) -> SignalProducer<ResultSet<Group, Projection>, Never> {
         return observe(projected.sql, projected.resultSet(for:))
     }
 
@@ -607,7 +606,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func fetch<Projection: ModelProjection>(
         _ id: Projection.Model.ID
-    ) -> SignalProducer<Projection?, NoError> {
+    ) -> SignalProducer<Projection?, Never> {
         let query = Projection.Model.all
             .filter(Projection.Model.idKeyPath == id)
         return fetch(query)
@@ -628,7 +627,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func observe<Projection: ModelProjection>(
         _ id: Projection.Model.ID
-    ) -> SignalProducer<Projection?, NoError> {
+    ) -> SignalProducer<Projection?, Never> {
         let query = Projection.Model.all
             .filter(Projection.Model.idKeyPath == id)
         return observe(query)
@@ -645,7 +644,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func fetch<Key, Projection: ModelProjection>(
         _ query: Query<Key, Projection.Model>
-    ) -> SignalProducer<ResultSet<Key, Projection>, NoError> {
+    ) -> SignalProducer<ResultSet<Key, Projection>, Never> {
         let projected = ProjectedQuery<Key, Projection>(query)
         return fetch(projected)
     }
@@ -664,7 +663,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func observe<Key, Projection: ModelProjection>(
         _ query: Query<Key, Projection.Model>
-    ) -> SignalProducer<ResultSet<Key, Projection>, NoError> {
+    ) -> SignalProducer<ResultSet<Key, Projection>, Never> {
         let projected = ProjectedQuery<Key, Projection>(query)
         return observe(projected)
     }
@@ -679,7 +678,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func fetch<Model, Value>(
         _ aggregate: Aggregate<Model, Value>
-    ) -> SignalProducer<Value, NoError> {
+    ) -> SignalProducer<Value, Never> {
         return fetch(aggregate.sql, aggregate.result(for:))
     }
 
@@ -697,7 +696,7 @@ extension Store {
     /// - important: Nothing will be done until the returned producer is started.
     public func observe<Model, Value>(
         _ aggregate: Aggregate<Model, Value>
-    ) -> SignalProducer<Value, NoError> {
+    ) -> SignalProducer<Value, Never> {
         return observe(aggregate.sql, aggregate.result(for:))
     }
 }

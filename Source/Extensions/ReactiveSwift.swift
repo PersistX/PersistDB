@@ -1,6 +1,5 @@
 import Foundation
 import ReactiveSwift
-import Result
 
 extension SignalProducer {
     /// Await the termination of the signal producer.
@@ -36,9 +35,9 @@ extension SignalProducer {
 
         _ = take(first: 1)
             .map(Result.success)
-            .flatMapError { error -> SignalProducer<Result<Value, Error>, NoError> in
+            .flatMapError { error -> SignalProducer<Result<Value, Error>, Never> in
                 let result = Result<Value, Error>.failure(error)
-                return SignalProducer<Result<Value, Error>, NoError>(value: result)
+                return SignalProducer<Result<Value, Error>, Never>(value: result)
             }
             .on(value: { result = $0 })
             .await()

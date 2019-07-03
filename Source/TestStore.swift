@@ -1,6 +1,5 @@
 import Foundation
 import ReactiveSwift
-import Result
 import Schemata
 
 private struct ID<A: PersistDB.Model>: ModelProjection, Hashable {
@@ -38,6 +37,17 @@ extension Insert {
         let idValue = AnyExpression.value(Model.ID.anyValue.encode(id).sql)
         let values = valueSet.update(with: [ Model.idKeyPath == Expression(idValue) ])
         self.init(unvalidated: values)
+    }
+}
+
+extension Result {
+    fileprivate var value: Success? {
+        switch self {
+        case let .success(value):
+            return value
+        case .failure:
+            return nil
+        }
     }
 }
 

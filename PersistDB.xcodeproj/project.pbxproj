@@ -45,9 +45,7 @@
 		BE80D7182115F37000822B6C /* SQL.Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE80D7162115F36F00822B6C /* SQL.Row.swift */; };
 		BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D5F61EBE3A0100CEC4D1 /* PersistDB.framework */; };
 		BE89D6071EBE3A0100CEC4D1 /* PersistDB.h in Headers */ = {isa = PBXBuildFile; fileRef = BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BE89D62B1EBE3D7400CEC4D1 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6291EBE3D7400CEC4D1 /* Result.framework */; };
 		BE89D62C1EBE3D7400CEC4D1 /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */; };
-		BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6361EBE769100CEC4D1 /* Result.framework */; };
 		BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE89D6371EBE769100CEC4D1 /* Schemata.framework */; };
 		BE9D8B291F3DF69500DB1C42 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D8B281F3DF69500DB1C42 /* ReactiveSwift.framework */; };
 		BEA031261FF976DD003C2E90 /* SQL.Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA031251FF976DD003C2E90 /* SQL.Value.swift */; };
@@ -128,10 +126,8 @@
 		BEDE90B8201605AE004656FC /* PersistDB.h in Headers */ = {isa = PBXBuildFile; fileRef = BE89D5F91EBE3A0100CEC4D1 /* PersistDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEDE90BB2016063D004656FC /* Differ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90BF2016063D004656FC /* Differ.framework */; };
 		BEDE90BC2016063D004656FC /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C02016063D004656FC /* ReactiveSwift.framework */; };
-		BEDE90BD2016063D004656FC /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C12016063D004656FC /* Result.framework */; };
 		BEDE90BE2016063D004656FC /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C22016063D004656FC /* Schemata.framework */; };
 		BEDE90C320160655004656FC /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C620160656004656FC /* ReactiveSwift.framework */; };
-		BEDE90C420160655004656FC /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C720160656004656FC /* Result.framework */; };
 		BEDE90C520160655004656FC /* Schemata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEDE90C820160656004656FC /* Schemata.framework */; };
 		BEDE90C920160691004656FC /* TestDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7740E11EFFDC4500D1F5A5 /* TestDB.swift */; };
 		BEDE90CA2016259F004656FC /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC36D7201246C1000E3AAB /* Table.swift */; };
@@ -205,9 +201,7 @@
 		BE89D5FA1EBE3A0100CEC4D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE89D5FF1EBE3A0100CEC4D1 /* PersistDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersistDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE89D6061EBE3A0100CEC4D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BE89D6291EBE3D7400CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE89D6361EBE769100CEC4D1 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE89D6371EBE769100CEC4D1 /* Schemata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE9D8B281F3DF69500DB1C42 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA031251FF976DD003C2E90 /* SQL.Value.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL.Value.swift; sourceTree = "<group>"; };
@@ -237,10 +231,8 @@
 		BEDE90782016054D004656FC /* PersistDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersistDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEDE90BF2016063D004656FC /* Differ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Differ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEDE90C02016063D004656FC /* ReactiveSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ReactiveSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEDE90C12016063D004656FC /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEDE90C22016063D004656FC /* Schemata.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEDE90C620160656004656FC /* ReactiveSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ReactiveSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEDE90C720160656004656FC /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEDE90C820160656004656FC /* Schemata.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Schemata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE76A69202E0FDE007A48DB /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		BEE76A6C202E24F6007A48DB /* Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
@@ -255,7 +247,6 @@
 			files = (
 				BEBC36DA2013C0D9000E3AAB /* Differ.framework in Frameworks */,
 				BE9D8B291F3DF69500DB1C42 /* ReactiveSwift.framework in Frameworks */,
-				BE89D62B1EBE3D7400CEC4D1 /* Result.framework in Frameworks */,
 				BE89D62C1EBE3D7400CEC4D1 /* Schemata.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,7 +256,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEA083D81F40C3F9002AB2C1 /* ReactiveSwift.framework in Frameworks */,
-				BE89D6381EBE769100CEC4D1 /* Result.framework in Frameworks */,
 				BE89D6391EBE769100CEC4D1 /* Schemata.framework in Frameworks */,
 				BE89D6001EBE3A0100CEC4D1 /* PersistDB.framework in Frameworks */,
 			);
@@ -277,7 +267,6 @@
 			files = (
 				BEDE90BB2016063D004656FC /* Differ.framework in Frameworks */,
 				BEDE90BC2016063D004656FC /* ReactiveSwift.framework in Frameworks */,
-				BEDE90BD2016063D004656FC /* Result.framework in Frameworks */,
 				BEDE90BE2016063D004656FC /* Schemata.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,7 +276,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEDE90C320160655004656FC /* ReactiveSwift.framework in Frameworks */,
-				BEDE90C420160655004656FC /* Result.framework in Frameworks */,
 				BEDE90C520160655004656FC /* Schemata.framework in Frameworks */,
 				BEDE90792016054D004656FC /* PersistDB.framework in Frameworks */,
 			);
@@ -413,18 +401,14 @@
 			isa = PBXGroup;
 			children = (
 				BEDE90C620160656004656FC /* ReactiveSwift.framework */,
-				BEDE90C720160656004656FC /* Result.framework */,
 				BEDE90C820160656004656FC /* Schemata.framework */,
 				BEDE90BF2016063D004656FC /* Differ.framework */,
 				BEDE90C02016063D004656FC /* ReactiveSwift.framework */,
-				BEDE90C12016063D004656FC /* Result.framework */,
 				BEDE90C22016063D004656FC /* Schemata.framework */,
 				BEBC36DB2013C0D9000E3AAB /* Differ.framework */,
 				BE9D8B281F3DF69500DB1C42 /* ReactiveSwift.framework */,
-				BE89D6361EBE769100CEC4D1 /* Result.framework */,
 				BE89D6371EBE769100CEC4D1 /* Schemata.framework */,
 				BE1E73901F24355C00B05DFA /* XCTest.framework */,
-				BE89D6291EBE3D7400CEC4D1 /* Result.framework */,
 				BE89D62A1EBE3D7400CEC4D1 /* Schemata.framework */,
 			);
 			name = Frameworks;
