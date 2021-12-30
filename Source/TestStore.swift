@@ -118,4 +118,20 @@ public final class TestStore {
             }
             .value!
     }
+
+    public func delete<Model>(
+        _ delete: Delete<Model>
+    ) {
+        _ = store
+            .delete(delete)
+            .await()
+    }
+
+    public func update<Model>(
+        _ update: Update<Model>
+    ) {
+        _ = store
+            .update(update)
+            .await()
+    }
 }
