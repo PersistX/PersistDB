@@ -455,7 +455,7 @@ extension Store where Mode == ReadWrite {
         defer { actions.send(value: tagged) }
 
         let effect = SignalProducer<Tagged<SQL.Effect>?, Never>(effects)
-            .filterMap { $0 }
+            .compactMap { $0 }
             .filter { $0.uuid == tagged.uuid }
             .map { $0.value }
             .take(first: 1)
