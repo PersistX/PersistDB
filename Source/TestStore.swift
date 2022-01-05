@@ -119,6 +119,15 @@ public final class TestStore {
             .value!
     }
 
+	/// Insert a model entity.
+	public func insert<Model>(
+		_ insert: Insert<Model>
+	) {
+		_ = store
+			.insert(insert)
+			.await()
+	}
+
     /// Delete a model entity.
     public func delete<Model>(
         _ delete: Delete<Model>
