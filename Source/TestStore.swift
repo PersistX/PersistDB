@@ -118,4 +118,31 @@ public final class TestStore {
             }
             .value!
     }
+
+    /// Insert a model entity.
+    public func insert<Model>(
+        _ insert: Insert<Model>
+    ) {
+        _ = store
+            .insert(insert)
+            .await()
+    }
+
+    /// Delete a model entity.
+    public func delete<Model>(
+        _ delete: Delete<Model>
+    ) {
+        _ = store
+            .delete(delete)
+            .await()
+    }
+
+    /// Update properties for a model entity.
+    public func update<Model>(
+        _ update: Update<Model>
+    ) {
+        _ = store
+            .update(update)
+            .await()
+    }
 }
